@@ -1,0 +1,35 @@
+enabled = false
+start_focused = false
+reader_toolbar = true
+list_header = true
+hide_accounts = true
+fold_unified = true
+hide_avatars = true
+hide_subject = true
+column_headings = false
+hide_stars = true
+hide_attachment_icons = true
+rail_sidebar = true
+reader_view = true
+rail_dots = true
+hover_expand = false
+fold_accounts = true
+click_folds = false
+unread_counts = true
+show_favorites = true
+show_filters = true
+show_tags = true
+show_contacts = true
+show_attachments = true
+show_inboxes = true
+tags_below = false
+layout = "automatic"
+
+[unified]
+starred = true
+sent = true
+drafts = true
+archive = true
+junk = false
+trash = false
+snoozed = true
