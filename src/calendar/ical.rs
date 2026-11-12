@@ -10,7 +10,7 @@ use crate::mail::invite::fold;
 /// A UID no other calendar item has.
 pub(crate) fn new_uid() -> String {
     let token = crate::rng::token(32).unwrap_or_else(|_| crate::datefmt::now().to_string());
-    format!("{token}@hylki")
+    format!("{token}@buzon")
 }
 
 /// The bare `VEVENT` or `VTODO`, as EDS takes a new item.
@@ -70,7 +70,7 @@ pub(super) fn component(item: &Item, uid: &str, now: i64) -> String {
 /// A whole `.ics` file holding the item, for the calendar application.
 pub(crate) fn calendar_file(item: &Item, uid: &str, now: i64) -> String {
     let mut out = String::from(
-        "BEGIN:VCALENDAR\r\nPRODID:-//Hyprlab//Hylki//EN\r\nVERSION:2.0\r\nMETHOD:PUBLISH\r\n",
+        "BEGIN:VCALENDAR\r\nPRODID:-//Nodalia//Buzon//EN\r\nVERSION:2.0\r\nMETHOD:PUBLISH\r\n",
     );
     out.push_str(&component(item, uid, now));
     out.push_str("END:VCALENDAR\r\n");
@@ -127,8 +127,8 @@ mod tests {
             },
             alarms: Vec::new(),
         };
-        let ics = component(&item, "u1@hylki", MONDAY_8 - 60);
-        assert!(ics.starts_with("BEGIN:VEVENT\r\nUID:u1@hylki\r\n"), "{ics}");
+        let ics = component(&item, "u1@buzon", MONDAY_8 - 60);
+        assert!(ics.starts_with("BEGIN:VEVENT\r\nUID:u1@buzon\r\n"), "{ics}");
         assert!(ics.contains("DTSTAMP:20261102T075900Z\r\n"));
         assert!(ics.contains("SUMMARY:Lunch\\, then\\; the review\r\n"));
         assert!(ics.contains("DTSTART:20261102T080000Z\r\nDTEND:20261102T090000Z\r\n"));
@@ -149,7 +149,7 @@ mod tests {
             },
             alarms: Vec::new(),
         };
-        let ics = component(&item, "u2@hylki", MONDAY_8);
+        let ics = component(&item, "u2@buzon", MONDAY_8);
         assert!(ics.contains("DTSTART;VALUE=DATE:20261230\r\n"));
         assert!(ics.contains("DTEND;VALUE=DATE:20270101\r\n"));
         assert!(!ics.contains("DESCRIPTION"));
@@ -164,13 +164,13 @@ mod tests {
             when: When::Due(Some(date(2026, 11, 5))),
             alarms: Vec::new(),
         };
-        let ics = component(&item, "u3@hylki", MONDAY_8);
+        let ics = component(&item, "u3@buzon", MONDAY_8);
         assert!(ics.starts_with("BEGIN:VTODO\r\n"));
         assert!(ics.contains("DUE;VALUE=DATE:20261105\r\n"));
         assert!(ics.contains("STATUS:NEEDS-ACTION\r\n"));
         assert!(ics.ends_with("END:VTODO\r\n"));
         item.when = When::Due(None);
-        assert!(!component(&item, "u3@hylki", MONDAY_8).contains("DUE"));
+        assert!(!component(&item, "u3@buzon", MONDAY_8).contains("DUE"));
     }
 
     #[test]
@@ -185,7 +185,7 @@ mod tests {
             },
             alarms: Vec::new(),
         };
-        let file = calendar_file(&item, "u4@hylki", MONDAY_8);
+        let file = calendar_file(&item, "u4@buzon", MONDAY_8);
         assert!(file.starts_with("BEGIN:VCALENDAR\r\n"));
         assert!(file.contains("METHOD:PUBLISH\r\nBEGIN:VEVENT\r\n"));
         assert!(file.ends_with("END:VEVENT\r\nEND:VCALENDAR\r\n"));
@@ -205,7 +205,7 @@ mod tests {
             },
             alarms: vec![15],
         };
-        let ics = component(&item, "u5@hylki", MONDAY_8);
+        let ics = component(&item, "u5@buzon", MONDAY_8);
         assert!(
             ics.contains(
                 "BEGIN:VALARM\r\nACTION:DISPLAY\r\nTRIGGER;RELATED=START:-PT15M\r\n\
@@ -215,20 +215,20 @@ mod tests {
         );
         for (minutes, trigger) in [(0, "PT0S"), (60, "-PT1H"), (1440, "-P1D"), (10080, "-P1W")] {
             item.alarms = vec![minutes];
-            let ics = component(&item, "u5@hylki", MONDAY_8);
+            let ics = component(&item, "u5@buzon", MONDAY_8);
             assert!(ics.contains(&format!("START:{trigger}\r\n")), "{ics}");
         }
         item.alarms = vec![15, 24 * 60];
-        let ics = component(&item, "u5@hylki", MONDAY_8);
+        let ics = component(&item, "u5@buzon", MONDAY_8);
         assert_eq!(ics.matches("BEGIN:VALARM").count(), 2, "{ics}");
         assert!(ics.contains("START:-PT15M\r\n") && ics.contains("START:-P1D\r\n"));
         item.alarms.clear();
-        assert!(!component(&item, "u5@hylki", MONDAY_8).contains("VALARM"));
+        assert!(!component(&item, "u5@buzon", MONDAY_8).contains("VALARM"));
     }
 
     #[test]
     fn uids_differ() {
         assert_ne!(new_uid(), new_uid());
-        assert!(new_uid().ends_with("@hylki"));
+        assert!(new_uid().ends_with("@buzon"));
     }
 }

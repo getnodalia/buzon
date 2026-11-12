@@ -214,7 +214,7 @@ fn raw_dkim_signatures(parsed: &mail_parser::Message) -> Vec<String> {
 
 /// Whether one of these `DKIM-Signature` values, by the domain `domain`
 /// whose signature passed, lists every header in `needed` in its `h=`.
-/// Hylki does not check signatures itself; the provider's verdict says one
+/// Buzón does not check signatures itself; the provider's verdict says one
 /// by that domain held, and its `h=` says what that one covered.
 fn dkim_covers(signatures: &[String], domain: &str, needed: &[&str]) -> bool {
     signatures.iter().any(|sig| {
@@ -680,7 +680,7 @@ mod tests {
         assert_eq!(check.trust, SenderTrust::Fail);
     }
 
-    /// VIREO-11: the provider reported SPF only, and the sender shipped a
+    /// BUZON-11: the provider reported SPF only, and the sender shipped a
     /// DMARC pass in another name below it. Only the provider's site counts.
     #[test]
     fn a_forged_header_cannot_fill_a_method_the_provider_left_out() {

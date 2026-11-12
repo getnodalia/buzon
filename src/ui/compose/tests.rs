@@ -49,7 +49,7 @@ fn initial_suggestions_keep_newer_names_and_frequency() {
 
 #[test]
 fn a_markdown_reply_has_a_line_to_write_on_above_the_quote() {
-    let reply = "<p><br></p><p class=\"hylki-quote-attr\">On Monday, Ann wrote:</p><blockquote><p>Hi</p></blockquote>";
+    let reply = "<p><br></p><p class=\"buzon-quote-attr\">On Monday, Ann wrote:</p><blockquote><p>Hi</p></blockquote>";
     let md = super::markdown_body(reply);
     assert!(md.starts_with("\n\nOn Monday, Ann wrote:"), "{md:?}");
     // A new message stays empty, and written text is left as it is.
@@ -64,11 +64,11 @@ use crate::ui::rich_editor::SourceKind;
 fn the_separator_line_follows_the_setting() {
     assert_eq!(
         sig_html("Ann", false),
-        "<div class=\"hylki-sig\"><br>Ann</div>"
+        "<div class=\"buzon-sig\"><br>Ann</div>"
     );
     assert_eq!(
         sig_html("Ann", true),
-        "<div class=\"hylki-sig\"><br>-- <br>Ann</div>"
+        "<div class=\"buzon-sig\"><br>-- <br>Ann</div>"
     );
     assert!(!sig_source(SourceKind::Markdown, "Ann", false).contains("-- "));
     assert!(sig_source(SourceKind::Markdown, "Ann", true).starts_with("\n\n-- \n"));
@@ -81,7 +81,7 @@ fn the_separator_line_follows_the_setting() {
 fn pinned_an_html_source_signature_is_the_rich_block() {
     assert_eq!(
         sig_source(SourceKind::Html, "Ann\nB", true),
-        "\n<div class=\"hylki-sig\"><br>-- <br>Ann<br>B</div>\n"
+        "\n<div class=\"buzon-sig\"><br>-- <br>Ann<br>B</div>\n"
     );
     // Anything with a `<` is taken as HTML.
     assert_eq!(
@@ -204,27 +204,27 @@ fn pinned_translate_scripts_are_unchanged() {
     }
     assert_eq!(
         fnv(super::format::SHOWCASE_PLAIN_LOG),
-        (393, 0x667da3e64a4a676e)
+        (393, 0x2096ddcfa7bac9f7)
     );
     assert_eq!(
         fnv(super::translate::TR_QUOTE_TEXT),
-        (453, 0xc2a237f0c7dc2fab)
+        (453, 0x2ff12a399c04606c)
     );
     assert_eq!(
         fnv(super::translate::TR_RICH_BEGIN),
-        (1701, 0xd3cb51e10a1c983c)
+        (1701, 0x8690ed806548068d)
     );
     assert_eq!(
         fnv(super::translate::TR_RICH_END),
-        (731, 0x866624ea47866e35)
+        (731, 0x59f0a99d455ef34b)
     );
     assert_eq!(
         fnv(super::translate::TR_SOURCE_BEGIN),
-        (877, 0x64fe55236df5c79f)
+        (877, 0x7f226764de82ba2e)
     );
     assert_eq!(
         fnv(super::translate::TR_SOURCE_END),
-        (721, 0xdfc354ea9d805901)
+        (721, 0xa2eeb19aac3c1c1b)
     );
-    assert_eq!(fnv(super::translate::TR_CANCEL), (197, 0x2cb5c4f7c3471566));
+    assert_eq!(fnv(super::translate::TR_CANCEL), (197, 0x22ff8ecb006520ef));
 }

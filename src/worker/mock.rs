@@ -76,11 +76,11 @@ pub(super) async fn run_mock(
         crate::models::FolderHierarchy::maildir(),
     ));
     emit(WorkerEvent::Folders(backend.folders(account_id)));
-    // HYLKI_DEMO_ARRIVAL=<secs>: a reply lands in account 1's Inbox
+    // BUZON_DEMO_ARRIVAL=<secs>: a reply lands in account 1's Inbox
     // conversation after that long, as a sync would bring it — for
     // watching an open conversation take in a new message.
     if account_id == 1 {
-        if let Some(secs) = std::env::var("HYLKI_DEMO_ARRIVAL")
+        if let Some(secs) = std::env::var("BUZON_DEMO_ARRIVAL")
             .ok()
             .and_then(|v| v.parse::<u64>().ok())
         {
@@ -178,10 +178,10 @@ pub(super) async fn run_mock(
                 for id in ids {
                     mock_sender_check(&path, id, &emit);
                 }
-                // HYLKI_DEMO_SYNC_DELAY=<secs> holds the "been to the server"
+                // BUZON_DEMO_SYNC_DELAY=<secs> holds the "been to the server"
                 // signal back, so the progress a long sync shows (the manual
                 // filter run's dialog, #198) can be watched here.
-                match std::env::var("HYLKI_DEMO_SYNC_DELAY")
+                match std::env::var("BUZON_DEMO_SYNC_DELAY")
                     .ok()
                     .and_then(|v| v.parse::<u64>().ok())
                 {

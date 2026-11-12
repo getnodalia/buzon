@@ -107,7 +107,7 @@ struct EditedOut {
 #[tool_router(router = composer_tools, vis = "pub(super)")]
 impl Mail {
     #[tool(
-        description = "The messages being written in Hylki now that the user allows \
+        description = "The messages being written in Buzón now that the user allows \
         agents to see, with recipients, subject and any edit waiting for the user. Pass \
         an `id` to read_draft for the text. Drafts saved and closed are in the drafts folder \
         (list_messages).",
@@ -176,7 +176,7 @@ impl Mail {
             .send(AppMsg::Assistant(AppCall::EditDraft { id, edit, done }))
             .is_err()
         {
-            return failure("Hylki is closing".into());
+            return failure("Buzón is closing".into());
         }
         match tokio::time::timeout(READ_WAIT, answer).await {
             Ok(Ok(EditAnswer::Waits)) => json(&EditedOut {
@@ -189,7 +189,7 @@ impl Mail {
                 "The composer had an edit a moment ago, and each one interrupts the user. Try \
                  again in {secs} s, if the user wants another."
             )),
-            _ => failure("Hylki did not answer".into()),
+            _ => failure("Buzón did not answer".into()),
         }
     }
 }
@@ -290,12 +290,12 @@ impl Mail {
         let (done, answer) = tokio::sync::oneshot::channel();
         self.app
             .send(AppMsg::Assistant(AppCall::ReadDrafts { id, text, done }))
-            .map_err(|_| "Hylki is closing".to_string())?;
+            .map_err(|_| "Buzón is closing".to_string())?;
         let deadline = tokio::time::Instant::now() + READ_WAIT;
         let lines = tokio::time::timeout_at(deadline, answer)
             .await
-            .map_err(|_| "Hylki did not answer".to_string())?
-            .map_err(|_| "Hylki did not answer".to_string())?;
+            .map_err(|_| "Buzón did not answer".to_string())?
+            .map_err(|_| "Buzón did not answer".to_string())?;
         let mut out = Vec::new();
         for line in lines {
             if let Ok(Ok(d)) = tokio::time::timeout_at(deadline, line).await {

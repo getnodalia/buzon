@@ -41,11 +41,11 @@ pub(crate) struct Progress {
     pub(crate) cancel: AtomicBool,
 }
 
-/// Where the checkers are kept: `~/.local/share/hylki/grammar/<name>`.
+/// Where the checkers are kept: `~/.local/share/buzon/grammar/<name>`.
 pub(crate) fn folder(name: &str) -> Option<PathBuf> {
     Some(
         crate::config::data_base()?
-            .join("hylki")
+            .join("buzon")
             .join("grammar")
             .join(name),
     )
@@ -257,7 +257,7 @@ mod tests {
     #[test]
     fn a_single_folder_becomes_the_install_folder_and_keeps_its_modes() {
         use std::os::unix::fs::PermissionsExt;
-        let dir = std::env::temp_dir().join(format!("hylki-gr-unpack-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("buzon-gr-unpack-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         let (file, _, _) = tar_gz(&dir);
@@ -281,7 +281,7 @@ mod tests {
     #[test]
     fn a_zip_unpacks_into_the_install_folder() {
         use std::io::Write as _;
-        let dir = std::env::temp_dir().join(format!("hylki-gr-zip-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("buzon-gr-zip-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         let file = dir.join("a.zip");
@@ -315,7 +315,7 @@ mod tests {
 
     #[test]
     fn a_folder_without_a_version_file_is_not_installed() {
-        let dir = std::env::temp_dir().join(format!("hylki-gr-ver-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("buzon-gr-ver-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         assert_eq!(installed(&dir), None);

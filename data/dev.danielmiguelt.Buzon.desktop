@@ -1,0 +1,29 @@
+[Desktop Entry]
+Name=Buzón
+GenericName=Email Client
+Comment=A fast, GNOME-native email client, built with Rust and libadwaita. Open source and private by default.
+# %U, not %u: a file manager hands every selected file to one launch, so
+# they all land in the same message ("Send with Buzón" from GNOME Files).
+Exec=buzon %U
+Icon=dev.danielmiguelt.Buzon
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Network;Email;
+Keywords=Email;Mail;IMAP;
+MimeType=x-scheme-handler/mailto;x-scheme-handler/mid;message/rfc822;application/vnd.ms-outlook;
+StartupNotify=true
+StartupWMClass=dev.danielmiguelt.Buzon
+Actions=new-message;contacts;attachments;
+# Earlier names, for desktops that carry favourites across a rename.
+
+[Desktop Action new-message]
+Name=New Message
+Exec=buzon mailto:
+
+[Desktop Action contacts]
+Name=Contacts
+Exec=buzon --contacts
+
+[Desktop Action attachments]
+Name=Attachments
+Exec=buzon --attachments

@@ -70,15 +70,15 @@ fn live_unseen_count_matches_the_uid_list() {
         let after = search_count(&mut sess, "UNSEEN").await.expect("count");
         assert_eq!(before, after);
         // A move with MOVE read from the cached capabilities, and back.
-        let _ = crate::worker::imap::wire::create_box(&mut sess, "HylkiCount").await;
-        move_message(&mut sess, "INBOX", uid, "HylkiCount")
+        let _ = crate::worker::imap::wire::create_box(&mut sess, "BuzonCount").await;
+        move_message(&mut sess, "INBOX", uid, "BuzonCount")
             .await
             .expect("move");
-        let moved = sel(&mut sess, "HylkiCount").await.expect("select").exists;
+        let moved = sel(&mut sess, "BuzonCount").await.expect("select").exists;
         assert!(moved >= 1);
         let back = search_uids(&mut sess, "ALL").await.expect("all");
         let back = *back.iter().max().expect("moved message");
-        move_message(&mut sess, "HylkiCount", back, "INBOX")
+        move_message(&mut sess, "BuzonCount", back, "INBOX")
             .await
             .expect("move back");
         let _ = sess.logout().await;

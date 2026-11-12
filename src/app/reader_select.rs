@@ -125,7 +125,7 @@ impl AppModel {
                 let found = messages.len();
                 self.merge_related(account_id, message_id, messages);
                 tracing::debug!(
-                    target: "hylki::undo",
+                    target: "buzon::undo",
                     "related for {account_id}:{message_id}: {found} in the cache, conversation now {}",
                     self.current_thread.len(),
                 );
@@ -538,7 +538,7 @@ impl AppModel {
             // Already on screen, pixel for pixel: leave it alone.
             let unchanged = !needs_body && !was_thread && same_as_showing(showing, &display);
             tracing::debug!(
-                target: "hylki::undo",
+                target: "buzon::undo",
                 "select {}: single message, needs_body={needs_body}, unchanged={unchanged}",
                 m.id,
             );
@@ -681,7 +681,7 @@ impl AppModel {
         // gathering, no spinner — returning to a thread shouldn't
         // cost what opening it did.
         tracing::debug!(
-            target: "hylki::undo",
+            target: "buzon::undo",
             "select {}: thread of {}, remembered={}, needs_body={needs_body}",
             m.id,
             thread.len(),

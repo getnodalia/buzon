@@ -341,10 +341,10 @@ async fn the_tools_offered_cannot_send_or_erase() {
         names,
         [
             "archive_messages",
+            "buzon_status",
             "compose_message",
             "find_contacts",
             "forward_message",
-            "hylki_status",
             "list_accounts",
             "list_attachments",
             "list_drafts",
@@ -767,7 +767,7 @@ async fn one_call_changes_a_limited_number_of_messages() {
 async fn every_call_goes_on_the_record_refused_or_not() {
     let id = id_of(ADA, "INBOX", 5);
     let mut s = Session::start(ada_may(&[AssistantCap::List]), Err("none".into())).await;
-    s.call("hylki_status", json!({})).await;
+    s.call("buzon_status", json!({})).await;
     s.call("list_messages", json!({})).await;
     s.call("read_message", json!({"id":id})).await;
     // The record goes to the app's loop, on its own time.
@@ -793,7 +793,7 @@ async fn status_says_what_is_allowed_and_what_never_is() {
         Err("none".into()),
     )
     .await;
-    let status = data(&s.call("hylki_status", json!({})).await);
+    let status = data(&s.call("buzon_status", json!({})).await);
     assert_eq!(status["accounts"][0]["account"], ADA);
     assert_eq!(
         status["accounts"][0]["allowed"],

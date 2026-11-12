@@ -315,14 +315,14 @@ pub(crate) enum MessageListInput {
     /// Close and clear the search toolbar (#102): Esc, empty focus-out, or
     /// the header button while open.
     CloseSearch,
-    /// Showcase only (HYLKI_SHOWCASE_SWIPE): drive row `index` through a full
+    /// Showcase only (BUZON_SHOWCASE_SWIPE): drive row `index` through a full
     /// swipe and release, so the commit exit can be caught in stills — there
     /// is no way to inject a real gesture on this desktop.
     DebugSwipe {
         index: usize,
         left: bool,
     },
-    /// Showcase only (HYLKI_SHOWCASE_ROW_MENU): the first row's menu.
+    /// Showcase only (BUZON_SHOWCASE_ROW_MENU): the first row's menu.
     DebugRowMenu,
     /// Expand/collapse a conversation thread.
     ToggleThread((u32, String)),

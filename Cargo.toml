@@ -1,15 +1,15 @@
 [package]
-name = "hylki"
-version = "1.48.0"
+name = "buzon"
+version = "0.1.0"
 edition = "2021"
-description = "A clean, fast GNOME-native email client"
+description = "The email client of the Nodalia suite"
 license = "AGPL-3.0-or-later"
-repository = "https://github.com/hyprlab/hylki"
-homepage = "https://hylki.hyprlab.co"
+repository = "https://github.com/getnodalia/buzon"
+homepage = "https://getnodalia.com"
 
 [features]
-# The community beta channel: "Hylki (beta)" branding, app ID
-# co.hyprlab.Hylki.Beta, a "b"-suffixed version, and — inside Flatpak — the
+# The community beta channel: "Buzón (beta)" branding, app ID
+# dev.danielmiguelt.Buzon.Beta, a "b"-suffixed version, and — inside Flatpak — the
 # stable app's data dirs, so beta testers share their accounts and mail cache
 # with the stable install instead of setting everything up twice.
 beta = []
@@ -121,7 +121,7 @@ rmcp = { version = "3.8", features = ["server", "client", "transport-io", "macro
 schemars = "1"
 
 [build-dependencies]
-# Compiles resources/veem.gresource.xml (the bundled symbolic icons) into a
+# Compiles resources/buzon.gresource.xml (the bundled symbolic icons) into a
 # .gresource blob embedded in the binary. See build.rs.
 glib-build-tools = "0.20"
 

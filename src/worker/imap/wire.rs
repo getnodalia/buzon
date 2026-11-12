@@ -1,4 +1,4 @@
-//! The IMAP commands as Hylki sends them, each logged for the console
+//! The IMAP commands as Buzón sends them, each logged for the console
 //! (#132): selection, UID sets, mailbox names, and thin wrappers that log
 //! the command and its verdict.
 
@@ -7,8 +7,8 @@ use futures::TryStreamExt;
 
 // ---------------------------------------------------------------------------
 // The IMAP conversation, for the console (#132 and every "it failed on my
-// server" report): each command Hylki sends is logged as `> …` and the
-// server's verdict as `< OK` or `< <error>`, under the `hylki::imap`
+// server" report): each command Buzón sends is logged as `> …` and the
+// server's verdict as `< OK` or `< <error>`, under the `buzon::imap`
 // target — commands and results only, never a message body or a password.
 // The console keeps it whether or not console mode is on, so "Export log"
 // carries it after the fact; stderr sees only the failures.
@@ -17,19 +17,19 @@ use crate::worker::imap::fetch_mode::compact_parse_error;
 use crate::worker::imap::ImapSession;
 
 pub(in crate::worker) fn wire(cmd: &str) {
-    tracing::debug!(target: "hylki::imap", "> {cmd}");
+    tracing::debug!(target: "buzon::imap", "> {cmd}");
 }
 
 pub(super) fn wired<T>(cmd: &str, r: &Result<T, async_imap::error::Error>) {
     match r {
-        Ok(_) => tracing::debug!(target: "hylki::imap", "< OK ({})", cmd_head(cmd)),
+        Ok(_) => tracing::debug!(target: "buzon::imap", "< OK ({})", cmd_head(cmd)),
         Err(e) => wired_err(cmd, e),
     }
 }
 
 /// [`wired`] for a failure the caller still holds.
 pub(super) fn wired_err(cmd: &str, e: &async_imap::error::Error) {
-    tracing::warn!(target: "hylki::imap", "< {} ({cmd})", compact_parse_error(&e.to_string()))
+    tracing::warn!(target: "buzon::imap", "< {} ({cmd})", compact_parse_error(&e.to_string()))
 }
 
 /// The command's verb and first argument, for the terse OK line.
@@ -247,11 +247,11 @@ pub(super) async fn search_count(session: &mut ImapSession, query: &str) -> Opti
     };
     let held = session.as_mut().release_namespace();
     if !answered {
-        tracing::warn!(target: "hylki::imap", "< no count ({})", cmd_head(&cmd));
+        tracing::warn!(target: "buzon::imap", "< no count ({})", cmd_head(&cmd));
         return None;
     }
     let count = esearch_count(held.as_deref().unwrap_or_default());
-    tracing::debug!(target: "hylki::imap", "< OK ({}) COUNT {count:?}", cmd_head(&cmd));
+    tracing::debug!(target: "buzon::imap", "< OK ({}) COUNT {count:?}", cmd_head(&cmd));
     count
 }
 

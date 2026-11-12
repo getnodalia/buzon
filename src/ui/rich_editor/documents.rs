@@ -45,12 +45,12 @@ pub(super) fn document(
         js_str(&i18n("Hide quoted text"))
     );
     let script = format!(
-        "<script>window.__hylkiPasteRich={paste_rich};\
-         window.__hylkiComposeFont={compose_font};\
-         window.__hylkiReturnParagraph={return_paragraph};\
-         window.__hylkiFoldQuote={fold_quote};\
-         window.__hylkiFoldTips={fold_tips};\
-         window.__hylkiPlain={plain};</script>\
+        "<script>window.__buzonPasteRich={paste_rich};\
+         window.__buzonComposeFont={compose_font};\
+         window.__buzonReturnParagraph={return_paragraph};\
+         window.__buzonFoldQuote={fold_quote};\
+         window.__buzonFoldTips={fold_tips};\
+         window.__buzonPlain={plain};</script>\
          {LINES_SCRIPT}{SHEETS_SCRIPT}{PASTE_SCRIPT}{FOLD_SCRIPT}{HISTORY_SCRIPT}{EMOJI_SCRIPT}\
          {GRAMMAR_SCRIPT}{TABLES_SCRIPT}"
     );
@@ -65,7 +65,7 @@ pub(super) fn document(
                    margin:0;padding:0;border:0;}}\
                  html[data-plain] body>*{{margin:0 0 1.6em;}}\
                  html[data-plain] body>*:last-child{{margin-bottom:0;}}\
-                 html[data-plain] body>:has(+[data-hylki-line]){{margin-bottom:0;}}"
+                 html[data-plain] body>:has(+[data-buzon-line]){{margin-bottom:0;}}"
             ),
         )
     } else {
@@ -85,18 +85,18 @@ pub(super) fn document(
               whatever survives insertHTML. */\
            img{{max-width:100%;height:auto;}}\
            /* A picture armed to be recut when the message is sent. */\
-           img[data-hylki-fit]{{outline:2px dashed #e01b24;outline-offset:2px;}}\
+           img[data-buzon-fit]{{outline:2px dashed #e01b24;outline-offset:2px;}}\
            /* The in-progress word's misspelling mark (Custom Highlight API);\
               the tint backs up engines that skip decorations in highlights. */\
-           ::highlight(hylki-misspell){{\
+           ::highlight(buzon-misspell){{\
              text-decoration:underline wavy #e01b24;\
              background-color:rgba(224,27,36,0.10);}}\
            /* Grammar and style (#452): a mistake wavy, a matter of style\
               dotted, both in the accent blue the misspelling's red is not. */\
-           ::highlight(hylki-grammar){{\
+           ::highlight(buzon-grammar){{\
              text-decoration:underline wavy #3584e4;\
              background-color:rgba(53,132,228,0.10);}}\
-           ::highlight(hylki-style){{\
+           ::highlight(buzon-style){{\
              text-decoration:underline dotted #3584e4;}}\
            blockquote{{margin:0;margin-inline-start:8px;padding-inline-start:10px;\
              border-inline-start:3px solid rgba(128,128,128,0.4);}}\
@@ -108,44 +108,44 @@ pub(super) fn document(
            body>p:first-child{{margin-top:0;}}\
            /* The lines of one paragraph, each a <p> while it is written\
               (#524), sit together as the lines of one. */\
-           body>p[data-hylki-line]{{margin-top:0;}}\
-           body>p:has(+p[data-hylki-line]){{margin-bottom:0;}}\
-           .hylki-quote-attr{{opacity:0.7;margin:10px 0 4px;}}\
+           body>p[data-buzon-line]{{margin-top:0;}}\
+           body>p:has(+p[data-buzon-line]){{margin-bottom:0;}}\
+           .buzon-quote-attr{{opacity:0.7;margin:10px 0 4px;}}\
            /* A quoted message that sets its own colors, on the light\
               ground it was designed for. */\
-           blockquote.hylki-quote-mail{{background:#ffffff;color:#1e1e1e;\
+           blockquote.buzon-quote-mail{{background:#ffffff;color:#1e1e1e;\
              color-scheme:light;}}\
            /* So is a spreadsheet's table (#623), black on white as the\
               program drew it: its black lines vanish on a dark ground. */\
-           table.hylki-sheet{{background:#ffffff;color:#000000;\
+           table.buzon-sheet{{background:#ffffff;color:#000000;\
              color-scheme:light;}}\
-           table.hylki-sheet a{{color:#0000ee;}}\
-           .hylki-sig{{opacity:0.85;}}\
+           table.buzon-sheet a{{color:#0000ee;}}\
+           .buzon-sig{{opacity:0.85;}}\
            /* The font set for new messages is for what is written here,\
               the signature included (#548), which its editor shows in that\
               font: the quoted original keeps the editor's. */\
-           body>.hylki-quote-attr,\
-           body>.hylki-quote-attr+blockquote{{font:{EDITOR_FONT};}}\
+           body>.buzon-quote-attr,\
+           body>.buzon-quote-attr+blockquote{{font:{EDITOR_FONT};}}\
            /* The folded quote's button (#549), and the \"wrote:\" line and\
               quote before it, hidden while folded. The `html` outranks\
               the plain view's reset of every block. */\
-           html body>div[data-hylki-ui=fold]{{display:table;margin:10px 0;\
+           html body>div[data-buzon-ui=fold]{{display:table;margin:10px 0;\
              padding:0 7px;border-radius:6px;cursor:pointer;\
              background:rgba(128,128,128,0.2);-webkit-user-select:none;\
              user-select:none;}}\
-           html body>div[data-hylki-ui=fold]:hover{{\
+           html body>div[data-buzon-ui=fold]:hover{{\
              background:rgba(128,128,128,0.32);}}\
-           html body>div[data-hylki-ui=fold]::before{{\
+           html body>div[data-buzon-ui=fold]::before{{\
              content:'\\2022\\2022\\2022';font:bold 9px/14px sans-serif;\
              letter-spacing:1px;opacity:0.7;}}\
-           html.hylki-folded body>:has(+div[data-hylki-ui=fold]),\
-           html.hylki-folded body>:has(+*+div[data-hylki-ui=fold]){{\
+           html.buzon-folded body>:has(+div[data-buzon-ui=fold]),\
+           html.buzon-folded body>:has(+*+div[data-buzon-ui=fold]){{\
              display:none;}}\
            a{{color:#3584e4;}}\
            {plain_css}\
          </style>{script}\
-         <script>window.__hylkiDirty=false;\
-           document.addEventListener('input',function(){{window.__hylkiDirty=true;}},true);\
+         <script>window.__buzonDirty=false;\
+           document.addEventListener('input',function(){{window.__buzonDirty=true;}},true);\
          </script></head>\
          <body contenteditable=\"true\" dir=\"auto\">{content}</body></html>"
     )
@@ -182,9 +182,9 @@ pub(super) fn source_document(text: &str, webview: &webkit6::WebView) -> String 
          <script>\
          (function(){{\
            var t=document.getElementById('src');\
-           window.__hylkiDirty=false;\
-           window.__hylkiSourceText=function(){{return t.value;}};\
-           t.addEventListener('input',function(){{window.__hylkiDirty=true;}});\
+           window.__buzonDirty=false;\
+           window.__buzonSourceText=function(){{return t.value;}};\
+           t.addEventListener('input',function(){{window.__buzonDirty=true;}});\
            /* Tab indents instead of leaving the field: in a source view it\
               is a character, and there is nowhere else in the document to\
               tab to anyway. */\
@@ -193,7 +193,7 @@ pub(super) fn source_document(text: &str, webview: &webkit6::WebView) -> String 
              e.preventDefault();\
              var a=t.selectionStart,b=t.selectionEnd;\
              t.setRangeText('  ',a,b,'end');\
-             window.__hylkiDirty=true;\
+             window.__buzonDirty=true;\
            }});\
            t.focus();t.setSelectionRange(0,0);\
          }})();\

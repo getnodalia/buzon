@@ -45,7 +45,7 @@ impl Key {
         Ok(Key(hex.into()))
     }
 
-    /// A key as the keyring keeps it; `None` for anything Hylki did not write.
+    /// A key as the keyring keeps it; `None` for anything Buzón did not write.
     pub(crate) fn from_hex(text: &str) -> Option<Key> {
         let text = text.trim();
         (text.len() == 64 && text.bytes().all(|b| b.is_ascii_hexdigit()))

@@ -1,5 +1,5 @@
 //! The drafting tools: a new message, a reply and a forward, each opened
-//! in a composer of Hylki's own for the user to check and send. Nothing
+//! in a composer of Buzón's own for the user to check and send. Nothing
 //! here sends, and nothing can attach a file from disk.
 
 use rmcp::handler::server::wrapper::Parameters;
@@ -22,7 +22,7 @@ const OPEN_WAIT: std::time::Duration = std::time::Duration::from_secs(30);
 #[derive(Deserialize, JsonSchema)]
 pub(super) struct ComposeArgs {
     /// The account to send from (its address, from list_accounts). Left out, the
-    /// account Hylki starts new messages from.
+    /// account Buzón starts new messages from.
     account: Option<String>,
     /// Recipients: email addresses, as "Name <address>" or bare.
     #[serde(default)]
@@ -33,7 +33,7 @@ pub(super) struct ComposeArgs {
     bcc: Vec<String>,
     #[serde(default)]
     subject: String,
-    /// The message, in plain text. Hylki adds the user's signature.
+    /// The message, in plain text. Buzón adds the user's signature.
     #[serde(default)]
     body: String,
 }
@@ -52,7 +52,7 @@ pub(super) struct ReplyArgs {
     cc: Vec<String>,
     #[serde(default)]
     bcc: Vec<String>,
-    /// The reply, in plain text; Hylki quotes the original under it.
+    /// The reply, in plain text; Buzón quotes the original under it.
     #[serde(default)]
     body: String,
 }
@@ -83,7 +83,7 @@ struct OpenedOut {
 #[tool_router(router = draft_tools, vis = "pub(super)")]
 impl Mail {
     #[tool(
-        description = "Prepare a new message and open it in Hylki for the user to check \
+        description = "Prepare a new message and open it in Buzón for the user to check \
         and send. It is not sent. Recipients must be email addresses from find_contacts or \
         the user; the body is plain text. Returns the composer's id.",
         annotations(read_only_hint = false, destructive_hint = false)
@@ -123,7 +123,7 @@ impl Mail {
     }
 
     #[tool(
-        description = "Prepare a reply to a message and open it in Hylki, the original \
+        description = "Prepare a reply to a message and open it in Buzón, the original \
         quoted under it as when the user clicks Reply, for the user to check and send. It is \
         not sent. Extra recipients must be email addresses; the body is plain text. Returns \
         the composer's id.",
@@ -151,7 +151,7 @@ impl Mail {
 
     #[tool(
         description = "Prepare a forward of a message, with its attachments, and open it \
-        in Hylki as when the user clicks Forward, for the user to check and send. It is not \
+        in Buzón as when the user clicks Forward, for the user to check and send. It is not \
         sent. Recipients must be email addresses; the body is plain text. Returns the \
         composer's id.",
         annotations(read_only_hint = false, destructive_hint = false)
@@ -205,7 +205,7 @@ impl Mail {
             Body::Encrypted => return Err(ENCRYPTED_NOTE.to_string()),
             Body::Unavailable(why) => {
                 return Err(format!(
-                    "Hylki could not download that message's text to quote: {why}. Try again later."
+                    "Buzón could not download that message's text to quote: {why}. Try again later."
                 ))
             }
         };
@@ -230,7 +230,7 @@ impl Mail {
             .send(AppMsg::Assistant(AppCall::Draft { draft, done }))
             .is_err()
         {
-            return failure("Hylki is closing".into());
+            return failure("Buzón is closing".into());
         }
         match tokio::time::timeout(OPEN_WAIT, answer).await {
             Ok(Ok(Ok((id, note)))) => json(&OpenedOut {
@@ -239,8 +239,8 @@ impl Mail {
                 note,
             }),
             Ok(Ok(Err(e))) => failure(e),
-            Ok(Err(_)) => failure("Hylki could not open the message".into()),
-            Err(_) => failure("Hylki took too long to open the message; it may still open".into()),
+            Ok(Err(_)) => failure("Buzón could not open the message".into()),
+            Err(_) => failure("Buzón took too long to open the message; it may still open".into()),
         }
     }
 }

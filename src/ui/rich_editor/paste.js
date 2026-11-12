@@ -1,6 +1,6 @@
 
 (function(){
-  window.__hylkiPasteOnce = null;
+  window.__buzonPasteOnce = null;
   var urlRe = /((?:https?:\/\/|www\.)[^\s<>()]+[^\s<>().,;:!?'"])/gi;
   /* Quotes too: a linkified address goes inside href="", and urlRe lets a
      `"` through in the middle of one. */
@@ -46,7 +46,7 @@
      point and are given for the first of a batch only; the rest follow the
      caret the previous insert left behind. */
   var insertQ = Promise.resolve();
-  window.__hylkiInsertImageURL = function(url, type, name, x, y){
+  window.__buzonInsertImageURL = function(url, type, name, x, y){
     insertQ = insertQ.then(function(){
       return new Promise(function(done){
         if(x !== null && document.caretRangeFromPoint){
@@ -105,7 +105,7 @@
       });
     });
   }).observe(document.documentElement, {childList: true, subtree: true});
-  var hl = window.__hylkiLines, LINE = hl.LINE, bare = hl.bare, quoted = hl.quoted,
+  var hl = window.__buzonLines, LINE = hl.LINE, bare = hl.bare, quoted = hl.quoted,
     lineBlock = hl.lineBlock, blockOf = hl.blockOf, joinLines = hl.joinLines;
   /* WebKit only marks a word's spelling once the caret leaves it. The word
      under the caret is checked by us instead: after a typing pause it goes
@@ -117,7 +117,7 @@
   var spellT = null, composing = false, spellRange = null;
   var spellHl = (window.Highlight && window.CSS && CSS.highlights)
     ? new Highlight() : null;
-  if(spellHl) CSS.highlights.set('hylki-misspell', spellHl);
+  if(spellHl) CSS.highlights.set('buzon-misspell', spellHl);
   function caretWord(){
     var sel = getSelection();
     if(!sel.rangeCount || !sel.isCollapsed) return null;
@@ -132,7 +132,7 @@
     r.setStart(n, a); r.setEnd(n, b);
     return {range: r, word: s.slice(a, b)};
   }
-  window.__hylkiSpellMark = function(bad){
+  window.__buzonSpellMark = function(bad){
     if(!spellHl) return;
     spellHl.clear();
     if(bad && spellRange && spellRange.startContainer.isConnected){
@@ -241,14 +241,14 @@
       + '|' + block + '|' + fontOf(at) + '|' + sizeOf(at);
     if(s === lastFmt) return;
     lastFmt = s;
-    try{ window.webkit.messageHandlers.hylkiFormat.postMessage(s); }catch(_){}
+    try{ window.webkit.messageHandlers.buzonFormat.postMessage(s); }catch(_){}
   }
   document.addEventListener('selectionchange', fmtState);
   document.addEventListener('input', fmtState);
   /* The Quote button is a toggle (#137): inside a quote it steps the
      caret's paragraph out one level, the same move as Enter twice; anywhere
      else it quotes the paragraph. The list buttons toggle on their own. */
-  window.__hylkiQuote = function(){
+  window.__buzonQuote = function(){
     var el = caretBlock();
     if(quoteOf(el)){
       document.execCommand('outdent');
@@ -260,11 +260,11 @@
   /* The format bar's menus take the focus while they are open, and the
      caret with it: kept when one opens, put back before its command. */
   var saved = null;
-  window.__hylkiSave = function(){
+  window.__buzonSave = function(){
     var sel = getSelection();
     saved = sel.rangeCount && document.body.contains(sel.anchorNode) ? sel.getRangeAt(0).cloneRange() : null;
   };
-  window.__hylkiRestore = function(){
+  window.__buzonRestore = function(){
     if(!saved) return;
     var sel = getSelection();
     sel.removeAllRanges();
@@ -273,14 +273,14 @@
   };
   /* Paragraph styles (#358): a heading, preformatted text or a plain
      paragraph. */
-  window.__hylkiBlock = function(tag){
+  window.__buzonBlock = function(tag){
     document.execCommand('formatBlock', false, tag);
     fmtState();
   };
   /* Font and colors (#358) as inline styles, which every mail client
      keeps; WebKit's own markup is a <font> tag otherwise. Only for these
      commands: Bold and the rest stay the plain tags Markdown maps. */
-  window.__hylkiStyled = function(cmd, value){
+  window.__buzonStyled = function(cmd, value){
     var sel = getSelection();
     if(cmd === 'fontName' && sel.rangeCount && sel.isCollapsed){
       pend('fontFamily', value);
@@ -317,7 +317,7 @@
     });
     root.querySelectorAll('font[size]').forEach(function(d){ d.removeAttribute('size'); });
   }
-  window.__hylkiSize = function(pt){
+  window.__buzonSize = function(pt){
     var sel = getSelection();
     if(!sel.rangeCount) return;
     var sizeWant = sizeValue(pt);
@@ -371,11 +371,11 @@
   });
   /* Indent and outdent (#358). In a list they nest the item under the one
      above, or bring it back out. */
-  window.__hylkiIndent = function(more){
+  window.__buzonIndent = function(more){
     document.execCommand(more ? 'indent' : 'outdent');
     fmtState();
   };
-  /* Return breaks the line, or with `__hylkiReturnParagraph` set starts a
+  /* Return breaks the line, or with `__buzonReturnParagraph` set starts a
      new paragraph, a <p> the recipient's client spaces as one; Shift+Return
      does the other. WebKit's own pair is the reverse of the default, and
      its paragraph is a copy of the block the caret is in, usually a
@@ -388,7 +388,7 @@
      ordinary one again. */
   function inlineNode(n){
     return n.nodeType !== 1
-      || (!n.hasAttribute('data-hylki-ui') && getComputedStyle(n).display.indexOf('inline') === 0);
+      || (!n.hasAttribute('data-buzon-ui') && getComputedStyle(n).display.indexOf('inline') === 0);
   }
   /* Whether `n` is on a line that is not a paragraph and is the only line
      of its block: text straight in the body, or a <div> with nothing of its
@@ -416,7 +416,7 @@
     return true;
   }
   var enterInQuote = false;
-  if(window.__hylkiReturnParagraph){
+  if(window.__buzonReturnParagraph){
     document.execCommand('defaultParagraphSeparator', false, 'p');
   }
   document.addEventListener('keydown', function(e){
@@ -441,7 +441,7 @@
     }
     enterInQuote = inQuote && !e.shiftKey;
     e.preventDefault();
-    if(!window.__hylkiReturnParagraph === !e.shiftKey){
+    if(!window.__buzonReturnParagraph === !e.shiftKey){
       if(!lineBlock(blockOf(n))){
         document.execCommand('insertLineBreak');
         revealCaret();
@@ -485,7 +485,7 @@
       var w = caretWord();
       if(!w) return;
       spellRange = w.range;
-      try{ window.webkit.messageHandlers.hylkiSpell.postMessage(w.word); }catch(_){}
+      try{ window.webkit.messageHandlers.buzonSpell.postMessage(w.word); }catch(_){}
     }, 600);
   });
   document.addEventListener('selectionchange', function(){
@@ -502,8 +502,8 @@
   });
   /* Resizing a picture. The frame and its corner handles are ordinary
      elements in this contenteditable document — there is nowhere else to
-     put them — so they are marked `data-hylki-ui` and stripped from
-     everything the document hands back (see `__hylkiBodyHtml`). They are
+     put them — so they are marked `data-buzon-ui` and stripped from
+     everything the document hands back (see `__buzonBodyHtml`). They are
      also contenteditable=false, so the caret cannot wander into them. */
   var rsBox = null, rsImg = null;
   /* Blue is an ordinary selection; red says the picture will be recut when
@@ -513,7 +513,7 @@
   function rsRemove(){ if(rsBox){ rsBox.remove(); rsBox = null; rsImg = null; } }
   function rsTint(){
     if(!rsBox || !rsImg) return;
-    var c = rsImg.hasAttribute('data-hylki-fit') ? RS_RED : RS_BLUE;
+    var c = rsImg.hasAttribute('data-buzon-fit') ? RS_RED : RS_BLUE;
     rsBox.style.outlineColor = c;
     Array.prototype.forEach.call(rsBox.children, function(h){ h.style.background = c; });
   }
@@ -561,7 +561,7 @@
     rsRemove();
     rsImg = img;
     rsBox = document.createElement('div');
-    rsBox.setAttribute('data-hylki-ui', 'resize');
+    rsBox.setAttribute('data-buzon-ui', 'resize');
     rsBox.setAttribute('contenteditable', 'false');
     rsBox.style.cssText = 'position:absolute;pointer-events:none;z-index:9;'
       + 'outline:1px solid #3584e4;';
@@ -584,8 +584,8 @@
   /* The context menu's size entries. `original` drops the explicit width so
      the picture falls back to its natural size, still held to the writing
      width by the stylesheet. */
-  window.__hylkiSetImageSize = function(kind){
-    var img = window.__hylkiCtxImg || rsImg;
+  window.__buzonSetImageSize = function(kind){
+    var img = window.__buzonCtxImg || rsImg;
     if(!img) return;
     if(kind === 'original'){
       img.style.width = ''; img.style.height = '';
@@ -602,14 +602,14 @@
      still save the original. Arming this asks for the bytes to be recut to
      the size shown, once, as the message is sent — irreversible, so it is
      off until asked for and marked on the picture while it is on. */
-  window.__hylkiToggleFit = function(hint){
-    var img = window.__hylkiCtxImg || rsImg;
+  window.__buzonToggleFit = function(hint){
+    var img = window.__buzonCtxImg || rsImg;
     if(!img) return;
-    if(img.hasAttribute('data-hylki-fit')){
-      img.removeAttribute('data-hylki-fit');
+    if(img.hasAttribute('data-buzon-fit')){
+      img.removeAttribute('data-buzon-fit');
       img.removeAttribute('title');
     } else {
-      img.setAttribute('data-hylki-fit', '1');
+      img.setAttribute('data-buzon-fit', '1');
       img.title = hint;
     }
     if(img === rsImg) rsTint(); else rsShow(img);
@@ -620,7 +620,7 @@
      alone: there are no extra pixels to be had. */
   function rsFlatten(){
     Array.prototype.forEach.call(
-      document.querySelectorAll('img[data-hylki-fit]'), function(im){
+      document.querySelectorAll('img[data-buzon-fit]'), function(im){
         var w = Math.round(im.getBoundingClientRect().width);
         if(!w || !im.naturalWidth || w >= im.naturalWidth) return;
         try{
@@ -638,9 +638,9 @@
   /* What the host reads instead of body.innerHTML: the same content with
      this script's own furniture taken out. The arming mark stays, so a
      draft reopened later still shows it and still honours it when sent. */
-  window.__hylkiBodyHtml = function(){
+  window.__buzonBodyHtml = function(){
     var c = document.body.cloneNode(true);
-    Array.prototype.forEach.call(c.querySelectorAll('[data-hylki-ui]'),
+    Array.prototype.forEach.call(c.querySelectorAll('[data-buzon-ui]'),
       function(n){ n.remove(); });
     joinLines(c);
     Array.prototype.forEach.call(
@@ -652,13 +652,13 @@
      and for a message composed as plain text (#180): quoted blocks carry
      "> " on every line, lists their dashes, links their address, and
      block boundaries become line breaks. innerText knew none of that. */
-  function hylkiTxt(node, pre){
+  function buzonTxt(node, pre){
     if(node.nodeType === 3){
       var v = node.nodeValue;
       return pre ? v : v.replace(/[ \t\r\n]+/g, ' ');
     }
     if(node.nodeType !== 1) return '';
-    if(node.hasAttribute('data-hylki-ui')) return '';
+    if(node.hasAttribute('data-buzon-ui')) return '';
     var tag = node.tagName.toLowerCase();
     if(tag === 'br') return '\n';
     if(tag === 'img') return node.getAttribute('alt') || '';
@@ -667,7 +667,7 @@
     /* A quoted plain-text part keeps its spaces under an inline pre-wrap
        (#436), as <pre> does. */
     var inPre = pre || tag === 'pre' || /^(pre|break-spaces)/.test(node.style.whiteSpace || '');
-    for(var i = 0; i < node.childNodes.length; i++) s += hylkiTxt(node.childNodes[i], inPre);
+    for(var i = 0; i < node.childNodes.length; i++) s += buzonTxt(node.childNodes[i], inPre);
     if(tag === 'a'){
       var h = node.getAttribute('href') || '';
       if(h && h !== s.trim() && h.indexOf('mailto:') !== 0) s += ' <' + h + '>';
@@ -693,10 +693,10 @@
   }
   /* What is sent has spaces where the editor keeps no-break spaces to
      show them: a run of them typed, or the indents of a plain-text quote. */
-  window.__hylkiBodyText = function(){
+  window.__buzonBodyText = function(){
     var c = document.body.cloneNode(true);
     joinLines(c);
-    return tidyTxt(hylkiTxt(c, false).replace(/\u00a0/g, ' '));
+    return tidyTxt(buzonTxt(c, false).replace(/\u00a0/g, ' '));
   };
   /* Plain text (#424) shows the message as it is sent: the document is
      flattened to the text above, the signature and the "wrote:" line
@@ -706,7 +706,7 @@
   function plainTextOf(nodes){
     var d = document.createElement('div');
     nodes.forEach(function(n){ d.appendChild(n.cloneNode(true)); });
-    return tidyTxt(hylkiTxt(d, false));
+    return tidyTxt(buzonTxt(d, false));
   }
   /* A line's indent, its runs of spaces and its tabs (to the next stop of
      eight) as no-break spaces: in a block that wraps they would collapse
@@ -735,8 +735,8 @@
   }
   function markOf(n){
     if(n.nodeType !== 1) return '';
-    if(n.classList.contains('hylki-sig')) return 'hylki-sig';
-    if(n.classList.contains('hylki-quote-attr')) return 'hylki-quote-attr';
+    if(n.classList.contains('buzon-sig')) return 'buzon-sig';
+    if(n.classList.contains('buzon-quote-attr')) return 'buzon-quote-attr';
     return '';
   }
   /* Whether `el`'s content is text and nothing else: line breaks, blocks
@@ -747,7 +747,7 @@
     var all = [el].concat(Array.prototype.slice.call(el.querySelectorAll('*')));
     for(var i = 0; i < all.length; i++){
       var n = all[i];
-      if(n.closest('[data-hylki-ui]')) continue;
+      if(n.closest('[data-buzon-ui]')) continue;
       if(n === document.body) continue;
       if(!keep.test(n.tagName)) return false;
       for(var j = 0; j < n.attributes.length; j++){
@@ -760,12 +760,12 @@
   }
   /* Whether switching to plain text takes anything away: styling,
      pictures, links, lists. A quote is not lost, only written out. */
-  window.__hylkiPlainLoses = function(){ return !plainOk(document.body, true); };
+  window.__buzonPlainLoses = function(){ return !plainOk(document.body, true); };
   function toPlain(){
     var b = document.body, segs = [], run = [];
     var flush = function(){ segs.push(['div', '', plainTextOf(run)]); run = []; };
     Array.prototype.slice.call(b.childNodes).forEach(function(n){
-      if(n.nodeType === 1 && n.hasAttribute('data-hylki-ui')) return;
+      if(n.nodeType === 1 && n.hasAttribute('data-buzon-ui')) return;
       var mark = markOf(n);
       if(!mark){ run.push(n); return; }
       flush();
@@ -784,14 +784,14 @@
   /* What the composer runs after putting HTML of its own into a plain
      text body (a signature, a cloud link): any block that is not plain
      text yet is made so. */
-  window.__hylkiPlainFix = function(){
-    if(!window.__hylkiPlain) return;
+  window.__buzonPlainFix = function(){
+    if(!window.__buzonPlain) return;
     Array.prototype.slice.call(document.body.children).forEach(function(n){
-      if(n.hasAttribute('data-hylki-ui') || plainOk(n, false)) return;
+      if(n.hasAttribute('data-buzon-ui') || plainOk(n, false)) return;
       n.replaceWith(plainBlock(n.tagName === 'P' ? 'p' : 'div', markOf(n), plainTextOf([n])));
     });
   };
-  if(window.__hylkiPlain){
+  if(window.__buzonPlain){
     document.addEventListener('DOMContentLoaded', toPlain);
     /* Bold, italic and underline are WebKit's own keys, not the
        toolbar's: in plain text they would show what is never sent. */
@@ -805,14 +805,14 @@
   /* Sending, and only sending: recut first, then read with the marks taken
      out. A draft is saved through the plain reader above, so quality is
      never lost to a save. */
-  window.__hylkiBodyHtmlForSend = function(){
+  window.__buzonBodyHtmlForSend = function(){
     rsFlatten();
     Array.prototype.forEach.call(
-      document.querySelectorAll('img[data-hylki-fit]'), function(n){
-        n.removeAttribute('data-hylki-fit'); n.removeAttribute('title');
+      document.querySelectorAll('img[data-buzon-fit]'), function(n){
+        n.removeAttribute('data-buzon-fit'); n.removeAttribute('title');
       });
     rsTint();
-    return fontRuns(window.__hylkiBodyHtml());
+    return fontRuns(window.__buzonBodyHtml());
   };
   /* The font set for new messages, written around each stretch of what
      was typed, since the editor's style sheet does not go out with it. The
@@ -820,20 +820,20 @@
      attribution line and the quote straight after) is left out, as the
      editor shows it. */
   function fontRuns(html){
-    var style = window.__hylkiComposeFont;
+    var style = window.__buzonComposeFont;
     if(!style) return html;
     var t = document.createElement('template');
     t.innerHTML = html;
     var kids = Array.prototype.slice.call(t.content.childNodes);
     kids.forEach(function(n){
-      if(n.nodeType === 1 && n.classList.contains('hylki-sig'))
+      if(n.nodeType === 1 && n.classList.contains('buzon-sig'))
         n.setAttribute('style', style + (n.getAttribute('style') || ''));
     });
     var kept = kids.map(function(n){
       if(n.nodeType !== 1) return false;
-      if(n.classList.contains('hylki-sig') || n.classList.contains('hylki-quote-attr')) return true;
+      if(n.classList.contains('buzon-sig') || n.classList.contains('buzon-quote-attr')) return true;
       var prev = n.previousElementSibling;
-      return n.tagName === 'BLOCKQUOTE' && !!prev && prev.classList.contains('hylki-quote-attr');
+      return n.tagName === 'BLOCKQUOTE' && !!prev && prev.classList.contains('buzon-quote-attr');
     });
     var run = [];
     function flush(){
@@ -874,12 +874,12 @@
   function rememberImg(e){
     var t = e.target;
     if(t && t.tagName === 'IMG'){
-      window.__hylkiCtxImg = t;
+      window.__buzonCtxImg = t;
       var r = document.createRange(); r.selectNode(t);
       var s = getSelection(); s.removeAllRanges(); s.addRange(r);
       rsShow(t);
     } else if(e.type === 'contextmenu'){
-      window.__hylkiCtxImg = null;
+      window.__buzonCtxImg = null;
     }
   }
   document.addEventListener('mousedown', function(e){ if(e.button === 2) rememberImg(e); }, true);
@@ -932,13 +932,13 @@
   }, true);
   document.addEventListener('paste', function(e){
     var cd = e.clipboardData; if(!cd) return;
-    var once = window.__hylkiPasteOnce, asText = textKey;
-    window.__hylkiPasteOnce = null;
+    var once = window.__buzonPasteOnce, asText = textKey;
+    window.__buzonPasteOnce = null;
     textKey = false;
     /* Plain text takes the clipboard's text and nothing else: no
        formatting, no picture, no link made of an address. Its indents
        stay, as typed ones do (#635). */
-    if(window.__hylkiPlain){
+    if(window.__buzonPlain){
       e.preventDefault();
       var t = cd.getData('text/plain');
       if(t) document.execCommand('insertHTML', false, t.split(/\r\n|\r|\n/)
@@ -966,10 +966,10 @@
     /* true keeps the formatting, false takes the text; 'cells' (Ctrl+V
        with Paste as plain text set) takes the text, but a spreadsheet's
        cells as the table they are, which their text cannot show. */
-    var rich = once !== null ? once : window.__hylkiPasteRich === true;
+    var rich = once !== null ? once : window.__buzonPasteRich === true;
     if(asText) rich = false;
     if(rich !== false && doc){
-      var sheet = window.__hylkiSheet(doc, rich === true);
+      var sheet = window.__buzonSheet(doc, rich === true);
       if(sheet){
         e.preventDefault();
         /* The break gives the caret a line below the table to go on

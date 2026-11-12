@@ -207,7 +207,7 @@ impl MessageView {
 
     pub(super) fn on_rendered(&mut self) {
         tracing::debug!(
-            target: "hylki::swap",
+            target: "buzon::swap",
             "page ready: {} (newest {})",
             self.webview.uri().unwrap_or_default(),
             self.latest_uri

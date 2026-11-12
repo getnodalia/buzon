@@ -304,7 +304,7 @@ pub(crate) struct AppModel {
     pub(super) transfer_tally: TransferTally,
     /// The account-list split view, narrowed to icon-only width when collapsed.
     pub(super) sidebar_split: Option<adw::OverlaySplitView>,
-    /// The "Hylki" title label, hidden while the sidebar is collapsed.
+    /// The "Buzón" title label, hidden while the sidebar is collapsed.
     pub(super) app_title: Option<gtk::Label>,
     /// Sidebar header. In the icon-only rail its window-control buttons are
     /// hidden so the header stops forcing a minimum width wider than the rail.
@@ -505,10 +505,10 @@ pub(crate) struct AppModel {
     /// The keyboard-shortcut reference, while it is open — so the shortcut that
     /// opens it closes it again.
     pub(super) shortcuts_win: Option<adw::Window>,
-    /// Whether Hylki keeps running with no window. Shared with the window's
+    /// Whether Buzón keeps running with no window. Shared with the window's
     /// close handler, which has to read it without the model.
     pub(super) run_in_background: std::rc::Rc<std::cell::Cell<bool>>,
-    /// Whether Hylki starts at login (background running only).
+    /// Whether Buzón starts at login (background running only).
     pub(super) autostart: bool,
     /// The window opens fullscreen (#511).
     pub(super) start_fullscreen: bool,
@@ -543,7 +543,7 @@ pub(crate) struct AppModel {
     /// feature off, keystrokes must pass straight through rather than be consumed
     /// and dropped.
     pub(super) single_key: std::rc::Rc<std::cell::Cell<bool>>,
-    /// Gmail's single-key map in place of Hylki's (#392), shared with the
+    /// Gmail's single-key map in place of Buzón's (#392), shared with the
     /// key controller like `single_key`.
     pub(super) gmail_keys: std::rc::Rc<std::cell::Cell<bool>>,
     /// Settings → System → Keep downloaded mail, in days; 0 keeps it (#394).
@@ -747,7 +747,7 @@ pub(crate) struct AppModel {
     pub(super) theme_switch: bool,
     /// The account chip is shown in the reader header (Settings).
     pub(super) account_chip: bool,
-    /// Icons come from the desktop's icon theme, not Hylki's own (Settings).
+    /// Icons come from the desktop's icon theme, not Buzón's own (Settings).
     pub(super) desktop_icons: bool,
     /// What Reader View does when a message is opened (Settings).
     pub(super) reader_default: config::ReaderDefault,
@@ -988,7 +988,7 @@ pub(crate) struct AppModel {
     /// token, so they open at once (see `draft_copies`).
     pub(super) draft_fetches: std::collections::HashMap<u64, super::draft_copies::DraftFetch>,
     /// A message whose body is being fetched so a reply to it can open with
-    /// handed-in files (Send with Hylki → Reply to a Message…).
+    /// handed-in files (Send with Buzón → Reply to a Message…).
     pub(super) pending_reply: Option<(Message, HandOffFiles)>,
     /// A draft picker waiting for Drafts folders never listed this run
     /// (the hand-off, and the folders still to answer).

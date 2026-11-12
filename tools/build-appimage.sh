@@ -3,21 +3,20 @@
 # Build the AppImage (#235).
 #
 #   tools/build-appimage.sh          # builds it in a container, from the host
-#   HYLKI_APPIMAGE_SRC=<checkout> tools/build-appimage.sh
+#   BUZON_APPIMAGE_SRC=<checkout> tools/build-appimage.sh
 #                                    # builds another checkout (a tag, the
 #                                    # beta worktree) with this script
 #
 # Output lands in packaging/out/:
-#   Hylki-<arch>.AppImage            - the stable bundle
-#   Hylki-Beta-<arch>.AppImage       - the beta, when the version is X.Y.Z-beta.N
+#   Buzon-<arch>.AppImage            - the stable bundle
+#   Buzon-Beta-<arch>.AppImage       - the beta, when the version is X.Y.Z-beta.N
 #
 # A beta is the beta app, as in the Flatpak: built with the `beta` feature,
-# app ID co.hyprlab.Hylki.Beta, its own launcher and icon. Outside the
-# Flatpak both read ~/.config/hylki, so a beta tester keeps their accounts.
+# app ID dev.danielmiguelt.Buzon.Beta, its own launcher and icon. Outside the
+# Flatpak both read ~/.config/buzon, so a beta tester keeps their accounts.
 #
-# Both update from hylki.hyprlab.co, which serves the newest AppImage of each
-# channel and its .zsync file. Flatout writes the same address in again when
-# the bundle is published, and makes the .zsync itself.
+# Both update from the repository's GitHub releases, which carry each
+# AppImage and its .zsync file.
 #
 # Unlike the RPM, this carries every library the app needs, down to glibc and
 # the dynamic linker, so one file runs on any distribution and any libc. The
@@ -38,23 +37,22 @@ set -euo pipefail
 # packaging/appimage; ROOT is the source being built. They differ when an
 # older tag is built with today's script (CI does that for a hand-started run).
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-ROOT="${HYLKI_APPIMAGE_SRC:-$HERE}"
+ROOT="${BUZON_APPIMAGE_SRC:-$HERE}"
 ARCH="$(uname -m)"
-IMAGE="${HYLKI_APPIMAGE_IMAGE:-ghcr.io/pkgforge-dev/archlinux:latest}"
-SITE="https://hylki.hyprlab.co"
+IMAGE="${BUZON_APPIMAGE_IMAGE:-ghcr.io/pkgforge-dev/archlinux:latest}"
 VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' "$ROOT/Cargo.toml" | head -1)"
 case "$VERSION" in
     *-beta.*)
-        APP_ID="co.hyprlab.Hylki.Beta"
-        NAME="Hylki-Beta"
+        APP_ID="dev.danielmiguelt.Buzon.Beta"
+        NAME="Buzon-Beta"
         FEATURES=(--features beta)
-        UPDATES="$SITE/download/beta/$NAME-$ARCH.AppImage.zsync"
+        UPDATES="gh-releases-zsync|getnodalia|buzon|latest-pre|$NAME-$ARCH.AppImage.zsync"
         ;;
     *)
-        APP_ID="co.hyprlab.Hylki"
-        NAME="Hylki"
+        APP_ID="dev.danielmiguelt.Buzon"
+        NAME="Buzon"
         FEATURES=()
-        UPDATES="$SITE/download/$NAME-$ARCH.AppImage.zsync"
+        UPDATES="gh-releases-zsync|getnodalia|buzon|latest|$NAME-$ARCH.AppImage.zsync"
         ;;
 esac
 
@@ -78,15 +76,15 @@ if [ ! -f /etc/arch-release ]; then
         -v "$ROOT":/src:ro \
         -v "$HERE":/here:ro \
         -v "$OUT":/out \
-        -v hylki-appimage-target:/build/target \
-        -v hylki-appimage-cargo:/root/.cargo \
+        -v buzon-appimage-target:/build/target \
+        -v buzon-appimage-cargo:/root/.cargo \
         "$IMAGE" \
         sh -euc '
             mkdir -p /build
             tar -C /src --exclude=./target --exclude=./temp --exclude=./.git \
                         --exclude=./dist --exclude=./packaging/out -cf - . \
                 | tar -C /build -xf -
-            HYLKI_APPIMAGE_SRC=/build exec /here/tools/build-appimage.sh
+            BUZON_APPIMAGE_SRC=/build exec /here/tools/build-appimage.sh
         '
 fi
 
@@ -131,10 +129,10 @@ cd "$ROOT"
 cargo build --release "${FEATURES[@]}"
 
 echo "==> Installing into /usr"
-# The same layout the RPM installs (packaging/fedora/hylki.spec): the
+# The same layout the RPM installs (packaging/fedora/buzon.spec): the
 # collector reads the app out of /usr, and the app's own paths are relative to
 # the binary, so what works there works inside the bundle.
-install -Dm755 target/release/hylki /usr/bin/hylki
+install -Dm755 target/release/buzon /usr/bin/buzon
 install -d /usr/share/applications /usr/share/metainfo
 msgfmt --desktop --template="data/$APP_ID.desktop" -d po -o "/usr/share/applications/$APP_ID.desktop"
 msgfmt --xml --template="data/$APP_ID.metainfo.xml" -d po -o "/usr/share/metainfo/$APP_ID.metainfo.xml"
@@ -142,7 +140,7 @@ for po in po/*.po; do
     [ -e "$po" ] || continue
     lang="$(basename "$po" .po)"
     install -d "/usr/share/locale/$lang/LC_MESSAGES"
-    msgfmt -o "/usr/share/locale/$lang/LC_MESSAGES/hylki.mo" "$po"
+    msgfmt -o "/usr/share/locale/$lang/LC_MESSAGES/buzon.mo" "$po"
 done
 for size in 256x256 512x512; do
     install -Dm644 "data/icons/hicolor/$size/apps/$APP_ID.png" \
@@ -164,11 +162,8 @@ export OUTNAME="$NAME-$ARCH.AppImage"
 export STARTUPWMCLASS="$APP_ID"
 export GTK_CLASS_FIX=1
 # What AppImage updaters (AppImageUpdate, AppManager, Gear Lever) read to
-# update in place: the address of the newest .zsync on this channel. Written
-# here so that a bundle taken from the GitHub release updates from the same
-# place as one downloaded from the site, and so that Flatout, finding it
-# already there, publishes the file unchanged.
-export UPINFO="zsync|$UPDATES"
+# update in place: where the newest .zsync on this channel is.
+export UPINFO="$UPDATES"
 
 # gpg is deliberately *not* bundled: OpenPGP (#133) drives the user's own
 # keyring and gpg-agent, and a second gpg of a different version talking to
@@ -180,7 +175,7 @@ export UPINFO="zsync|$UPDATES"
 # module that makes WebKit honour the desktop's proxy settings, and
 # enchant_hunspell is the only spell-check backend we want (the aspell,
 # hspell, nuspell and voikko ones would each drag in a library of their own).
-quick-sharun /usr/bin/hylki \
+quick-sharun /usr/bin/buzon \
     /usr/lib/gio/modules/libgiognomeproxy.so \
     /usr/lib/enchant-2/enchant_hunspell.so
 
@@ -232,14 +227,14 @@ echo "    dictionaries: $(ls "$APPDIR/share/hunspell" | sed 's/\..*//' | sort -u
 # serif and monospace in DejaVu, Liberation for the Arial, Times and Courier
 # that mail asks for by name, Adwaita for the GNOME look. About 20 MB raw.
 echo "==> Fallback fonts"
-FC="$APPDIR/share/hylki/fontconfig"
-install -d "$FC" "$APPDIR/share/hylki/fonts"
+FC="$APPDIR/share/buzon/fontconfig"
+install -d "$FC" "$APPDIR/share/buzon/fonts"
 cp -L /usr/share/fonts/TTF/DejaVuSans{,-Bold,-Oblique,-BoldOblique}.ttf \
       /usr/share/fonts/TTF/DejaVuSerif{,-Bold,-Italic,-BoldItalic}.ttf \
       /usr/share/fonts/TTF/DejaVuSansMono{,-Bold,-Oblique,-BoldOblique}.ttf \
       /usr/share/fonts/liberation/Liberation{Sans,Serif,Mono}-*.ttf \
       /usr/share/fonts/Adwaita/*.ttf \
-      "$APPDIR/share/hylki/fonts/"
+      "$APPDIR/share/buzon/fonts/"
 # The rules of the build's conf.d, written into the file rather than
 # included: an include of conf.d resolves to the host's /etc/fonts. Left
 # out, as in the Flatpak's: the ones that add folders (the user's, the
@@ -270,26 +265,24 @@ open(dest, "w").write(text)
 PY
 # The fallback has to find these fonts and no others, wherever the bundle is
 # mounted: tried from a second, moved copy.
-probe="$(mktemp -d)/share/hylki"
-install -d "$probe"; cp -r "$APPDIR/share/hylki/." "$probe/"
+probe="$(mktemp -d)/share/buzon"
+install -d "$probe"; cp -r "$APPDIR/share/buzon/." "$probe/"
 fonts="$(HOME=$(mktemp -d) FONTCONFIG_FILE="$probe/fontconfig/fallback.conf" fc-list : file 2>"$probe/fc.err")"
 grep -i "fontconfig error" "$probe/fc.err" && { echo "fontconfig refuses the fallback config" >&2; exit 1; }
 echo "$fonts" | grep -v "^$probe/fonts/" | grep . && { echo "fallback fonts reach outside the bundle" >&2; exit 1; }
 echo "    fallback fonts: $(echo "$fonts" | grep -c .), sans-serif is $(HOME=$(mktemp -d) FONTCONFIG_FILE="$probe/fontconfig/fallback.conf" fc-match -f '%{family[0]}' sans-serif)"
-echo 'HYLKI_FONT_FALLBACK_CONF=${SHARUN_DIR}/share/hylki/fontconfig/fallback.conf' >> "$APPDIR/.env"
+echo 'BUZON_FONT_FALLBACK_CONF=${SHARUN_DIR}/share/buzon/fontconfig/fallback.conf' >> "$APPDIR/.env"
 
 # Pin the message catalogues rather than leave them to be found: src/i18n.rs
 # looks beside the binary, which happens to land in the right place in the
 # bundle's layout, and a layout change upstream should not silently turn the
 # app monolingual.
-echo 'HYLKI_LOCALEDIR=${SHARUN_DIR}/share/locale' >> "$APPDIR/.env"
+echo 'BUZON_LOCALEDIR=${SHARUN_DIR}/share/locale' >> "$APPDIR/.env"
 
 echo "==> Packing"
 quick-sharun --make-appimage
 
-# The .zsync quick-sharun writes is for its own address; Flatout makes the
-# one that is served.
-rm -f "$OUT/$NAME-$ARCH.AppImage.zsync"
+# The .zsync quick-sharun writes goes on the release beside the AppImage.
 
 echo "==> AppImage in $OUT:"
 ls -lh "$OUT/$NAME-$ARCH.AppImage"

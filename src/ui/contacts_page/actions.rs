@@ -60,9 +60,7 @@ impl ContactsPage {
         match &self.scope {
             // Every book's groups are listed only when asked for, by the
             // Groups filter or a search for them.
-            ContactScope::All => {
-                !c.is_group() || self.groups_only() || names_groups(&self.query)
-            }
+            ContactScope::All => !c.is_group() || self.groups_only() || names_groups(&self.query),
             // A book lists its groups as well as its people, the groups
             // first; so does an account of several books.
             ContactScope::Book(book) => c.book_uid == *book,
@@ -146,7 +144,7 @@ impl ContactsPage {
         });
     }
 
-    /// Ask for a name for the book `uid`, Hylki's own: GNOME and Evolution
+    /// Ask for a name for the book `uid`, Buzón's own: GNOME and Evolution
     /// keep the book's. One given before can be dropped again.
     pub(super) fn ask_book_name(
         &self,
@@ -168,7 +166,7 @@ impl ContactsPage {
         let dialog = adw::AlertDialog::new(
             Some(&i18n("Rename Address Book")),
             Some(&i18n(
-                "The name is used in Hylki only; GNOME Contacts and Evolution keep the book's own.",
+                "The name is used in Buzón only; GNOME Contacts and Evolution keep the book's own.",
             )),
         );
         dialog.set_extra_child(Some(&entry));
@@ -425,7 +423,7 @@ impl ContactsPage {
     }
 
     /// The people of the selection that can move to the book `to`: those
-    /// in another book Hylki can write to, and delete from.
+    /// in another book Buzón can write to, and delete from.
     pub(super) fn movable(&self, to: &str) -> Vec<usize> {
         self.chosen()
             .into_iter()
@@ -433,7 +431,7 @@ impl ContactsPage {
             .collect()
     }
 
-    /// Whether a person can move to the book `to`: from another book Hylki
+    /// Whether a person can move to the book `to`: from another book Buzón
     /// can write to, and delete from.
     pub(super) fn can_move(&self, c: &ContactDetails, to: &str) -> bool {
         let writable = |uid: &str| self.books.iter().any(|b| b.uid == uid);
@@ -563,7 +561,7 @@ impl ContactsPage {
     }
 
     /// Fill the filter popover's books from those known: the writable ones
-    /// (the Hylki book always among them), any others the contacts come
+    /// (the Buzón book always among them), any others the contacts come
     /// from, and the directories. A book unticked stays so while it is
     /// there.
     pub(super) fn refresh_book_filter(&mut self) {

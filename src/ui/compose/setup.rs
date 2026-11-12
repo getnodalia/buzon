@@ -98,7 +98,7 @@ pub(super) fn add_toolbar_end_buttons(
     }
     // Mail merge fields (#447), at the caret: in every format, since a
     // field is text in each.
-    let fields_btn = gtk::Button::from_icon_name("hylki-merge-field-symbolic");
+    let fields_btn = gtk::Button::from_icon_name("buzon-merge-field-symbolic");
     fields_btn.set_tooltip_text(Some(i18n("Insert Merge Field").as_str()));
     fields_btn.add_css_class("flat");
     fields_btn.set_can_focus(false);

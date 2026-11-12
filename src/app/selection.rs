@@ -153,7 +153,7 @@ impl AppModel {
         // what r or f on it mean.
         let m = self.open_target()?;
         tracing::debug!(
-            target: "hylki::reply",
+            target: "buzon::reply",
             "toolbar target: selected {}:{} from={} cards={} thread={} head={}",
             m.account_id, m.id, m.from_addr, self.selection_from_cards,
             self.current_thread.len(), self.thread_star_target(&m),
@@ -163,7 +163,7 @@ impl AppModel {
         }
         let picked = self.newest_to_answer(&self.current_thread, m);
         tracing::debug!(
-            target: "hylki::reply",
+            target: "buzon::reply",
             "toolbar target: answering {}:{} from={}",
             picked.account_id, picked.id, picked.from_addr,
         );

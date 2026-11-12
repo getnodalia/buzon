@@ -112,7 +112,7 @@ impl AppModel {
                 (body, o.message.attachments.is_empty())
             });
         if let Some((body, no_files)) = outgoing {
-            message.body = crate::desktop::legacy::current_markup(body);
+            message.body = body;
             message.date = item.status.clone();
             message.has_attachment = !no_files;
             self.attachments.clear();
@@ -123,8 +123,7 @@ impl AppModel {
             self.show_message(Some(message), false);
             return;
         }
-        message.body =
-            crate::desktop::legacy::current_markup(crate::worker::extract_body(&item.raw));
+        message.body = crate::worker::extract_body(&item.raw);
         message.date = crate::models::OutboxItem::waiting_label(item.queued_at);
         self.attachments = crate::worker::extract_attachments_of(&item.raw);
         self.attachments_loading = false;
@@ -153,7 +152,7 @@ impl AppModel {
         let editable = crate::worker::editable_from_raw(&item.raw, &item.rcpts);
 
         let attachments = stage_attachments(
-            &format!("hylki-outbox-{account_id}-{id}"),
+            &format!("buzon-outbox-{account_id}-{id}"),
             &editable.attachments,
         );
 

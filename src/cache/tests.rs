@@ -250,19 +250,19 @@ fn rows_of_folders_an_account_does_not_have_go() {
 }
 
 /// How long the conversation lookups take on a real cache (#259):
-/// `HYLKI_CACHE_TIMING=<copy of cache.db> cargo test --release --bin hylki
+/// `BUZON_CACHE_TIMING=<copy of cache.db> cargo test --release --bin buzon
 /// cache::tests::thread_lookup_timing -- --ignored --nocapture`. Takes
 /// each account's newest 256 Message-IDs as one page of badges, and the
 /// newest reply's ids as one opened conversation. An encrypted copy also
-/// needs its key in `HYLKI_CACHE_TIMING_KEY`, from
-/// `secret-tool lookup service co.hyprlab.Hylki username cache-key`.
+/// needs its key in `BUZON_CACHE_TIMING_KEY`, from
+/// `secret-tool lookup service dev.danielmiguelt.Buzon username cache-key`.
 #[test]
 #[ignore]
 fn thread_lookup_timing() {
-    let Ok(path) = std::env::var("HYLKI_CACHE_TIMING") else {
+    let Ok(path) = std::env::var("BUZON_CACHE_TIMING") else {
         return;
     };
-    let protection = match std::env::var("HYLKI_CACHE_TIMING_KEY") {
+    let protection = match std::env::var("BUZON_CACHE_TIMING_KEY") {
         Ok(hex) => super::at_rest::Protection::Encrypted(
             super::at_rest::Key::from_hex(&hex).expect("a 64-digit hex key"),
         ),
@@ -313,7 +313,7 @@ fn thread_lookup_timing() {
 #[test]
 fn background_reader_sees_wal_updates_without_writing() {
     let path = std::env::temp_dir().join(format!(
-        "hylki-cache-reader-{}-{}.db",
+        "buzon-cache-reader-{}-{}.db",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -364,12 +364,12 @@ fn background_reader_sees_wal_updates_without_writing() {
 fn the_cache_is_not_world_readable() {
     use std::os::unix::fs::PermissionsExt;
 
-    let base = std::env::temp_dir().join(format!("hylki-cache-test-{}", std::process::id()));
+    let base = std::env::temp_dir().join(format!("buzon-cache-test-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&base);
     std::fs::create_dir_all(&base).unwrap();
     std::env::set_var("XDG_DATA_HOME", &base);
 
-    let dir = base.join("hylki");
+    let dir = base.join("buzon");
     // Start from the permissions the old code left behind, to prove an
     // existing cache is tightened rather than only a freshly created one.
     std::fs::create_dir_all(&dir).unwrap();
@@ -421,12 +421,12 @@ fn folder_kinds_keep_their_stored_numbers() {
 #[test]
 fn message_ids_go_back_on_the_wire_in_the_case_they_arrived() {
     let c = Cache::in_memory().unwrap();
-    note_msgid_case("vireo-12tPxIJKt7PhQVbIiO@gmail.com");
+    note_msgid_case("buzon-12tPxIJKt7PhQVbIiO@gmail.com");
     note_msgid_case("plain@example.com"); // all lowercase: nothing to note
                                           // Known before it is on disk (noted, not yet carried by a batch).
     assert_eq!(
-        c.exact_msgids("vireo-12tpxijkt7phqvbiio@gmail.com plain@example.com"),
-        "vireo-12tPxIJKt7PhQVbIiO@gmail.com plain@example.com"
+        c.exact_msgids("buzon-12tpxijkt7phqvbiio@gmail.com plain@example.com"),
+        "buzon-12tPxIJKt7PhQVbIiO@gmail.com plain@example.com"
     );
     // The next batch of messages writes it down; then it is on disk.
     c.upsert_messages(1, "INBOX", &[]);
@@ -435,8 +435,8 @@ fn message_ids_go_back_on_the_wire_in_the_case_they_arrived() {
         "drained by the batch"
     );
     assert_eq!(
-        c.exact_msgids("vireo-12tpxijkt7phqvbiio@gmail.com"),
-        "vireo-12tPxIJKt7PhQVbIiO@gmail.com"
+        c.exact_msgids("buzon-12tpxijkt7phqvbiio@gmail.com"),
+        "buzon-12tPxIJKt7PhQVbIiO@gmail.com"
     );
     // An id never seen with capitals is left as stored.
     assert_eq!(c.exact_msgids("unknown@x"), "unknown@x");
@@ -862,7 +862,7 @@ fn drop_soft_broken_plain_bodies_keeps_html_and_fixed_text() {
         1,
         "INBOX",
         4,
-        "<div class=\"hylki-plain\">soft \nbreak</div>",
+        "<div class=\"buzon-plain\">soft \nbreak</div>",
     );
 
     Cache::drop_soft_broken_plain_bodies(&c.conn);

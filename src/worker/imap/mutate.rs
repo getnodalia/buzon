@@ -91,7 +91,7 @@ pub(super) async fn uid_move(
 ) -> Result<(), async_imap::error::Error> {
     // If even CAPABILITY fails, let MOVE produce the real error.
     let can_move = has_capability(session, "MOVE").await.unwrap_or(true);
-    tracing::debug!(target: "hylki::imap", "server {} MOVE", if can_move { "offers" } else { "lacks" });
+    tracing::debug!(target: "buzon::imap", "server {} MOVE", if can_move { "offers" } else { "lacks" });
     if can_move {
         return mv_uids(session, set, dest).await;
     }

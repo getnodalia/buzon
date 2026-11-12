@@ -41,15 +41,15 @@ impl MockBackend {
             Account {
                 id: 1,
                 name: "Jason M.".into(),
-                email: "jason@hylki.hyprlab.co".into(),
-                label: "jason@hylki.hyprlab.co".into(),
+                email: "jason@getnodalia.com".into(),
+                label: "jason@getnodalia.com".into(),
                 accent: "#3584e4".into(),
             },
             Account {
                 id: 2,
-                name: "Hyprlab".into(),
-                email: "hello@hyprlab.dev".into(),
-                label: "hello@hyprlab.dev".into(),
+                name: "Nodalia".into(),
+                email: "hello@getnodalia.com".into(),
+                label: "hello@getnodalia.com".into(),
                 accent: "#f6d32d".into(),
             },
             Account {
@@ -93,7 +93,7 @@ impl MockBackend {
         ];
 
         let mut messages = sample_messages();
-        // HYLKI_DEMO_SENT_THREAD=1: file the demo's own replies where a real
+        // BUZON_DEMO_SENT_THREAD=1: file the demo's own replies where a real
         // client keeps them — in Sent — instead of beside the mail they answer.
         // The sample thread is written entirely into the Inbox, which is tidy
         // but is exactly the case #222 is about: the list can only count its
@@ -101,9 +101,9 @@ impl MockBackend {
         // short by every reply they sent. With this on, the "Reader redesign"
         // thread is 3 rows in the Inbox and 5 messages, which is what the chip
         // should say.
-        if std::env::var("HYLKI_DEMO_SENT_THREAD").is_ok_and(|v| v == "1") {
+        if std::env::var("BUZON_DEMO_SENT_THREAD").is_ok_and(|v| v == "1") {
             const SENT: u32 = 3;
-            const ME: &str = "jason@hylki.hyprlab.co";
+            const ME: &str = "jason@getnodalia.com";
             // Real mail carries the whole ancestry in References; the sample
             // specs carry only the immediate parent (which is why the cache has
             // a `refs_repair` pass at all). Thicken them first, or moving a

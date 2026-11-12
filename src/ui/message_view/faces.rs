@@ -212,8 +212,8 @@ impl MessageView {
         // circle was markup, not an image.
         self.run_js(&format!(
             "(function(u,ks){{ks.forEach(function(k){{\
-             document.querySelectorAll('.hylki-ava[data-key=\"'+k+'\"]').forEach(function(e){{\
-             var n=document.createElement('img');n.className='hylki-ava';n.alt='';\
+             document.querySelectorAll('.buzon-ava[data-key=\"'+k+'\"]').forEach(function(e){{\
+             var n=document.createElement('img');n.className='buzon-ava';n.alt='';\
              n.dataset.key=k;n.src=u;e.replaceWith(n);}});}});}})({uri:?},{keys:?})"
         ));
     }

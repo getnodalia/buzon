@@ -323,21 +323,21 @@ impl AppModel {
         if cards.is_empty() {
             cards.extend(self.current.clone());
         }
-        // HYLKI_SHOWCASE_PGP=<good|untrusted|bad|nokey|enc> gives every
+        // BUZON_SHOWCASE_PGP=<good|untrusted|bad|nokey|enc> gives every
         // demo card that OpenPGP verdict, for a capture of the header's
         // chip (#300); the demo has no sender checks of its own.
-        let showcase = std::env::var_os("HYLKI_DEMO")
-            .and(std::env::var("HYLKI_SHOWCASE_PGP").ok())
+        let showcase = std::env::var_os("BUZON_DEMO")
+            .and(std::env::var("BUZON_SHOWCASE_PGP").ok())
             .map(|v| {
                 Box::new(crate::models::SenderCheck {
                     pgp: showcase_pgp(&v),
                     ..Default::default()
                 })
             });
-        // HYLKI_SHOWCASE_RECEIPT=1 has every demo card ask for a read
+        // BUZON_SHOWCASE_RECEIPT=1 has every demo card ask for a read
         // receipt (#520), for a capture of its banner.
-        let receipts = std::env::var_os("HYLKI_DEMO")
-            .and(std::env::var_os("HYLKI_SHOWCASE_RECEIPT"))
+        let receipts = std::env::var_os("BUZON_DEMO")
+            .and(std::env::var_os("BUZON_SHOWCASE_RECEIPT"))
             .is_some();
         for m in cards {
             let stored = self.sender_cache.get(&body_key(&m)).cloned();

@@ -74,7 +74,11 @@ pub(crate) fn word_initials(text: &str) -> Vec<char> {
         })
         .collect();
     let found = firsts(&outside);
-    if found.is_empty() { firsts(text) } else { found }
+    if found.is_empty() {
+        firsts(text)
+    } else {
+        found
+    }
 }
 
 /// The initials for `text`: the first letter of the first word and of the
@@ -115,7 +119,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for InitialsPaintable {
-        const NAME: &'static str = "HylkiInitialsPaintable";
+        const NAME: &'static str = "BuzonInitialsPaintable";
         type Type = super::InitialsPaintable;
         type Interfaces = (gdk::Paintable,);
     }
@@ -336,7 +340,10 @@ pub(super) fn texture_data_uri(texture: &gdk::Texture, size: i32) -> Option<Stri
     let square = pixbuf.new_subpixbuf((w - side) / 2, (h - side) / 2, side, side);
     let scaled = square.scale_simple(px, px, gtk::gdk_pixbuf::InterpType::Hyper)?;
     let png = scaled.save_to_bufferv("png", &[]).ok()?;
-    Some(format!("data:image/png;base64,{}", glib::base64_encode(&png)))
+    Some(format!(
+        "data:image/png;base64,{}",
+        glib::base64_encode(&png)
+    ))
 }
 
 thread_local! {

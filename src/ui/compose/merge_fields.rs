@@ -26,11 +26,11 @@ pub(crate) enum FieldTarget {
 }
 
 /// The name of To's field button, by which the palette finds it to point at.
-const TO_BUTTON: &str = "hylki-merge-field-to";
+const TO_BUTTON: &str = "buzon-merge-field-to";
 
 /// To's field button, after the row's More.
 pub(super) fn add_to_button(widgets: &ComposeWidgets, sender: &ComponentSender<Compose>) {
-    let button = gtk::Button::from_icon_name("hylki-merge-field-symbolic");
+    let button = gtk::Button::from_icon_name("buzon-merge-field-symbolic");
     button.set_widget_name(TO_BUTTON);
     button.set_tooltip_text(Some(i18n("Insert Merge Field").as_str()));
     button.add_css_class("flat");
@@ -87,11 +87,7 @@ fn subject_text(widgets: &ComposeWidgets) -> Option<gtk::Text> {
 
 impl Compose {
     /// Handles [`ComposeInput::MergeFields`].
-    pub(super) fn on_merge_fields(
-        &mut self,
-        target: FieldTarget,
-        widgets: &ComposeWidgets,
-    ) {
+    pub(super) fn on_merge_fields(&mut self, target: FieldTarget, widgets: &ComposeWidgets) {
         let Some(text) = subject_text(widgets) else {
             return;
         };
@@ -200,13 +196,13 @@ impl Compose {
     }
 }
 
-/// HYLKI_SHOWCASE_MERGE_FIELDS=<to|subject|body>:<png>[:<n>] (demo only;
+/// BUZON_SHOWCASE_MERGE_FIELDS=<to|subject|body>:<png>[:<n>] (demo only;
 /// see `compose::showcase`): the palette captured a second after it opens,
 /// then its `n`th field clicked and what the field or body holds logged.
 fn showcase(popover: &gtk::Popover, read: impl Fn(Box<dyn FnOnce(String)>) + 'static) {
     let (Ok(v), Some(_)) = (
-        std::env::var("HYLKI_SHOWCASE_MERGE_FIELDS"),
-        std::env::var_os("HYLKI_DEMO"),
+        std::env::var("BUZON_SHOWCASE_MERGE_FIELDS"),
+        std::env::var_os("BUZON_DEMO"),
     ) else {
         return;
     };

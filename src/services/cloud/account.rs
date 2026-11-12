@@ -157,7 +157,7 @@ pub(crate) struct LinkTerms {
 }
 
 fn default_folder() -> String {
-    "Hylki".to_string()
+    "Buzón".to_string()
 }
 
 fn default_true() -> bool {

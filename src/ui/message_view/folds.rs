@@ -51,7 +51,7 @@ impl MessageView {
     pub(super) fn card_marks_html(&self, m: &Message) -> String {
         let icon = |class: &str, name: &str, title: &str| {
             format!(
-                "<span class=\"hylki-mark{class}\" title=\"{}\">{}</span>",
+                "<span class=\"buzon-mark{class}\" title=\"{}\">{}</span>",
                 attr_escape(title),
                 inline_icon_svg(name)
             )
@@ -61,27 +61,27 @@ impl MessageView {
         // message on the page has files (#616).
         let clip = if m.has_attachment {
             icon(
-                " hylki-mark-clip",
+                " buzon-mark-clip",
                 "mail-attachment-symbolic",
                 &i18n("Has attachments"),
             )
         } else {
-            "<span class=\"hylki-mark hylki-mark-none\"></span>".to_string()
+            "<span class=\"buzon-mark buzon-mark-none\"></span>".to_string()
         };
         let importance = match m.importance {
             Importance::High => icon(
-                " hylki-mark-high",
+                " buzon-mark-high",
                 "emblem-important-symbolic",
                 &i18n("High importance"),
             ),
-            Importance::Low => icon("", "hylki-importance-low-symbolic", &i18n("Low importance")),
+            Importance::Low => icon("", "buzon-importance-low-symbolic", &i18n("Low importance")),
             Importance::Normal => String::new(),
         };
         format!(
-            "<span class=\"hylki-marks\">{importance}{}{clip}</span>",
+            "<span class=\"buzon-marks\">{importance}{}{clip}</span>",
             icon(
-                " hylki-mark-star",
-                "hylki-non-starred-symbolic",
+                " buzon-mark-star",
+                "buzon-non-starred-symbolic",
                 &i18n("Starred")
             ),
         )
@@ -112,7 +112,7 @@ impl MessageView {
         }
         let preview = crate::models::preview_display(&m.preview);
         format!(
-            "<div class=\"hylki-fbar\" data-key=\"{}:{}\" title=\"{}\" \
+            "<div class=\"buzon-fbar\" data-key=\"{}:{}\" title=\"{}\" \
              style=\"-webkit-line-clamp:{n};height:calc({n} * 1.35em)\">{}</div>",
             m.account_id,
             m.id,
@@ -134,11 +134,11 @@ impl MessageView {
             .map(|(a, i)| format!("{a}:{i}"))
             .collect();
         let js = format!(
-            "(function(k){{var ms=document.querySelectorAll('.hylki-msg');\
+            "(function(k){{var ms=document.querySelectorAll('.buzon-msg');\
              for(var i=0;i<ms.length;i++){{var on=k.indexOf(ms[i].dataset.key)>=0;\
-             if(ms[i].classList.contains('hylki-folded')===on)continue;\
-             ms[i].classList.toggle('hylki-folded',on);\
-             if(!on){{var f=ms[i].querySelector('iframe.hylki-frame');if(f){{wake(f);f._h=0;s(f);}}}}}}}})({})",
+             if(ms[i].classList.contains('buzon-folded')===on)continue;\
+             ms[i].classList.toggle('buzon-folded',on);\
+             if(!on){{var f=ms[i].querySelector('iframe.buzon-frame');if(f){{wake(f);f._h=0;s(f);}}}}}}}})({})",
             serde_json::to_string(&keys).unwrap_or_else(|_| "[]".into()),
         );
         self.run_js(&js);

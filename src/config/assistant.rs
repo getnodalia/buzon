@@ -79,7 +79,7 @@ impl AssistantCap {
             AssistantCap::Tag => "add and remove tags",
             AssistantCap::Move => "move and archive mail",
             AssistantCap::Trash => "move mail to Trash",
-            AssistantCap::OpenConversation => "see the conversation open in Hylki",
+            AssistantCap::OpenConversation => "see the conversation open in Buzón",
             AssistantCap::OpenDrafts => "read and edit the open drafts agents prepared",
             AssistantCap::OwnDrafts => "read and edit the drafts the user is writing",
         }

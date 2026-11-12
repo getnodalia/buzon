@@ -65,7 +65,7 @@ pub(super) async fn connect_and_list(
                     if let Some(h) = read {
                         note_hierarchy_read(account);
                         tracing::info!(
-                            target: "hylki::imap",
+                            target: "buzon::imap",
                             "account {account_id}: folders nest by {:?}, top level {:?} (said: {})",
                             h.delimiter,
                             h.top_level.then_some(h.prefix.as_str()),
@@ -114,8 +114,8 @@ pub(super) async fn connect_and_list(
     result
 }
 
-/// The servers whose hierarchy has been read since Hylki started, by host
-/// and user. It does not change while Hylki runs, and NAMESPACE took 2 to
+/// The servers whose hierarchy has been read since Buzón started, by host
+/// and user. It does not change while Buzón runs, and NAMESPACE took 2 to
 /// 4 seconds on a slow Gmail account, at every reconnect (#296).
 static HIERARCHY_READ: std::sync::Mutex<Vec<(String, String)>> = std::sync::Mutex::new(Vec::new());
 
@@ -210,7 +210,7 @@ async fn connect_inner(
     // nothing a user could act on.
     if account.imap_host.trim().is_empty() {
         return Err(i18n(
-            "This account has no IMAP server. Hylki can't use Exchange accounts from Online Accounts: remove it and add it as an IMAP or Microsoft 365 account.",
+            "This account has no IMAP server. Buzón can't use Exchange accounts from Online Accounts: remove it and add it as an IMAP or Microsoft 365 account.",
         )
         .into());
     }
@@ -248,11 +248,11 @@ async fn connect_inner(
     // The sign-in for the console: mechanism and user, never the secret.
     let session = if account.oauth {
         // XOAUTH2 with a fresh access token (from GOA or a native refresh token).
-        tracing::debug!(target: "hylki::imap", "> AUTHENTICATE XOAUTH2 {}", oauth_user(account));
+        tracing::debug!(target: "buzon::imap", "> AUTHENTICATE XOAUTH2 {}", oauth_user(account));
         let token = match fetch_oauth_token(account).await {
             Some(t) => t,
             None => {
-                tracing::warn!(target: "hylki::imap", "< no OAuth token (AUTHENTICATE XOAUTH2)");
+                tracing::warn!(target: "buzon::imap", "< no OAuth token (AUTHENTICATE XOAUTH2)");
                 return Err("could not get an OAuth token".into());
             }
         };
@@ -266,22 +266,22 @@ async fn connect_inner(
             .await
             .map_err(|(e, _client)| e);
         match &r {
-            Ok(_) => tracing::debug!(target: "hylki::imap", "< OK (AUTHENTICATE XOAUTH2)"),
+            Ok(_) => tracing::debug!(target: "buzon::imap", "< OK (AUTHENTICATE XOAUTH2)"),
             Err(e) => {
-                tracing::warn!(target: "hylki::imap", "< {e} (AUTHENTICATE XOAUTH2)");
+                tracing::warn!(target: "buzon::imap", "< {e} (AUTHENTICATE XOAUTH2)");
                 forget_access_token(account);
             }
         }
         r?
     } else {
-        tracing::debug!(target: "hylki::imap", "> LOGIN {} ****", account.username);
+        tracing::debug!(target: "buzon::imap", "> LOGIN {} ****", account.username);
         let r = client
             .login(&account.username, password)
             .await
             .map_err(|(e, _client)| e);
         match &r {
-            Ok(_) => tracing::debug!(target: "hylki::imap", "< OK (LOGIN)"),
-            Err(e) => tracing::warn!(target: "hylki::imap", "< {e} (LOGIN)"),
+            Ok(_) => tracing::debug!(target: "buzon::imap", "< OK (LOGIN)"),
+            Err(e) => tracing::warn!(target: "buzon::imap", "< {e} (LOGIN)"),
         }
         r?
     };

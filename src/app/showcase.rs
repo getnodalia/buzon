@@ -3,7 +3,7 @@
 //!
 //! The probes (`install_showcase_probes`) and the overlays work on real
 //! profiles too; the staging (`stage_showcase`) runs only in the demo with
-//! HYLKI_SHOWCASE set. Each HYLKI_SHOWCASE_* hook is one function in the
+//! BUZON_SHOWCASE set. Each BUZON_SHOWCASE_* hook is one function in the
 //! child module for what it stages, called in the order the hooks were
 //! always armed (timers due at the same second fire in that order).
 
@@ -38,7 +38,7 @@ impl AppModel {
         probes::probe_notify(sender);
     }
 
-    /// Screenshot showcase (HYLKI_DEMO + HYLKI_SHOWCASE=/path.png): stage
+    /// Screenshot showcase (BUZON_DEMO + BUZON_SHOWCASE=/path.png): stage
     /// the demo the way the marketing shots want it — first row (the demo
     /// conversation, expanded via the threads_expanded preference) selected,
     /// one mid-thread card highlighted — then render the window to a PNG.
@@ -50,12 +50,12 @@ impl AppModel {
         sender: &ComponentSender<Self>,
     ) {
         if demo_mode() {
-            if let Ok(shot) = std::env::var("HYLKI_SHOWCASE") {
-                // HYLKI_SHOWCASE_STAGE=0 skips the staging (capture-only, for
-                // testing arbitrary states); HYLKI_SHOWCASE_DELAY overrides the
+            if let Ok(shot) = std::env::var("BUZON_SHOWCASE") {
+                // BUZON_SHOWCASE_STAGE=0 skips the staging (capture-only, for
+                // testing arbitrary states); BUZON_SHOWCASE_DELAY overrides the
                 // capture time (seconds, default 9).
-                let stage = std::env::var("HYLKI_SHOWCASE_STAGE").as_deref() != Ok("0");
-                let delay: u32 = std::env::var("HYLKI_SHOWCASE_DELAY")
+                let stage = std::env::var("BUZON_SHOWCASE_STAGE").as_deref() != Ok("0");
+                let delay: u32 = std::env::var("BUZON_SHOWCASE_DELAY")
                     .ok()
                     .and_then(|v| v.parse().ok())
                     .unwrap_or(9);
@@ -108,36 +108,36 @@ impl AppModel {
                 settings::stage_add_contact(sender);
                 settings::stage_dialog();
                 self.stage_contacts(sender);
-                // HYLKI_SHOWCASE_SETTINGS names a Settings panel to open
+                // BUZON_SHOWCASE_SETTINGS names a Settings panel to open
                 // and to capture instead of the main window.
-                let settings = std::env::var("HYLKI_SHOWCASE_SETTINGS").ok();
+                let settings = std::env::var("BUZON_SHOWCASE_SETTINGS").ok();
                 capture::stage_settings_window(sender, settings.clone());
                 capture::capture_window(root, delay, shot, settings);
             }
         }
     }
 
-    /// HYLKI_SHOWCASE_ABOUT=1 opens the About window a beat after
-    /// launch; pair it with HYLKI_SHOWCASE_TOP=1 to capture that window
+    /// BUZON_SHOWCASE_ABOUT=1 opens the About window a beat after
+    /// launch; pair it with BUZON_SHOWCASE_TOP=1 to capture that window
     /// instead of the main one.
     pub(super) fn install_showcase_overlays(&self, sender: &ComponentSender<Self>) {
-        if std::env::var("HYLKI_SHOWCASE_ABOUT").is_ok() {
+        if std::env::var("BUZON_SHOWCASE_ABOUT").is_ok() {
             input_after(sender, 3, AppMsg::OpenAbout);
         }
         // Screenshot/dev hook: open the status bar console shortly after
         // launch (pref permitting) so captures can show it.
-        if std::env::var("HYLKI_SHOWCASE_CONSOLE").is_ok() {
+        if std::env::var("BUZON_SHOWCASE_CONSOLE").is_ok() {
             input_after(sender, 3, AppMsg::OpenConsole);
         }
     }
 }
 
-/// HYLKI_SHOWCASE_READ=1 gives the demo's mail read receipt checkmarks
+/// BUZON_SHOWCASE_READ=1 gives the demo's mail read receipt checkmarks
 /// (#520), for a capture of them: every other message green, read by its
 /// first recipient an hour after it went, the rest grey.
 pub(super) fn showcase_receipt_marks(marks: &mut crate::models::ReceiptMarks) {
     use crate::backend::MailBackend;
-    if !demo_mode() || std::env::var_os("HYLKI_SHOWCASE_READ").is_none() {
+    if !demo_mode() || std::env::var_os("BUZON_SHOWCASE_READ").is_none() {
         return;
     }
     let backend = crate::backend::MockBackend::new();

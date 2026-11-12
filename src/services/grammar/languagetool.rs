@@ -375,9 +375,15 @@ mod tests {
         let codes = |c: &[&str]| c.iter().map(|s| s.to_string()).collect::<Vec<_>>();
         assert_eq!(
             preferred_split(&codes(&["en-US", "es", "fr-FR", "en-GB", "ca-ES-valencia"])),
-            ("en,es,fr,ca".into(), "en-US,fr-FR,en-GB,ca-ES-valencia".into())
+            (
+                "en,es,fr,ca".into(),
+                "en-US,fr-FR,en-GB,ca-ES-valencia".into()
+            )
         );
-        assert_eq!(preferred_split(&codes(&["de"])), ("de".into(), String::new()));
+        assert_eq!(
+            preferred_split(&codes(&["de"])),
+            ("de".into(), String::new())
+        );
     }
 
     /// Against a real server:

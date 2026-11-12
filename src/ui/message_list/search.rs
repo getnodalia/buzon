@@ -268,9 +268,7 @@ impl SearchScope {
     /// "All folders" keeps to (#649).
     pub(super) fn label(self, one_account: bool) -> String {
         match self {
-            SearchScope::AllFolders if one_account => {
-                i18n("This Account (Except Trash & Junk)")
-            }
+            SearchScope::AllFolders if one_account => i18n("This Account (Except Trash & Junk)"),
             SearchScope::AllFolders => i18n("All folders (except trash & junk)"),
             SearchScope::Everywhere => i18n("Everywhere"),
             SearchScope::ThisFolder => i18n("This folder"),

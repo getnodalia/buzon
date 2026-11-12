@@ -354,13 +354,13 @@ impl AppModel {
         }
     }
 
-    /// Prepare the message an assistant asked for, as Hylki's own New,
+    /// Prepare the message an assistant asked for, as Buzón's own New,
     /// Reply, Reply All or Forward would, with its text where the user
     /// would have typed.
     fn open_assistant_draft(&mut self, draft: Draft, done: Opened, sender: &ComponentSender<Self>) {
         if self.assistant_composers() >= MAX_OPEN {
             let _ = done.send(Err(format!(
-                "{MAX_OPEN} messages an agent prepared are already open in Hylki. Ask the \
+                "{MAX_OPEN} messages an agent prepared are already open in Buzón. Ask the \
                  user to send or close some first."
             )));
             return;
@@ -404,7 +404,7 @@ impl AppModel {
                 let m = self.original_message(original);
                 let mut prefill = self.quoting(&m, forward_prefill(&m));
                 prefill.attachments = stage_attachments(
-                    &format!("hylki-forward-{}-{}", m.account_id, m.id),
+                    &format!("buzon-forward-{}-{}", m.account_id, m.id),
                     &original.attachments,
                 );
                 prefill.to = draft.to.join(", ");
@@ -444,7 +444,7 @@ impl AppModel {
     }
 
     /// The composer, in a window of its own. With the user at work in
-    /// Hylki it waits unshown, and a toast and a notification say it is
+    /// Buzón it waits unshown, and a toast and a notification say it is
     /// ready, until they ask for it or go elsewhere; otherwise it opens
     /// without asking for the focus, and the notification follows if it did
     /// not get it.
@@ -509,9 +509,9 @@ impl AppModel {
             assistant: true,
         });
         let note = if busy_here {
-            "The message is ready in Hylki; the user was busy there, so it waits for them to open it. They check it and send it themselves."
+            "The message is ready in Buzón; the user was busy there, so it waits for them to open it. They check it and send it themselves."
         } else {
-            "The message is open in Hylki in a window of its own. The user checks it and sends it themselves."
+            "The message is open in Buzón in a window of its own. The user checks it and sends it themselves."
         };
         let mut note = note.to_string();
         if files > 0 {
@@ -597,7 +597,7 @@ fn wait_for_edit(last: Option<std::time::Instant>, now: std::time::Instant) -> O
     (since < EDIT_GAP).then(|| (EDIT_GAP - since).as_secs().max(1))
 }
 
-/// Whether any window of Hylki's has the focus.
+/// Whether any window of Buzón's has the focus.
 fn ours_in_front() -> bool {
     let tops = gtk::Window::toplevels();
     (0..tops.n_items())

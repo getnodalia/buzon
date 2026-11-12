@@ -11,7 +11,7 @@ beigefügt, adjunt, ci-joint, pièce jointe, pièces jointes, bijlage, bijgevoeg
 załącz, csatol, συνημμέν, вложен, прикреп, прилага";
 
 /// The start of the message's own signature block in the editor's HTML.
-const SIGNATURE: &str = "<div class=\"hylki-sig\"";
+const SIGNATURE: &str = "<div class=\"buzon-sig\"";
 
 /// `html` without the signature block and all it holds: a disclaimer such
 /// as "this email and any attachments are confidential" is not the user
@@ -157,7 +157,7 @@ mod tests {
     #[test]
     fn a_quoted_original_in_html_is_left_out() {
         let k = defaults();
-        let quote = "<p class=\"hylki-quote-attr\">On Monday, Ada wrote:</p>\
+        let quote = "<p class=\"buzon-quote-attr\">On Monday, Ada wrote:</p>\
             <blockquote><p>The file is attached.</p></blockquote>";
         let text = crate::mail::markdown::html_to_text(&format!("<p>Thanks!</p>{quote}"));
         assert_eq!(mentioned(&text, &k), None);
@@ -169,7 +169,7 @@ mod tests {
     #[test]
     fn the_signature_is_left_out() {
         let k = defaults();
-        let sig = "<div class=\"hylki-sig\"><br>-- <br>Ann<div>This email and any \
+        let sig = "<div class=\"buzon-sig\"><br>-- <br>Ann<div>This email and any \
             attachments are confidential.</div></div>";
         let html = format!("<p>See you on Monday.</p>{sig}<p>P.S. nothing more</p>");
         let text = crate::mail::markdown::html_to_text(&without_signature(&html));
@@ -186,7 +186,7 @@ mod tests {
     #[test]
     fn an_unclosed_signature_runs_to_the_end() {
         assert_eq!(
-            without_signature("<p>Hi</p><div class=\"hylki-sig\">attached"),
+            without_signature("<p>Hi</p><div class=\"buzon-sig\">attached"),
             "<p>Hi</p>"
         );
     }

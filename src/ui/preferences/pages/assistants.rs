@@ -100,7 +100,7 @@ impl AssistantsPage {
 
         let connection = adw::PreferencesGroup::builder()
             .description(i18n(
-                "Hylki contains no AI agent of its own but you can allow outside agents to access your mail using MCP (Model Context Protocol)",
+                "Buzón contains no AI agent of its own but you can allow outside agents to access your mail using MCP (Model Context Protocol)",
             ))
             .build();
         let enable = adw::SwitchRow::builder()

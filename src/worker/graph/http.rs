@@ -64,14 +64,14 @@ pub(super) fn graph_err(e: ureq::Error) -> String {
 /// The Microsoft Graph conversation for the console: method and URL (the
 /// token travels in a header and is never logged), then the verdict.
 fn graph_wire(method: &str, url: &str) {
-    tracing::debug!(target: "hylki::graph", "> {method} {}", url.strip_prefix(GRAPH_BASE).unwrap_or(url));
+    tracing::debug!(target: "buzon::graph", "> {method} {}", url.strip_prefix(GRAPH_BASE).unwrap_or(url));
 }
 
 fn graph_wired<T>(method: &str, url: &str, r: &Result<T, String>) {
     let path = url.strip_prefix(GRAPH_BASE).unwrap_or(url);
     match r {
-        Ok(_) => tracing::debug!(target: "hylki::graph", "< OK ({method} {path})"),
-        Err(e) => tracing::warn!(target: "hylki::graph", "< {e} ({method} {path})"),
+        Ok(_) => tracing::debug!(target: "buzon::graph", "< OK ({method} {path})"),
+        Err(e) => tracing::warn!(target: "buzon::graph", "< {e} ({method} {path})"),
     }
 }
 
@@ -103,7 +103,7 @@ fn graph_get(token: &str, url: &str) -> Result<ureq::Response, String> {
                     return Err(graph_err(e));
                 };
                 tries += 1;
-                tracing::info!(target: "hylki::graph", "throttled, waiting {} s", wait.as_secs());
+                tracing::info!(target: "buzon::graph", "throttled, waiting {} s", wait.as_secs());
                 std::thread::sleep(wait);
             }
             r => return r.map_err(graph_err),
@@ -250,8 +250,8 @@ pub(super) async fn graph_token(
     match fetch_oauth_token(account).await {
         Some(t) => Some(t),
         None => {
-            // Signed in through Hylki's own Microsoft app (#329) rather than
-            // GNOME Online Accounts: it is Hylki's sign-in to renew.
+            // Signed in through Buzón's own Microsoft app (#329) rather than
+            // GNOME Online Accounts: it is Buzón's sign-in to renew.
             let email = [("email", account.email.as_str())];
             emit(WorkerEvent::net_error(if account.goa_id.is_some() {
                 i18n_f(
@@ -260,7 +260,7 @@ pub(super) async fn graph_token(
                 )
             } else {
                 i18n_f(
-                    "Microsoft did not accept the saved sign-in for {email}. Open Hylki's Settings → Mail Accounts and sign in to it again.",
+                    "Microsoft did not accept the saved sign-in for {email}. Open Buzón's Settings → Mail Accounts and sign in to it again.",
                     &email,
                 )
             }));
@@ -313,7 +313,9 @@ mod tests {
             let (mut first, _) = listener.accept().unwrap();
             read_head(&mut first);
             first
-                .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: keep-alive\r\n\r\n{}")
+                .write_all(
+                    b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: keep-alive\r\n\r\n{}",
+                )
                 .unwrap();
             // Whatever comes next, on this connection or a new one, gets
             // no answer.

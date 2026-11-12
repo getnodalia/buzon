@@ -60,7 +60,7 @@ impl RecipientRow {
         let shown = if name.is_empty() { addr } else { name };
         pill.update_property(&[gtk::accessible::Property::Label(shown)]);
         if field {
-            let icon = gtk::Image::from_icon_name("hylki-merge-field-symbolic");
+            let icon = gtk::Image::from_icon_name("buzon-merge-field-symbolic");
             icon.set_pixel_size(12);
             icon.set_margin_end(4);
             pill.append(&icon);

@@ -538,7 +538,7 @@ impl ContactsPage {
                     .icon("x-office-address-book-symbolic"),
             );
         }
-        // GNOME Contacts knows nothing of the Hylki book, nor of groups.
+        // GNOME Contacts knows nothing of the Buzón book, nor of groups.
         if !local && !group {
             first.push(
                 MenuEntry::new(i18n("Open in GNOME Contacts"), move || {

@@ -394,7 +394,7 @@ impl<E: Emit> ImapWorker<E> {
         // A folder at a time: SELECT, then a HEADER search. Servers
         // whose header index lags (see UndoMove below) are the reason
         // the cache is asked first; this is the fallback for a message
-        // Hylki has never listed.
+        // Buzón has never listed.
         let sess = ensured(session);
         let mut hit: Option<(String, u32)> = None;
         match list_folders(
@@ -636,7 +636,7 @@ impl<E: Emit> ImapWorker<E> {
         } else {
             None
         };
-        tracing::debug!(target: "hylki::imap", "quota: {quota:?} (server {} QUOTA)", if offered { "offers" } else { "lacks" });
+        tracing::debug!(target: "buzon::imap", "quota: {quota:?} (server {} QUOTA)", if offered { "offers" } else { "lacks" });
         emit(WorkerEvent::Quota(quota));
         After::Done
     }

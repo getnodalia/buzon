@@ -339,7 +339,7 @@ fn extract_data_images(html: &str) -> (String, Vec<InlineImage>) {
         });
         match lifted {
             Some((len, mime, data)) => {
-                let cid = format!("{}.{}@hylki.inline", stamp, parts.len() + 1);
+                let cid = format!("{}.{}@buzon.inline", stamp, parts.len() + 1);
                 let name = alt_of_enclosing_tag(html, start, start + len);
                 out.push_str(&html[i..start]);
                 out.push_str("cid:");
@@ -412,7 +412,7 @@ fn new_message_id(from: &str) -> String {
             .map(|d| d.as_nanos().to_string())
             .unwrap_or_default()
     });
-    format!("<hylki-{unique}@{domain}>")
+    format!("<buzon-{unique}@{domain}>")
 }
 
 /// Wrap each stored (bare) message id back in angle brackets for a header value.

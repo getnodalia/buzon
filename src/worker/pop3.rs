@@ -228,7 +228,7 @@ impl<E: Fn(WorkerEvent)> Pop3Worker<E> {
                     c.set_starred(account_id, INBOX, uid, flagged);
                 }
             }
-            // POP3 has no flags at all: every tag is Hylki's own.
+            // POP3 has no flags at all: every tag is Buzón's own.
             MailRequest::SetKeyword {
                 uid,
                 message_id,

@@ -183,7 +183,7 @@ impl MessageList {
                 },
             )
             .icon(if any {
-                "hylki-non-starred-symbolic"
+                "buzon-non-starred-symbolic"
             } else {
                 "starred-symbolic"
             })
@@ -192,7 +192,7 @@ impl MessageList {
             item(
                 RowAction::ToggleStar,
                 &i18n("Remove Star"),
-                "hylki-non-starred-symbolic",
+                "buzon-non-starred-symbolic",
             )
         } else {
             item(RowAction::ToggleStar, &i18n("Star"), "starred-symbolic")
@@ -287,7 +287,7 @@ impl MessageList {
                     },
                 )
                 .icon(if any_unread {
-                    "hylki-mail-read-symbolic"
+                    "buzon-mail-read-symbolic"
                 } else {
                     "mail-unread-symbolic"
                 })
@@ -304,7 +304,7 @@ impl MessageList {
             Some(item(
                 RowAction::ToggleRead,
                 &i18n("Mark as Read"),
-                "hylki-mail-read-symbolic",
+                "buzon-mail-read-symbolic",
             ))
         } else {
             Some(item(
@@ -539,7 +539,7 @@ impl MessageList {
                         item(
                             BulkAction::MarkRead,
                             &i18n("Mark as Read"),
-                            "hylki-mail-read-symbolic",
+                            "buzon-mail-read-symbolic",
                         )
                     } else {
                         item(
@@ -555,7 +555,7 @@ impl MessageList {
                     item(
                         BulkAction::Flag,
                         &i18n("Remove Star"),
-                        "hylki-non-starred-symbolic",
+                        "buzon-non-starred-symbolic",
                     )
                 } else {
                     item(BulkAction::Flag, &i18n("Star"), "starred-symbolic")

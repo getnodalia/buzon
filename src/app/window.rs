@@ -34,7 +34,7 @@ pub(super) fn save_window_geometry(w: &adw::ApplicationWindow) {
 }
 
 /// Save the geometry a second after it changes, not only on close (#642):
-/// a logout or a restart ends Hylki without a close, and with Run in
+/// a logout or a restart ends Buzón without a close, and with Run in
 /// Background the window was closed long before, at another size.
 fn save_geometry_on_change(window: &adw::ApplicationWindow) {
     let due = std::rc::Rc::new(std::cell::Cell::new(false));

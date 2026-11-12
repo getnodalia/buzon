@@ -264,7 +264,7 @@ async fn ask_namespace<T: Wire>(session: &mut Over<T>) -> Option<Option<(String,
     }
     let raw = raw?;
     tracing::debug!(
-        target: "hylki::imap",
+        target: "buzon::imap",
         "< {} ({})",
         String::from_utf8_lossy(&raw).trim_end(),
         cmd_head(cmd)

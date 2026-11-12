@@ -77,11 +77,11 @@ pub(crate) fn stack(front: gtk::Box, behind: Vec<gtk::Box>, count: usize) -> gtk
     fixed.upcast()
 }
 
-/// The payload a sidebar folder takes as a move: the marker "vireo-move" and
+/// The payload a sidebar folder takes as a move: the marker "buzon-move" and
 /// one (account, folder, uid, id) group per message (see
 /// `sidebar::dnd::parse_move_payload`).
 pub(crate) fn move_payload(items: &[(u32, u32, u32, u32)]) -> gtk::gdk::ContentProvider {
-    let mut payload = String::from("vireo-move");
+    let mut payload = String::from("buzon-move");
     for (a, f, u, i) in items {
         payload.push_str(&format!("\t{a}\t{f}\t{u}\t{i}"));
     }

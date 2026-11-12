@@ -337,7 +337,7 @@ fn an_alias_server_saves_switch_round_trips() {
         smtp_username = "ann"
         "#;
     let cfg: ConfigFile = toml::from_str(toml_in).unwrap();
-    // A config from before #647 has no key: Hylki keeps filing the copy.
+    // A config from before #647 has no key: Buzón keeps filing the copy.
     assert!(cfg.accounts[0].aliases[0].server_saves_sent);
     assert!(!cfg.accounts[0].aliases[1].server_saves_sent);
     let out = toml::to_string_pretty(&cfg).unwrap();
@@ -412,8 +412,11 @@ fn new_mail_sound_names_a_builtin_or_falls_back() {
         Some(super::SoundSource::Resource(p)) => p,
         _ => panic!("a built-in plays from the bundle"),
     };
-    assert_eq!(resource("hum"), "/co/hyprlab/Hylki/sounds/hum.ogg");
-    assert_eq!(resource("bogus"), "/co/hyprlab/Hylki/sounds/click.ogg");
+    assert_eq!(resource("hum"), "/dev/danielmiguelt/Buzon/sounds/hum.ogg");
+    assert_eq!(
+        resource("bogus"),
+        "/dev/danielmiguelt/Buzon/sounds/click.ogg"
+    );
     // A sound.toml from before the in-front switch (#337) still reads.
     let saved: super::NewMailSound = toml::from_str("enabled = true\nsound = \"swing\"").unwrap();
     assert_eq!(
@@ -531,7 +534,7 @@ fn a_view_keeps_its_sort_through_the_file() {
 fn a_private_file_is_tightened_before_it_is_filled() {
     use std::os::unix::fs::PermissionsExt;
     let mode = |p: &std::path::Path| std::fs::metadata(p).unwrap().permissions().mode() & 0o777;
-    let dir = std::env::temp_dir().join(format!("hylki-private-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("buzon-private-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     super::private_dir(&dir.join("a/b")).unwrap();
     assert_eq!(mode(&dir.join("a/b")), 0o700);
@@ -539,7 +542,7 @@ fn a_private_file_is_tightened_before_it_is_filled() {
     super::private_dir(&dir.join("a")).unwrap();
     assert_eq!(mode(&dir.join("a")), 0o700);
 
-    let file = dir.join("hylki-log.txt");
+    let file = dir.join("buzon-log.txt");
     std::fs::write(&file, b"an older, longer log").unwrap();
     std::fs::set_permissions(&file, std::fs::Permissions::from_mode(0o644)).unwrap();
     super::write_private(&file, "log").unwrap();
@@ -573,7 +576,7 @@ fn accepted_keys_keep_the_address_with_the_fingerprint() {
 #[cfg(unix)]
 #[test]
 fn a_settings_file_is_replaced_whole() {
-    let dir = std::env::temp_dir().join(format!("hylki-replace-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("buzon-replace-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
     let file = dir.join("state.toml");
@@ -593,7 +596,10 @@ fn a_settings_file_is_replaced_whole() {
     let link = dir.join("window.toml");
     std::os::unix::fs::symlink(&file, &link).unwrap();
     super::replace_file(&link, |tmp| std::fs::write(tmp, "through")).unwrap();
-    assert!(std::fs::symlink_metadata(&link).unwrap().file_type().is_symlink());
+    assert!(std::fs::symlink_metadata(&link)
+        .unwrap()
+        .file_type()
+        .is_symlink());
     assert_eq!(std::fs::read_to_string(&file).unwrap(), "through");
     let _ = std::fs::remove_dir_all(&dir);
 }

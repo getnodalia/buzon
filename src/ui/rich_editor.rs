@@ -21,8 +21,8 @@ mod toolbar;
 pub(crate) use documents::remote_image_urls;
 use documents::{document, preview_document, source_document};
 pub(crate) use files::is_inline_image;
-use files::{deliver_files, paste_into};
 pub(crate) use files::PasteAs;
+use files::{deliver_files, paste_into};
 pub(crate) use fonts::{choose_family, compose_font_choices, preview_font, recent_font_css, SIZES};
 pub(crate) use signature::{signature_from_source, signature_to_html};
 pub(crate) use spelling::apply_spellcheck;
@@ -213,7 +213,7 @@ impl RichEditor {
         crate::desktop::web_fonts::load_html(
             &self.webview,
             &document(content, &self.webview, &self.image_policy, self.plain.get()),
-            Some("https://hylki.localhost/editor"),
+            Some("https://buzon.localhost/editor"),
         );
     }
 
@@ -226,7 +226,7 @@ impl RichEditor {
         crate::desktop::web_fonts::load_html(
             &self.webview,
             &source_document(text, &self.webview),
-            Some("https://hylki.localhost/editor"),
+            Some("https://buzon.localhost/editor"),
         );
     }
 
@@ -264,7 +264,7 @@ impl RichEditor {
     /// Read the source text back, exactly as typed.
     pub(super) fn extract_source(&self, cb: impl FnOnce(String) + 'static) {
         self.eval(
-            "window.__hylkiSourceText ? window.__hylkiSourceText() : ''",
+            "window.__buzonSourceText ? window.__buzonSourceText() : ''",
             cb,
         );
     }
@@ -301,7 +301,7 @@ impl RichEditor {
         crate::desktop::web_fonts::load_html(
             &view,
             &preview_document(html, &view, &self.image_policy),
-            Some("https://hylki.localhost/preview"),
+            Some("https://buzon.localhost/preview"),
         );
         self.stack.set_visible_child_name("preview");
     }
@@ -389,7 +389,7 @@ impl RichEditor {
     /// flag set on the first `input` event). Used to avoid saving a pristine,
     /// quote-only reply to Drafts when the reader navigates away.
     pub(super) fn is_dirty(&self, cb: impl FnOnce(bool) + 'static) {
-        self.eval("String(!!window.__hylkiDirty)", move |v| cb(v == "true"));
+        self.eval("String(!!window.__buzonDirty)", move |v| cb(v == "true"));
     }
 
     /// Show or hide the formatting commands: hidden while the message is
@@ -426,7 +426,7 @@ impl RichEditor {
 
     /// Read the current body HTML asynchronously.
     pub(super) fn extract_html(&self, cb: impl FnOnce(String) + 'static) {
-        self.eval("window.__hylkiBodyHtml()", cb);
+        self.eval("window.__buzonBodyHtml()", cb);
     }
 
     /// Read the body for *sending*: any picture armed with "Recompress to
@@ -434,12 +434,12 @@ impl RichEditor {
     /// go through [`RichEditor::extract`], which never touches the pixels —
     /// a save must not cost quality.
     pub(super) fn extract_for_send(&self, cb: impl FnOnce(String, String) + 'static) {
-        self.read_body("window.__hylkiBodyHtmlForSend()", cb);
+        self.read_body("window.__buzonBodyHtmlForSend()", cb);
     }
 
     /// Read the current body HTML and a plain-text rendering asynchronously.
     pub(crate) fn extract(&self, cb: impl FnOnce(String, String) + 'static) {
-        self.read_body("window.__hylkiBodyHtml()", cb);
+        self.read_body("window.__buzonBodyHtml()", cb);
     }
 
     fn read_body(&self, reader: &str, cb: impl FnOnce(String, String) + 'static) {
@@ -447,7 +447,7 @@ impl RichEditor {
         // between the halves cut the text off and plain-text mail went out
         // empty (#297).
         self.webview.evaluate_javascript(
-            &format!("JSON.stringify([{reader}, window.__hylkiBodyText()])"),
+            &format!("JSON.stringify([{reader}, window.__buzonBodyText()])"),
             None,
             None,
             gtk::gio::Cancellable::NONE,
@@ -518,7 +518,7 @@ fn popup_at_caret(webview: &webkit6::WebView, anchor: &gtk::Stack, popover: gtk:
     let weak = webview.downgrade();
     let anchor = anchor.downgrade();
     webview.evaluate_javascript(
-        "window.__hylkiEmojiMark ? window.__hylkiEmojiMark() : ''",
+        "window.__buzonEmojiMark ? window.__buzonEmojiMark() : ''",
         None,
         None,
         gtk::gio::Cancellable::NONE,
@@ -571,7 +571,7 @@ fn put_at_caret(webview: &webkit6::WebView, text: &str) {
             "(function(t){{var s=getSelection(),a=document.activeElement;\
              if(!(a&&a.tagName==='TEXTAREA')&&!(s&&s.rangeCount)){{\
              var x=document.getElementById('src');if(x)x.focus();else{PLACE_CARET};}}\
-             window.__hylkiEmojiPut&&window.__hylkiEmojiPut(t);}})({text})"
+             window.__buzonEmojiPut&&window.__buzonEmojiPut(t);}})({text})"
         ),
     );
 }
@@ -597,7 +597,7 @@ fn fade_in(webview: &webkit6::WebView) {
     anim.set_easing(adw::Easing::EaseOutCubic);
     anim.play();
     unsafe {
-        webview.set_data("hylki-fade-anim", anim);
+        webview.set_data("buzon-fade-anim", anim);
     }
 }
 
@@ -682,9 +682,9 @@ mod pinned_tests {
     #[test]
     fn embedded_scripts_are_unchanged() {
         assert_eq!(fnv(HISTORY_SCRIPT), (1287, 0x8e997368982bb599));
-        assert_eq!(fnv(EMOJI_SCRIPT), (1621, 0x748b009b19f3f0ec));
-        assert_eq!(fnv(LINES_SCRIPT), (5153, 0xb927290405c83fda));
-        assert_eq!(fnv(PASTE_SCRIPT), (43618, 0x511aca19373da885));
+        assert_eq!(fnv(EMOJI_SCRIPT), (1621, 0x3a37ec9c1b3c8d10));
+        assert_eq!(fnv(LINES_SCRIPT), (5153, 0x9254a485a160a58f));
+        assert_eq!(fnv(PASTE_SCRIPT), (43618, 0x9117092ed759bde0));
     }
 
     #[test]

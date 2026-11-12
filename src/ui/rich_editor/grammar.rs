@@ -57,11 +57,11 @@ pub(super) fn connect(
     ucm: &webkit6::UserContentManager,
     state: &GrammarState,
 ) {
-    ucm.register_script_message_handler("hylkiGrammar", None);
-    ucm.register_script_message_handler("hylkiGrammarHit", None);
+    ucm.register_script_message_handler("buzonGrammar", None);
+    ucm.register_script_message_handler("buzonGrammarHit", None);
     {
         let (weak, state) = (webview.downgrade(), state.clone());
-        ucm.connect_script_message_received(Some("hylkiGrammar"), move |_, value| {
+        ucm.connect_script_message_received(Some("buzonGrammar"), move |_, value| {
             let Ok(req) = serde_json::from_str::<Request>(&value.to_str()) else {
                 return;
             };
@@ -70,7 +70,7 @@ pub(super) fn connect(
     }
     {
         let state = state.clone();
-        ucm.connect_script_message_received(Some("hylkiGrammarHit"), move |_, value| {
+        ucm.connect_script_message_received(Some("buzonGrammarHit"), move |_, value| {
             *state.hit.borrow_mut() = serde_json::from_str::<Option<Hit>>(&value.to_str())
                 .ok()
                 .flatten()
@@ -85,7 +85,7 @@ pub(super) fn connect(
     });
 }
 
-const SWITCH_ON: &str = "window.__hylkiGrammarOn && window.__hylkiGrammarOn()";
+const SWITCH_ON: &str = "window.__buzonGrammarOn && window.__buzonGrammarOn()";
 
 /// Start checking the text of this editor.
 pub(super) fn switch_on(webview: &webkit6::WebView, state: &GrammarState) {
@@ -108,7 +108,7 @@ pub(super) fn pause(webview: &webkit6::WebView, state: &GrammarState, on: bool) 
     }
     exec(
         webview,
-        "window.__hylkiGrammarClear && window.__hylkiGrammarClear()",
+        "window.__buzonGrammarClear && window.__buzonGrammarClear()",
     );
     if !on && state.on.get() {
         exec(webview, SWITCH_ON);
@@ -194,7 +194,7 @@ fn show(weak: &gtk::glib::WeakRef<webkit6::WebView>, seq: u64, issues: &str) {
     if let Some(v) = weak.upgrade() {
         exec(
             &v,
-            &format!("window.__hylkiGrammarShow && window.__hylkiGrammarShow({seq},{issues})"),
+            &format!("window.__buzonGrammarShow && window.__buzonGrammarShow({seq},{issues})"),
         );
     }
 }
@@ -235,7 +235,7 @@ pub(super) fn lead_menu(
         if let Some(why) = state.error.borrow().as_ref() {
             if grammar::load().active() {
                 put(note(
-                    "hylki-grammar-error",
+                    "buzon-grammar-error",
                     &i18n_f("Grammar check failed: {error}", &[("error", why)]),
                 ));
                 put(webkit6::ContextMenuItem::new_separator());
@@ -243,15 +243,15 @@ pub(super) fn lead_menu(
         }
         return at;
     };
-    put(note("hylki-grammar-note", &shorten(&hit.message)));
+    put(note("buzon-grammar-note", &shorten(&hit.message)));
     if hit.replacements.is_empty() {
-        put(note("hylki-grammar-none", &i18n("No suggestions")));
+        put(note("buzon-grammar-none", &i18n("No suggestions")));
     }
     for (i, rep) in hit.replacements.iter().enumerate() {
-        let action = gtk::gio::SimpleAction::new(&format!("hylki-grammar-fix-{i}"), None);
+        let action = gtk::gio::SimpleAction::new(&format!("buzon-grammar-fix-{i}"), None);
         let v = view.downgrade();
         let js = format!(
-            "window.__hylkiGrammarFix({},{})",
+            "window.__buzonGrammarFix({},{})",
             hit.id,
             serde_json::to_string(rep).unwrap_or_else(|_| "''".into())
         );
@@ -269,7 +269,7 @@ pub(super) fn lead_menu(
             &action, &label, None,
         ));
     }
-    let action = gtk::gio::SimpleAction::new("hylki-grammar-ignore", None);
+    let action = gtk::gio::SimpleAction::new("buzon-grammar-ignore", None);
     let v = view.downgrade();
     let (rule, text) = (hit.rule.clone(), hit.text.clone());
     action.connect_activate(move |_, _| {
@@ -279,7 +279,7 @@ pub(super) fn lead_menu(
                 serde_json::to_string(&rule).unwrap_or_default(),
                 serde_json::to_string(&text).unwrap_or_default(),
             );
-            exec(&v, &format!("window.__hylkiGrammarIgnore({r},{t})"));
+            exec(&v, &format!("window.__buzonGrammarIgnore({r},{t})"));
         }
     });
     put(webkit6::ContextMenuItem::from_gaction(

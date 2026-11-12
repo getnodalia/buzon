@@ -47,7 +47,7 @@ pub(crate) struct PrefInit {
     pub(crate) theme_switch: bool,
     /// The account chip is shown in the reader header.
     pub(crate) account_chip: bool,
-    /// Icons come from the desktop's icon theme, not Hylki's own.
+    /// Icons come from the desktop's icon theme, not Buzón's own.
     pub(crate) desktop_icons: bool,
     /// The Reader View switch is shown in the reader header.
     pub(crate) reader_switch: bool,
@@ -216,7 +216,7 @@ pub(crate) struct PrefInit {
 pub(crate) enum PrefInput {
     /// The Contacts page: the books new contacts can go to, freshly read.
     SetContactBooks(Vec<crate::contacts::Book>),
-    /// The Hylki book's size changed (an import, a deletion).
+    /// The Buzón book's size changed (an import, a deletion).
     SetLocalContactCount(usize),
     /// What the assistant connection is doing and has done, as the app saw
     /// it change.
@@ -416,7 +416,7 @@ pub(crate) enum PrefOutput {
     /// (D-Bus, so off the main thread) and send them back.
     LoadContactBooks,
     /// An address book was added, changed, removed or switched on or off
-    /// for Hylki (#408): sync the books and read the contacts again.
+    /// for Buzón (#408): sync the books and read the contacts again.
     ContactSourcesChanged,
     /// A category was shown, so the app can reopen the window on it.
     PageShown(String),

@@ -91,7 +91,7 @@ fn write_printable(
     texture: Option<&gtk::gdk::Texture>,
     page: &gtk::PageSetup,
 ) -> Result<PathBuf, String> {
-    let dir = std::env::temp_dir().join(format!("hylki-print-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("buzon-print-{}", std::process::id()));
     crate::config::private_dir(&dir).map_err(|e| e.to_string())?;
     let n = super::SERIAL.with(|s| {
         s.set(s.get() + 1);
@@ -150,7 +150,7 @@ fn image_pdf(
 
     let surface = cairo::PdfSurface::new(paper.0, paper.1, out).map_err(|e| e.to_string())?;
     let _ = surface.set_metadata(cairo::PdfMetadata::Title, title);
-    let _ = surface.set_metadata(cairo::PdfMetadata::Creator, "Hylki");
+    let _ = surface.set_metadata(cairo::PdfMetadata::Creator, "Buzón");
     let cr = cairo::Context::new(&surface).map_err(|e| e.to_string())?;
     let (scale, x, y) = image_placement((f64::from(w), f64::from(h)), paper);
     cr.translate(x, y);
@@ -191,7 +191,7 @@ mod tests {
     fn an_image_prints_as_one_page_on_the_paper() {
         gtk::init().ok();
         let dir =
-            std::env::temp_dir().join(format!("hylki-print-image-test-{}", std::process::id()));
+            std::env::temp_dir().join(format!("buzon-print-image-test-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let out = dir.join("image.pdf");
         let bytes = gtk::glib::Bytes::from_owned([0u8, 0, 0, 255].repeat(8 * 4));

@@ -106,7 +106,7 @@ impl ReaderSwap {
         );
         let Some(pane) = inner.host.child().filter(|p| p.is_mapped()) else {
             // Nothing on screen: nothing to hold.
-            tracing::debug!(target: "hylki::swap", "freeze {generation}: pane not on screen");
+            tracing::debug!(target: "buzon::swap", "freeze {generation}: pane not on screen");
             return;
         };
         let started = std::time::Instant::now();
@@ -121,14 +121,14 @@ impl ReaderSwap {
                 inner.still.set_paintable(Some(&still));
                 inner.still.set_visible(true);
                 tracing::debug!(
-                    target: "hylki::swap",
+                    target: "buzon::swap",
                     "freeze {generation}: still up in {:?}",
                     started.elapsed()
                 );
             }
             // The pane changes in view, as it did before the freeze.
             Err(why) => {
-                tracing::debug!(target: "hylki::swap", "freeze {generation}: no still: {why}")
+                tracing::debug!(target: "buzon::swap", "freeze {generation}: no still: {why}")
             }
         }
     }
@@ -141,7 +141,7 @@ impl ReaderSwap {
         if inner.generation.get() != generation || !inner.frozen.get() {
             return;
         }
-        tracing::debug!(target: "hylki::swap", "reveal {generation}: {why}");
+        tracing::debug!(target: "buzon::swap", "reveal {generation}: {why}");
         inner.frozen.set(false);
         if !inner.still.is_visible() {
             return;

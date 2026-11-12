@@ -5,7 +5,7 @@
      them its cells cannot be told apart. The lines come from a stylesheet in
      <head> that names the table by its place in the body: nothing is written
      into the message, the undo history or the draft. */
-  if(window.__hylkiPlain) return;
+  if(window.__buzonPlain) return;
   var sheet = document.createElement('style');
   document.head.appendChild(sheet);
   var C = 'rgba(128,128,128,0.45)';

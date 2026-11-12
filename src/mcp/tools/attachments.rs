@@ -120,7 +120,7 @@ impl Mail {
             Ok(raw) => raw,
             Err(NoRaw::Encrypted) => return Err(ENCRYPTED_NOTE.to_string()),
             Err(NoRaw::Unavailable(why)) => {
-                return Err(format!("Hylki could not download this message: {why}"))
+                return Err(format!("Buzón could not download this message: {why}"))
             }
         };
         tokio::task::spawn_blocking(move || crate::worker::extract_attachments_of(&raw))

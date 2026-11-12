@@ -353,7 +353,7 @@ impl AppModel {
         (vanished, next_after_vanish)
     }
 
-    /// Desktop-notify for genuinely new inbox mail. Only when Hylki
+    /// Desktop-notify for genuinely new inbox mail. Only when Buzón
     /// isn't the active window (no point notifying about mail you're
     /// watching arrive), only for the Inbox, and never on the first load
     /// of a folder (no prior cache) — that would fire for every existing
@@ -466,7 +466,7 @@ impl AppModel {
     }
 
     /// A draft picker waiting on this folder's list (Send with
-    /// Hylki → Continue a Draft…) opens once every Drafts folder
+    /// Buzón → Continue a Draft…) opens once every Drafts folder
     /// has answered.
     fn resume_pickers(&mut self, account_id: u32, folder_id: u32, sender: &ComponentSender<Self>) {
         if let Some((_, waiting)) = self.pending_draft_pick.as_mut() {
@@ -527,7 +527,7 @@ impl AppModel {
                     }
                 }
                 tracing::debug!(
-                    target: "hylki::undo",
+                    target: "buzon::undo",
                     "re-filed conversation under id {}",
                     m.id,
                 );

@@ -403,11 +403,11 @@ mod tests {
 
     /// Writes an event and a task to a real EDS and reads them back. Only
     /// in a sealed rig whose bus can start nothing but EDS, with its own
-    /// HOME and XDG dirs (`HYLKI_CAL_RIG=1`): never on a real session.
+    /// HOME and XDG dirs (`BUZON_CAL_RIG=1`): never on a real session.
     #[test]
     #[ignore]
     fn live_rig_write() {
-        if std::env::var("HYLKI_CAL_RIG").is_err() {
+        if std::env::var("BUZON_CAL_RIG").is_err() {
             return;
         }
         let read_back = |kind: ItemKind, uid: &str| -> Vec<String> {

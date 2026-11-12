@@ -217,7 +217,7 @@ pub(crate) fn queue_attach_files(paths: Vec<std::path::PathBuf>) {
 static ATTACH_PENDING: std::sync::Mutex<Vec<Vec<std::path::PathBuf>>> =
     std::sync::Mutex::new(Vec::new());
 
-/// Open a view on a fresh launch (`hylki --contacts`), once the app is up.
+/// Open a view on a fresh launch (`buzon --contacts`), once the app is up.
 pub(crate) fn queue_start_view(view: StartView) {
     send_or_park(&VIEW_PENDING, view, view_msg);
 }
@@ -392,7 +392,7 @@ impl AppModel {
     /// A `mid:` link (RFC 2392) from anywhere on the system (#130): open the
     /// message with that Message-ID.
     fn open_mid(&mut self, uri: String, sender: ComponentSender<Self>) {
-        // The cache first: it holds every message Hylki has listed,
+        // The cache first: it holds every message Buzón has listed,
         // across accounts, and answers at once. Only a miss asks the
         // servers, one HEADER search per folder per account.
         let Some(id) = parse_mid(&uri) else {
@@ -544,8 +544,8 @@ mod tests {
         );
         // Slashes inside the id are part of it; one after the domain is a cid.
         assert_eq!(
-            super::parse_mid("mid:hyprlab/hylki/issues/128/5558573653@github.com/att1"),
-            Some("hyprlab/hylki/issues/128/5558573653@github.com".to_string())
+            super::parse_mid("mid:getnodalia/buzon/issues/128/5558573653@github.com/att1"),
+            Some("getnodalia/buzon/issues/128/5558573653@github.com".to_string())
         );
         assert_eq!(super::parse_mid("mid:"), None);
         assert_eq!(super::parse_mid("mid:not-an-id"), None);

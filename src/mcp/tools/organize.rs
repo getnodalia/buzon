@@ -82,14 +82,14 @@ struct ChangedOut {
 /// What every answer reminds the assistant of. A change reaches the list a
 /// moment after it is made, and a message that moved has a new id, which only
 /// listing or searching its new folder gives, once that has caught up.
-const NOTE: &str = "The user can undo this in Hylki. It shows in listings a moment later. A \
+const NOTE: &str = "The user can undo this in Buzón. It shows in listings a moment later. A \
     message that moved has a new id: list or search its new folder after a few seconds to find \
     it.";
 
 #[tool_router(router = organize_tools, vis = "pub(super)")]
 impl Mail {
     #[tool(
-        description = "Mark messages read or unread. The user can undo it in Hylki.",
+        description = "Mark messages read or unread. The user can undo it in Buzón.",
         annotations(
             read_only_hint = false,
             destructive_hint = false,
@@ -102,7 +102,7 @@ impl Mail {
     }
 
     #[tool(
-        description = "Add or remove the star on messages. The user can undo it in Hylki.",
+        description = "Add or remove the star on messages. The user can undo it in Buzón.",
         annotations(
             read_only_hint = false,
             destructive_hint = false,
@@ -131,7 +131,7 @@ impl Mail {
 
     #[tool(
         description = "Add a tag to messages or take it off. Only tags the user already has, \
-        from list_tags. The user can undo it in Hylki.",
+        from list_tags. The user can undo it in Buzón.",
         annotations(
             read_only_hint = false,
             destructive_hint = false,
@@ -159,7 +159,7 @@ impl Mail {
 
     #[tool(
         description = "Move messages to a folder of their own account. The user can undo it in \
-        Hylki. Messages already in that folder stay where they are.",
+        Buzón. Messages already in that folder stay where they are.",
         annotations(
             read_only_hint = false,
             destructive_hint = false,
@@ -193,8 +193,8 @@ impl Mail {
     }
 
     #[tool(
-        description = "Archive messages, as Hylki's Archive button does. The user can undo it \
-        in Hylki.",
+        description = "Archive messages, as Buzón's Archive button does. The user can undo it \
+        in Buzón.",
         annotations(
             read_only_hint = false,
             destructive_hint = false,
@@ -207,7 +207,7 @@ impl Mail {
     }
 
     #[tool(
-        description = "Move messages to Trash. The user can undo it in Hylki. Mail already in \
+        description = "Move messages to Trash. The user can undo it in Buzón. Mail already in \
         Trash stays there: only the user can erase it for good.",
         annotations(
             read_only_hint = false,
@@ -266,7 +266,7 @@ impl Mail {
             }))
             .is_err()
         {
-            return failure("Hylki is closing".into());
+            return failure("Buzón is closing".into());
         }
         match tokio::time::timeout(ANSWER_WAIT, answer).await {
             Ok(Ok(done)) => {
@@ -281,8 +281,8 @@ impl Mail {
                     note: NOTE,
                 })
             }
-            Ok(Err(_)) => failure("Hylki could not make the change".into()),
-            Err(_) => failure("Hylki took too long to answer; check before trying again".into()),
+            Ok(Err(_)) => failure("Buzón could not make the change".into()),
+            Err(_) => failure("Buzón took too long to answer; check before trying again".into()),
         }
     }
 }

@@ -86,7 +86,7 @@ pub(super) fn rebuild_personal_words(exp: &adw::ExpanderRow) {
     let mut stale: Vec<gtk::Widget> = Vec::new();
     let mut child = exp.first_child();
     while let Some(c) = child {
-        collect_named(&c, "vireo-spell-word", &mut stale);
+        collect_named(&c, "buzon-spell-word", &mut stale);
         child = c.next_sibling();
     }
     for row in &stale {
@@ -98,7 +98,7 @@ pub(super) fn rebuild_personal_words(exp: &adw::ExpanderRow) {
     exp.set_enable_expansion(true);
     for w in words {
         let row = adw::ActionRow::builder().title(&w).build();
-        row.set_widget_name("vireo-spell-word");
+        row.set_widget_name("buzon-spell-word");
         let del = gtk::Button::from_icon_name("user-trash-symbolic");
         del.add_css_class("flat");
         del.set_valign(gtk::Align::Center);

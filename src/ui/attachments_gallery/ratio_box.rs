@@ -34,7 +34,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for RatioBox {
-        const NAME: &'static str = "HylkiRatioBox";
+        const NAME: &'static str = "BuzonRatioBox";
         type Type = super::RatioBox;
         type ParentType = gtk::Widget;
     }

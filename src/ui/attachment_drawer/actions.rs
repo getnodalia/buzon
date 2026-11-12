@@ -166,7 +166,7 @@ impl AttachmentDrawer {
     /// Ask the app to show its full-window lightbox over the message's
     /// previewable attachments (images and PDFs), starting at `start`
     /// (attachments order). The overlay lives at the window level so it fills
-    /// Hylki itself — a separate preview window meant double chrome.
+    /// Buzón itself — a separate preview window meant double chrome.
     fn show_lightbox(&self, start: usize, sender: &ComponentSender<Self>) {
         let items: Vec<Attachment> = self
             .items
@@ -269,7 +269,7 @@ impl AttachmentDrawer {
         let Some(att) = self.item_at(i) else {
             return;
         };
-        // An attached message reads best in a window of Hylki's own (#622).
+        // An attached message reads best in a window of Buzón's own (#622).
         if previewable(att)
             || crate::mail::message_file::is_message(&att.name, &att.data)
             || !crate::desktop::previewer::available()

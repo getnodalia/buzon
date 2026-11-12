@@ -118,7 +118,7 @@ impl<E: Emit> ImapWorker<E> {
             .unwrap_or_default()
         {
             if self.backfill_seen.insert(f.path.clone()) {
-                // Messages indexed before Hylki fetched References thread by their
+                // Messages indexed before Buzón fetched References thread by their
                 // immediate parent alone — which for an incoming reply is usually
                 // your own message, filed in Sent, so the link points outside the
                 // folder and the reply starts a thread of its own.
@@ -153,7 +153,7 @@ impl<E: Emit> ImapWorker<E> {
 async fn resolve_passwords(account: &mut AccountConfig, emit: &impl Fn(WorkerEvent)) {
     resolve_keyring_passwords(account, emit).await;
     // An account from GNOME Online Accounts takes its password from GOA at
-    // every connect, so one changed in GNOME Settings reaches Hylki without
+    // every connect, so one changed in GNOME Settings reaches Buzón without
     // being typed again (#254). The keyring copy is kept for a GOA that
     // cannot answer yet; an imported account shows no password field, so
     // without GOA there would be no way to fix a missing one (#17).

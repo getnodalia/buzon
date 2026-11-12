@@ -9,14 +9,14 @@
 //! with the app's own code (the cache, the contact lookup), drafts through
 //! the app's own composer and changes mail through the app's own actions, so
 //! there is never a second program reading the database a different version
-//! of Hylki laid out.
+//! of Buzón laid out.
 //!
 //! What an assistant may reach is [`crate::config::AssistantPolicy`], checked
 //! at every call, and nothing until the user allows it. No setting allows
 //! sending, erasing mail for good, or encrypted mail: there is no tool for
 //! the first two, and the tools get mail in a way that cannot decrypt.
 //!
-//! An assistant's client starts `hylki --mcp` ([`run_relay`]), an ordinary
+//! An assistant's client starts `buzon --mcp` ([`run_relay`]), an ordinary
 //! stdio server to it, which only carries bytes between the client and that
 //! socket; with nothing listening, it says so to the assistant.
 
@@ -44,9 +44,9 @@ pub(crate) const MCP_FLAG: &str = "--mcp";
 
 /// The name the assistant's client knows the server by.
 const SERVER_NAME: &str = if cfg!(feature = "beta") {
-    "hylki-beta"
+    "buzon-beta"
 } else {
-    "hylki"
+    "buzon"
 };
 
 /// The beta can run beside the stable app, and must not take its socket.
@@ -56,7 +56,7 @@ const SOCKET_NAME: &str = if cfg!(feature = "beta") {
     "mcp.sock"
 };
 
-/// Where the running app listens: `$XDG_RUNTIME_DIR/hylki/mcp.sock`, which
+/// Where the running app listens: `$XDG_RUNTIME_DIR/buzon/mcp.sock`, which
 /// only the user can reach. Inside the Flatpak sandbox the runtime
 /// directory is made anew for each instance, and the relay is another
 /// instance, so there it is the app's own directory under it, which every
@@ -67,13 +67,13 @@ pub(crate) fn socket_path() -> Option<PathBuf> {
         .map(PathBuf::from)?;
     let dir = match std::env::var("FLATPAK_ID") {
         Ok(id) if !id.is_empty() => runtime.join("app").join(id),
-        _ => runtime.join("hylki"),
+        _ => runtime.join("buzon"),
     };
     Some(dir.join(SOCKET_NAME))
 }
 
 /// The command an assistant's client starts as a local (stdio) MCP server,
-/// the way this copy of Hylki runs: through `flatpak run`, from the AppImage,
+/// the way this copy of Buzón runs: through `flatpak run`, from the AppImage,
 /// or as the installed program.
 pub(crate) fn connect_command() -> String {
     format!("{} {MCP_FLAG}", relay_program())
@@ -101,7 +101,7 @@ fn relay_program() -> String {
     match (on_path, exe) {
         (Some(name), _) => shell_word(&name),
         (None, Some(exe)) => shell_word(&exe.to_string_lossy()),
-        (None, None) => "hylki".to_string(),
+        (None, None) => "buzon".to_string(),
     }
 }
 
@@ -125,10 +125,10 @@ mod tests {
 
     #[test]
     fn a_path_is_quoted_only_when_a_shell_would_split_it() {
-        assert_eq!(shell_word("/usr/bin/hylki"), "/usr/bin/hylki");
+        assert_eq!(shell_word("/usr/bin/buzon"), "/usr/bin/buzon");
         assert_eq!(
-            shell_word("/home/a/My Apps/Hylki.AppImage"),
-            "'/home/a/My Apps/Hylki.AppImage'"
+            shell_word("/home/a/My Apps/Buzón.AppImage"),
+            "'/home/a/My Apps/Buzón.AppImage'"
         );
         assert_eq!(shell_word("it's"), "'it'\\''s'");
         assert_eq!(shell_word(""), "''");

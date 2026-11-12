@@ -50,7 +50,7 @@ pub(super) fn connect_context_menu(
             // lifts it declines non-embedded (remote) images itself,
             // since the hit test doesn't surface data: URIs to check
             // against here.
-            let action = gtk::gio::SimpleAction::new("hylki-img-attach", None);
+            let action = gtk::gio::SimpleAction::new("buzon-img-attach", None);
             let v = view.clone();
             let cb = menu_attach_cb.clone();
             action.connect_activate(move |_, _| detach_ctx_image(&v, cb.clone()));
@@ -75,10 +75,10 @@ pub(super) fn connect_context_menu(
                 (i18n("Large"), "large"),
                 (i18n("Original Size"), "original"),
             ] {
-                let action = gtk::gio::SimpleAction::new(&format!("hylki-img-{kind}"), None);
+                let action = gtk::gio::SimpleAction::new(&format!("buzon-img-{kind}"), None);
                 let v = view.clone();
                 action.connect_activate(move |_, _| {
-                    exec(&v, &format!("window.__hylkiSetImageSize('{kind}')"));
+                    exec(&v, &format!("window.__buzonSetImageSize('{kind}')"));
                 });
                 menu.insert(
                     &webkit6::ContextMenuItem::from_gaction(&action, &label, None),
@@ -87,13 +87,13 @@ pub(super) fn connect_context_menu(
                 at += 1;
             }
             {
-                let action = gtk::gio::SimpleAction::new("hylki-img-fit", None);
+                let action = gtk::gio::SimpleAction::new("buzon-img-fit", None);
                 let v = view.clone();
                 let hint = js_escape(&i18n(
                     "Will be recompressed to the size shown when this is sent",
                 ));
                 action.connect_activate(move |_, _| {
-                    exec(&v, &format!("window.__hylkiToggleFit('{hint}')"));
+                    exec(&v, &format!("window.__buzonToggleFit('{hint}')"));
                 });
                 menu.insert(
                     &webkit6::ContextMenuItem::from_gaction(
@@ -142,9 +142,9 @@ pub(super) fn connect_context_menu(
             }
             let action = gtk::gio::SimpleAction::new(
                 if rich {
-                    "hylki-paste-rich"
+                    "buzon-paste-rich"
                 } else {
-                    "hylki-paste-plain"
+                    "buzon-paste-plain"
                 },
                 None,
             );
@@ -171,8 +171,8 @@ pub(super) fn connect_context_menu(
         if !hit.context_is_image() {
             let (can_undo, can_redo) = menu_history.get();
             for (label, name, redo, on) in [
-                (i18n("Undo"), "hylki-undo", false, can_undo),
-                (i18n("Redo"), "hylki-redo", true, can_redo),
+                (i18n("Undo"), "buzon-undo", false, can_undo),
+                (i18n("Redo"), "buzon-redo", true, can_redo),
             ] {
                 let action = gtk::gio::SimpleAction::new(name, None);
                 action.set_enabled(on);
@@ -197,7 +197,7 @@ pub(super) fn connect_context_menu(
 }
 
 /// Replace WebKit's built-in labels with the app's own. WebKit names these
-/// actions in the process locale, which can differ from the language Hylki
+/// actions in the process locale, which can differ from the language Buzón
 /// is using and leaves English Cut, Copy and Select All in a Russian menu.
 fn localize_stock_items(menu: &webkit6::ContextMenu) {
     for (action, label) in [

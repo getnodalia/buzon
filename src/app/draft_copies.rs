@@ -93,7 +93,7 @@ impl AppModel {
             return false;
         };
         if let Ok(raw) = raw {
-            tracing::debug!(target: "hylki::drafts", "draft {} fetched ahead: {} bytes", f.uid, raw.len());
+            tracing::debug!(target: "buzon::drafts", "draft {} fetched ahead: {} bytes", f.uid, raw.len());
             self.keep_draft(&f.path, f.account_id, f.uid, &f.message_id, f.ts, raw);
         }
         true

@@ -10,7 +10,7 @@ use relm4::prelude::*;
 /// The subject marks the draft edited, and gets spelling underlines.
 pub(super) fn wire_subject(widgets: &ComposeWidgets, sender: &ComponentSender<Compose>) {
     // Not focusable, so the cursor the field goes in at stays where it is.
-    let fields = gtk::Button::from_icon_name("hylki-merge-field-symbolic");
+    let fields = gtk::Button::from_icon_name("buzon-merge-field-symbolic");
     fields.set_tooltip_text(Some(crate::i18n::i18n("Insert Merge Field").as_str()));
     fields.add_css_class("flat");
     fields.set_valign(gtk::Align::Center);

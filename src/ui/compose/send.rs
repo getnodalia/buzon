@@ -517,7 +517,7 @@ impl Compose {
             self.rebuild_attachments(&widgets.attach_box, sender);
             let parent = widgets.to_row.root().and_downcast::<gtk::Window>();
             alert(parent.as_ref(), &i18n("An attachment is missing"), &i18n_f(
-                "Hylki cannot read {names}. It was moved or deleted after it was attached. Remove it, or attach it again from where it is now.",
+                "Buzón cannot read {names}. It was moved or deleted after it was attached. Remove it, or attach it again from where it is now.",
                 &[("names", &missing.join(", "))],
             ));
             return false;
@@ -974,7 +974,7 @@ mod tests {
             eprintln!("gpg not installed; skipping");
             return;
         }
-        let root = std::env::temp_dir().join(format!("hylki-gpg-ask-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("buzon-gpg-ask-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         let keyring = |name: &str| {
             let home = root.join(name);
@@ -988,26 +988,26 @@ mod tests {
         };
         let me = keyring("me");
         let peer = keyring("peer");
-        generate_key(&me, "Me", "me@hylki.invalid", "never", "").expect("own key");
-        let fpr = generate_key(&peer, "Ada", "ada@hylki.invalid", "never", "").expect("key");
+        generate_key(&me, "Me", "me@buzon.invalid", "never", "").expect("own key");
+        let fpr = generate_key(&peer, "Ada", "ada@buzon.invalid", "never", "").expect("key");
         import_keys(&me, &export_public(&peer, &fpr).expect("exported")).expect("imported");
         let check = |accepted: &[AcceptedKey]| {
             pgp_send_check(
                 &me,
                 accepted,
-                "me@hylki.invalid",
+                "me@buzon.invalid",
                 None,
-                &["Ada <ADA@hylki.invalid>, ada@hylki.invalid"],
+                &["Ada <ADA@buzon.invalid>, ada@buzon.invalid"],
                 true,
             )
             .expect("can send")
         };
         let this_key = AcceptedKey {
-            addr: "ada@hylki.invalid".into(),
+            addr: "ada@buzon.invalid".into(),
             fingerprint: fpr.clone(),
         };
         let other_key = AcceptedKey {
-            addr: "ada@hylki.invalid".into(),
+            addr: "ada@buzon.invalid".into(),
             fingerprint: "0".repeat(40),
         };
         assert_eq!(check(&[]), vec![this_key.clone()], "named once");
@@ -1017,9 +1017,9 @@ mod tests {
         let signing = pgp_send_check(
             &me,
             &[],
-            "me@hylki.invalid",
+            "me@buzon.invalid",
             None,
-            &["ada@hylki.invalid"],
+            &["ada@buzon.invalid"],
             false,
         );
         assert_eq!(signing, Ok(Vec::new()));

@@ -24,7 +24,7 @@ impl Scratch {
             .unwrap()
             .as_nanos();
         let dir = std::env::temp_dir().join(format!(
-            "hylki-at-rest-{name}-{}-{nanos}",
+            "buzon-at-rest-{name}-{}-{nanos}",
             std::process::id()
         ));
         std::fs::create_dir_all(&dir).unwrap();
@@ -90,7 +90,7 @@ fn encrypted(key: &Key) -> Protection {
     Protection::Encrypted(key.clone())
 }
 
-/// A cache as an earlier, unencrypted Hylki left it: the whole schema, a
+/// A cache as an earlier, unencrypted Buzón left it: the whole schema, a
 /// message with its body (and so its search index entry) and an attachment.
 fn plaintext_fixture(db: &Path) {
     let cache = Cache::open_at(db, Protection::Plain).unwrap();

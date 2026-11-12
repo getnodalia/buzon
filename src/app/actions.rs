@@ -237,7 +237,7 @@ impl AppModel {
         // a separate compose window.
         let m = self.with_cached_body(*message);
         tracing::debug!(
-            target: "hylki::reply",
+            target: "buzon::reply",
             "card {:?}: {}:{} from={}",
             action, m.account_id, m.id, m.from_addr,
         );
@@ -296,7 +296,7 @@ impl AppModel {
             RowAction::Reply | RowAction::ReplyAll | RowAction::Forward
         ) {
             tracing::debug!(
-                target: "hylki::reply",
+                target: "buzon::reply",
                 "row {:?}: {}:{} from={} conversation={:?}",
                 action, m.account_id, m.id, m.from_addr,
                 conversation.iter().map(|c| c.id).collect::<Vec<_>>(),

@@ -1,4 +1,4 @@
-//! A message an assistant asks Hylki to prepare, checked before it goes to
+//! A message an assistant asks Buzón to prepare, checked before it goes to
 //! the app: every recipient an email address, the text plain. The app
 //! opens it in a composer ([`crate::mcp::AppCall::Draft`]); nothing here
 //! or there sends it. Also what an assistant is shown of a composer that
@@ -92,7 +92,7 @@ pub(crate) enum EditAnswer {
     TooSoon(u64),
 }
 
-/// A composer open in Hylki, as it stands, for an assistant to read.
+/// A composer open in Buzón, as it stands, for an assistant to read.
 #[derive(Debug, Clone)]
 pub(crate) struct OpenDraft {
     /// The composer's own id, which the app knows it by.

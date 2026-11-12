@@ -67,7 +67,7 @@ fn wrapper_scripts() -> (String, String) {
                 i18n("Add to Contacts"),
             ]);
             format!(
-                "<script nonce=\"{n}\">var vireoQT={qt};var hylkiAM={am};{SIZE_SCRIPT}</script>"
+                "<script nonce=\"{n}\">var buzonQT={qt};var buzonAM={am};{SIZE_SCRIPT}</script>"
             )
         }
         None => String::new(),
@@ -203,7 +203,7 @@ impl MessageView {
             bg.clone()
         };
         let page = if carded { deep } else { single_ground };
-        let body_class = if carded { " class=\"hylki-conv\"" } else { "" };
+        let body_class = if carded { " class=\"buzon-conv\"" } else { "" };
         let (csp, sizer) = wrapper_scripts();
         // A single message that paints no background of its own (plain mail,
         // and much styled mail too — Apple Mail styles fonts and wrapping but
@@ -216,8 +216,8 @@ impl MessageView {
             !carded && thread.len() == 1 && (reader || !paints_own_background(&thread[0].body));
         let plain_css = if single_plain {
             format!(
-                "body:not(.hylki-conv) .hylki-msg,\
-                 body:not(.hylki-conv) iframe.hylki-frame{{background:{chrome};}}"
+                "body:not(.buzon-conv) .buzon-msg,\
+                 body:not(.buzon-conv) iframe.buzon-frame{{background:{chrome};}}"
             )
         } else {
             String::new()
@@ -272,7 +272,7 @@ fn card_body(cards: &Cards<'_>, m: &Message) -> String {
         })
         .map_or((None, false), |(html, reader)| (Some(html), reader));
     let body = if m.body.trim().is_empty() && translated.is_none() {
-        "<div class=\"hylki-loading\">Loading…</div>".to_string()
+        "<div class=\"buzon-loading\">Loading…</div>".to_string()
     } else {
         message_frame(
             translated.as_deref().unwrap_or(&m.body),
@@ -299,7 +299,7 @@ fn card_body(cards: &Cards<'_>, m: &Message) -> String {
     // wrapper script). The document is attribute-escaped, so the only
     // `srcdoc="` in the markup is the frame's own.
     if LIVE_FOLDED.with(|f| f.borrow().contains(&(m.account_id, m.id))) {
-        return body.replacen(" srcdoc=\"", " data-hylki-srcdoc=\"", 1);
+        return body.replacen(" srcdoc=\"", " data-buzon-srcdoc=\"", 1);
     }
     body
 }
@@ -334,21 +334,21 @@ fn circle_html(m: &Message, dark: bool) -> String {
             .then(|| crate::services::avatar::own_gravatar_data_uri(&m.from_addr, 26))
             .flatten();
         if let Some(uri) = gravatar {
-            return Some(format!("<img class=\"hylki-ava\" src=\"{uri}\" alt=\"\">"));
+            return Some(format!("<img class=\"buzon-ava\" src=\"{uri}\" alt=\"\">"));
         }
         match (&face.picture, &face.emoji) {
             (Some(path), _) => crate::ui::initials::picture_data_uri(path, 26)
-                .map(|uri| format!("<img class=\"hylki-ava\" src=\"{uri}\" alt=\"\">")),
+                .map(|uri| format!("<img class=\"buzon-ava\" src=\"{uri}\" alt=\"\">")),
             (None, Some(emoji)) => {
                 let png = gtk::gdk::RGBA::parse(&face.color)
                     .ok()
                     .and_then(|bg| crate::ui::initials::png_data_uri(emoji, bg, 26));
                 Some(match png {
                     Some(uri) => {
-                        format!("<img class=\"hylki-ava\" src=\"{uri}\" alt=\"\">")
+                        format!("<img class=\"buzon-ava\" src=\"{uri}\" alt=\"\">")
                     }
                     None => format!(
-                        "<span class=\"hylki-ava\" style=\"background:{bg}\">{glyph}</span>",
+                        "<span class=\"buzon-ava\" style=\"background:{bg}\">{glyph}</span>",
                         bg = attr_escape(&face.color),
                         glyph = escape_html(emoji),
                     ),
@@ -359,7 +359,7 @@ fn circle_html(m: &Message, dark: bool) -> String {
     });
     let face = || {
         super::faces::known_face(&m.from_addr)
-            .map(|uri| format!("<img class=\"hylki-ava\" src=\"{uri}\" alt=\"\">"))
+            .map(|uri| format!("<img class=\"buzon-ava\" src=\"{uri}\" alt=\"\">"))
     };
     own.or_else(face).unwrap_or_else(|| {
         let initial = crate::ui::initials::word_initials(&m.shown_from_name())
@@ -380,9 +380,9 @@ fn circle_html(m: &Message, dark: bool) -> String {
         // only before a window exists to render with.
         let bg = crate::ui::initials::hsl(f64::from(hue), 0.52, f64::from(l) / 100.0);
         match crate::ui::initials::png_data_uri(&initial, bg, 26) {
-            Some(uri) => format!("<img class=\"hylki-ava\" src=\"{uri}\" alt=\"\">"),
+            Some(uri) => format!("<img class=\"buzon-ava\" src=\"{uri}\" alt=\"\">"),
             None => format!(
-                "<span class=\"hylki-ava\" style=\"background:hsl({hue},52%,{l}%)\">{}</span>",
+                "<span class=\"buzon-ava\" style=\"background:hsl({hue},52%,{l}%)\">{}</span>",
                 escape_html(&initial),
             ),
         }
@@ -403,12 +403,12 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
     // verdict arrives (SenderCheckFor patches it live), then
     // tinted by trust — Bazaar's fixed blue for a pass.
     let verify = format!(
-        "<button type=\"button\" class=\"hylki-verify\" data-key=\"{aid}:{id}\" \
+        "<button type=\"button\" class=\"buzon-verify\" data-key=\"{aid}:{id}\" \
              title=\"\">{svg}</button>\
-             <button type=\"button\" class=\"hylki-pgp\" data-key=\"{aid}:{id}\" \
-             title=\"\">{lock}{sig}<span class=\"hylki-pgp-text\"></span></button>\
-             <span class=\"hylki-sens\" data-key=\"{aid}:{id}\" title=\"\">{sens}\
-             <span class=\"hylki-sens-text\"></span></span>",
+             <button type=\"button\" class=\"buzon-pgp\" data-key=\"{aid}:{id}\" \
+             title=\"\">{lock}{sig}<span class=\"buzon-pgp-text\"></span></button>\
+             <span class=\"buzon-sens\" data-key=\"{aid}:{id}\" title=\"\">{sens}\
+             <span class=\"buzon-sens-text\"></span></span>",
         aid = m.account_id,
         id = m.id,
         svg = inline_icon_svg("verified-checkmark-symbolic"),
@@ -423,14 +423,14 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
         sens = inline_icon_svg("tag-outline-symbolic"),
     );
     format!(
-        "<section class=\"hylki-msg{sel}{unread_cls}{starred_cls}{folded_cls}\" data-key=\"{aid}:{id}\">\
-               <header class=\"hylki-msg-hdr\" data-key=\"{aid}:{id}\" \
+        "<section class=\"buzon-msg{sel}{unread_cls}{starred_cls}{folded_cls}\" data-key=\"{aid}:{id}\">\
+               <header class=\"buzon-msg-hdr\" data-key=\"{aid}:{id}\" \
                  title=\"{hdr_title}\">\
-                 <div class=\"hylki-hdr-line\">\
-                   {ava}{dot}<span class=\"hylki-from\">{from}</span>{verify}{addr}\
-                   <span class=\"hylki-tags\" data-key=\"{aid}:{id}\">{tags}</span>\
-                   <span class=\"hylki-hdr-meta\">{folder}{rcpt_toggle}{marks}{read}\
-                     <span class=\"hylki-date\">{date}</span></span>\
+                 <div class=\"buzon-hdr-line\">\
+                   {ava}{dot}<span class=\"buzon-from\">{from}</span>{verify}{addr}\
+                   <span class=\"buzon-tags\" data-key=\"{aid}:{id}\">{tags}</span>\
+                   <span class=\"buzon-hdr-meta\">{folder}{rcpt_toggle}{marks}{read}\
+                     <span class=\"buzon-date\">{date}</span></span>\
                    {acts_toggle}\
                  </div>{rcpt}\
                </header>{fbar}{tpl}{invite}{receipt}{unsub}{tr}{body}{atts}</section>",
@@ -486,7 +486,7 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
         // The translation banner (#327), on the same terms.
         tr = LIVE_TRANSLATE.with(|t| {
             format!(
-                "<div class=\"hylki-tr\" data-key=\"{}:{}\">{}</div>",
+                "<div class=\"buzon-tr\" data-key=\"{}:{}\">{}</div>",
                 m.account_id,
                 m.id,
                 t.borrow()
@@ -511,7 +511,7 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
         // where a message is acted on.
         acts_toggle = if !thread.is_empty() {
             format!(
-                "<button type=\"button\" class=\"hylki-acts-toggle\" \
+                "<button type=\"button\" class=\"buzon-acts-toggle\" \
                      title=\"{acts_title}\" data-key=\"{aid}:{id}\">{svg}</button>",
                 aid = m.account_id,
                 id = m.id,
@@ -536,7 +536,7 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
         }),
         // Folded (#326): the header and a line of preview.
         folded_cls = if LIVE_FOLDED.with(|f| f.borrow().contains(&(m.account_id, m.id))) {
-            " hylki-folded"
+            " buzon-folded"
         } else {
             ""
         },
@@ -570,7 +570,7 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
             // attacker-controlled address can't smuggle markup
             // through the attributes.
             format!(
-                "<span class=\"hylki-addr hylki-mail\" data-mail=\"{0}\" \
+                "<span class=\"buzon-addr buzon-mail\" data-mail=\"{0}\" \
                      data-addr=\"&lt;{0}&gt;\">&lt;{0}&gt;</span>",
                 escape_html(&m.from_addr).replace('"', "&quot;")
             )
@@ -585,7 +585,7 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
             // single-recipient chip would only repeat it (#40).
             1 if always_show_recipients => String::new(),
             n => format!(
-                "<button type=\"button\" class=\"hylki-rcpt-toggle{open}\" \
+                "<button type=\"button\" class=\"buzon-rcpt-toggle{open}\" \
                      title=\"{title}\">{label}</button>",
                 label = gtk::glib::markup_escape_text(&ni18n_f(
                     "{n} recipient",
@@ -605,7 +605,7 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
         // Where this message was read from, when that isn't the
         // folder on screen — the reply you sent, pulled in from Sent.
         folder = match folder_labels.get(&(m.account_id, m.id)) {
-            Some(label) => format!("<span class=\"hylki-folder\">{}</span>", escape_html(label)),
+            Some(label) => format!("<span class=\"buzon-folder\">{}</span>", escape_html(label)),
             None => String::new(),
         },
         body = body,
@@ -614,7 +614,7 @@ fn card_html(cards: &Cards<'_>, m: &Message, ava_html: &str, body: String) -> St
         // scrolling past no longer counts as reading.
         dot = if m.unread {
             format!(
-                "<span class=\"hylki-dot\" data-key=\"{}:{}\"></span>",
+                "<span class=\"buzon-dot\" data-key=\"{}:{}\"></span>",
                 m.account_id, m.id
             )
         } else {

@@ -9,7 +9,7 @@ use rmcp::model::{
 use rmcp::service::RequestContext;
 use rmcp::{RoleServer, ServerHandler, ServiceExt};
 
-const UNAVAILABLE: &str = "Hylki cannot be reached. Start Hylki and turn on Settings → MCP, then retry this tool. No MCP reconnect is needed.";
+const UNAVAILABLE: &str = "Buzón cannot be reached. Start Buzón and turn on Settings → MCP, then retry this tool. No MCP reconnect is needed.";
 
 pub(crate) fn run() -> ! {
     tracing_subscriber::fmt()
@@ -17,7 +17,7 @@ pub(crate) fn run() -> ! {
         .with_ansi(false)
         .with_env_filter(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "hylki=warn".into()),
+                .unwrap_or_else(|_| "buzon=warn".into()),
         )
         .init();
     let runtime = tokio::runtime::Builder::new_current_thread()
@@ -102,7 +102,7 @@ impl ServerHandler for Relay {
             Err(e) => {
                 tracing::warn!("mcp: app call failed: {e}");
                 Ok(CallToolResult::error(vec![ContentBlock::text(
-                    "The connection to Hylki ended before an answer arrived. If preparing a draft, check Hylki before retrying to avoid duplicates.",
+                    "The connection to Buzón ended before an answer arrived. If preparing a draft, check Buzón before retrying to avoid duplicates.",
                 )])
                 .into())
             }

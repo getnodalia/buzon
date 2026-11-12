@@ -27,11 +27,11 @@ impl Compose {
         let js = r#"(function(){var b=document.body;
 var r=null,sel=window.getSelection();
 if(sel&&sel.rangeCount){var s=sel.getRangeAt(0);if(b.contains(s.startContainer)){r=s.cloneRange();r.collapse(false);}}
-if(!r){var a=null,all=[].filter.call(b.children,function(n){return n.matches&&n.matches('.hylki-quote-attr,blockquote,.hylki-sig');});
+if(!r){var a=null,all=[].filter.call(b.children,function(n){return n.matches&&n.matches('.buzon-quote-attr,blockquote,.buzon-sig');});
 if(all.length)a=all[0];var c=document.createRange();if(a)c.setStartBefore(a);else{c.selectNodeContents(b);c.collapse(false);}r=c;}
 if(r){sel.removeAllRanges();sel.addRange(r);b.focus();}
 document.execCommand('insertHTML',false,@HTML@);
-window.__hylkiPlainFix&&window.__hylkiPlainFix();window.__hylkiDirty=true;})()"#
+window.__buzonPlainFix&&window.__buzonPlainFix();window.__buzonDirty=true;})()"#
             .replace("@HTML@", &format!("'{}'", rich_editor::js_escape(&html)));
         self.editor.run_js(&js);
     }

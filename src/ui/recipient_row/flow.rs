@@ -24,7 +24,7 @@ mod flow_imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for PillFlow {
-        const NAME: &'static str = "HylkiPillFlow";
+        const NAME: &'static str = "BuzonPillFlow";
         type Type = super::PillFlow;
         type ParentType = gtk::Widget;
     }

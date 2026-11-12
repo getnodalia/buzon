@@ -56,7 +56,7 @@ fn decodes_byte_order_marks_and_windows_1252() {
 
 #[test]
 fn the_columns_come_from_the_first_line_alone() {
-    let dir = std::env::temp_dir().join(format!("hylki-merge-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("buzon-merge-{}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
     let path = dir.join("people.csv");
     let mut csv = String::from("Name;;\"E-mail\"\n");
@@ -261,10 +261,10 @@ fn a_draft_gives_its_fields_back() {
     assert_eq!(fields_from_draft(&bare), "{{Email}}, ann@example.com");
     // Too long to spell out: the display name alone carries it.
     let long = "{{The Address We Have On File For Them}}";
-    assert_eq!(draft_field_address(long), "merge@hylki.invalid");
-    let saved = format!("\"{long}\" <merge@hylki.invalid>");
+    assert_eq!(draft_field_address(long), "merge@buzon.invalid");
+    let saved = format!("\"{long}\" <merge@buzon.invalid>");
     assert_eq!(fields_from_draft(&saved), long);
-    assert!(draft_field_address(both).len() <= 64 + "@hylki.invalid".len());
+    assert!(draft_field_address(both).len() <= 64 + "@buzon.invalid".len());
     assert_eq!(fields_from_draft("ann@example.com"), "ann@example.com");
 }
 

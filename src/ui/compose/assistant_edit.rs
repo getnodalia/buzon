@@ -28,7 +28,7 @@ use std::sync::atomic::{AtomicU32, Ordering};
 /// The rich document's written part, as `__w(body)`: the top-level nodes
 /// before the first signature, quote attribution or quote (`first`, or
 /// null when there is none). As Translate finds it.
-const RICH_WRITTEN: &str = r#"function __w(b){var first=null,c=b.querySelectorAll('.hylki-sig,.hylki-quote-attr,blockquote');
+const RICH_WRITTEN: &str = r#"function __w(b){var first=null,c=b.querySelectorAll('.buzon-sig,.buzon-quote-attr,blockquote');
 for(var i=0;i<c.length;i++){var t=c[i];while(t.parentNode&&t.parentNode!==b)t=t.parentNode;
 if(t.parentNode===b&&(!first||(t.compareDocumentPosition(first)&Node.DOCUMENT_POSITION_FOLLOWING)))first=t;}
 var kids=[];for(var n=b.firstChild;n&&n!==first;n=n.nextSibling)kids.push(n);return {first:first,kids:kids};}"#;
@@ -39,8 +39,8 @@ var kids=[];for(var n=b.firstChild;n&&n!==first;n=n.nextSibling)kids.push(n);ret
 /// with its "wrote:" line or the forward header above), whichever is first.
 const SOURCE_WRITTEN: &str = r#"function __e(v,H,O,P){var e=v.length;
 var i=O?v.lastIndexOf(O):-1;if(i<0&&P)i=v.lastIndexOf(P);if(i>=0)e=i;
-var sig=H?v.search(/<div class="hylki-sig"/):v.indexOf('\n-- \n');if(sig>=0)e=Math.min(e,sig);
-var q=H?v.search(/<p class="hylki-quote-attr"|<blockquote/i):v.search(/(^|\n)[ \t]*>/);
+var sig=H?v.search(/<div class="buzon-sig"/):v.indexOf('\n-- \n');if(sig>=0)e=Math.min(e,sig);
+var q=H?v.search(/<p class="buzon-quote-attr"|<blockquote/i):v.search(/(^|\n)[ \t]*>/);
 if(q>=0){if(!H){var pre=v.slice(0,q).replace(/\s+$/,'');var ls=pre.lastIndexOf('\n');
 var L=pre.split('\n'),p=L.length-1;while(p>0&&L[p-1].trim()!=='')p--;
 if(/^-{5,} /.test(L[p]))q=L.slice(0,p).join('\n').length+(p?1:0);else if(/[:：]\s*$/.test(pre.slice(ls+1)))q=ls+1;}
@@ -71,7 +71,7 @@ if(A.nodeType===1)r.setStart(A,0);else r.setStartBefore(A);
 if(E.nodeType===1)r.setEnd(E,E.childNodes.length);else r.setEndAfter(E);
 b.focus();var s=getSelection();s.removeAllRanges();s.addRange(r);
 if(h)document.execCommand('insertHTML',false,h);else document.execCommand('delete');
-window.__hylkiPlainFix&&window.__hylkiPlainFix();window.__hylkiDirty=true;return 'ok';})(@ARGS@)"#;
+window.__buzonPlainFix&&window.__buzonPlainFix();window.__buzonDirty=true;return 'ok';})(@ARGS@)"#;
 
 /// [`APPLY_RICH`] for the source field: `x` in place of the written part.
 const APPLY_SOURCE: &str = r#"(function(x,H,O,P){var t=document.getElementById('src');if(!t)return 'none';if(t.readOnly)return 'locked';@E@
@@ -79,16 +79,16 @@ var v=t.value,e=__e(v,H,O,P),a=0;
 while(e>a&&/\s/.test(v.charAt(e-1)))e--;while(a<e&&/\s/.test(v.charAt(a)))a++;
 if(a>=e){a=0;e=0;if(x)x+='\n\n';}
 t.focus();t.setSelectionRange(a,e);if(!document.execCommand('insertText',false,x))t.setRangeText(x,a,e,'end');
-window.__hylkiDirty=true;t.dispatchEvent(new Event('input'));return 'ok';})(@ARGS@)"#;
+window.__buzonDirty=true;t.dispatchEvent(new Event('input'));return 'ok';})(@ARGS@)"#;
 
 /// The diff of an edit's text, `h` (HTML), shown over the editor if `n` is
-/// still the edit waiting (`__hylkiSuggestSeq`): a layer of its own in the
+/// still the edit waiting (`__buzonSuggestSeq`): a layer of its own in the
 /// document's look, outside the body, so nothing the document hands back
 /// carries it. The text under it is locked meanwhile.
-const SHOW_DIFF: &str = r#"(function(n,h){if(window.__hylkiSuggestSeq!==n)return;
-var o=document.querySelector('[data-hylki-ui=suggest]');
+const SHOW_DIFF: &str = r#"(function(n,h){if(window.__buzonSuggestSeq!==n)return;
+var o=document.querySelector('[data-buzon-ui=suggest]');
 if(!o){var t=document.getElementById('src'),b=document.body,ref=t||b;if(!ref)return;var cs=getComputedStyle(ref);
-o=document.createElement('div');o.setAttribute('data-hylki-ui','suggest');o.setAttribute('contenteditable','false');o.setAttribute('dir','auto');
+o=document.createElement('div');o.setAttribute('data-buzon-ui','suggest');o.setAttribute('contenteditable','false');o.setAttribute('dir','auto');
 var s=o.style;s.cssText='position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;overflow:auto;box-sizing:border-box;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext;';
 s.padding=cs.padding;s.fontFamily=cs.fontFamily;s.fontSize=cs.fontSize;s.lineHeight=cs.lineHeight;s.color=cs.color;
 s.backgroundColor=cs.backgroundColor;
@@ -99,13 +99,13 @@ o.innerHTML=h;o.scrollTop=0;})(@ARGS@)"#;
 
 /// The diff taken away, and the text unlocked unless a translation still
 /// holds it. One on its way is not shown.
-const HIDE_DIFF: &str = r#"(function(){window.__hylkiSuggestSeq=0;var o=document.querySelector('[data-hylki-ui=suggest]');if(!o)return;o.remove();
-if(window.__hylkiTr)return;var t=document.getElementById('src');if(t)t.readOnly=false;else if(document.body)document.body.setAttribute('contenteditable','true');})()"#;
+const HIDE_DIFF: &str = r#"(function(){window.__buzonSuggestSeq=0;var o=document.querySelector('[data-buzon-ui=suggest]');if(!o)return;o.remove();
+if(window.__buzonTr)return;var t=document.getElementById('src');if(t)t.readOnly=false;else if(document.body)document.body.setAttribute('contenteditable','true');})()"#;
 
 /// How the diff marks what goes and what comes, on a light or dark ground.
-const DIFF_STYLE: &str = "<style>[data-hylki-ui=suggest] del{text-decoration:line-through;\
+const DIFF_STYLE: &str = "<style>[data-buzon-ui=suggest] del{text-decoration:line-through;\
 text-decoration-color:#e01b24;background:rgba(224,27,36,0.16);opacity:0.8;border-radius:3px;}\
-[data-hylki-ui=suggest] ins{text-decoration:none;background:rgba(46,194,126,0.26);border-radius:3px;}</style>";
+[data-buzon-ui=suggest] ins{text-decoration:none;background:rgba(46,194,126,0.26);border-radius:3px;}</style>";
 
 /// The number of the latest diff asked for.
 static DIFF_SEQ: AtomicU32 = AtomicU32::new(1);
@@ -346,7 +346,7 @@ impl Compose {
         };
         let n = DIFF_SEQ.fetch_add(1, Ordering::Relaxed);
         self.editor
-            .run_js(&format!("window.__hylkiSuggestSeq={n};"));
+            .run_js(&format!("window.__buzonSuggestSeq={n};"));
         let editor = self.editor.clone();
         let loss = self.edit_loss.clone();
         self.read_written(move |old, loses| {

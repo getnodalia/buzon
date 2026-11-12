@@ -19,7 +19,7 @@ js=js.replace('\\"','"').replace('\\\\','\\')
 # cut before DOMContentLoaded handler: keep function defs only
 js=js[:js.index('document.addEventListener(\'DOMContentLoaded\'')]
 stubs="var follow=null,hold=null;function chase(){}function pin(){}function reportPos(){}function markClipped(){}function selAll(){}function copySel(){}\n"
-P='<div class="vireo-plain">{}</div>'
+P='<div class="buzon-plain">{}</div>'
 OUTLOOK_HDR=('<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in">'
              '<p><b>From:</b> Ann<br><b>Sent:</b> Monday<br><b>To:</b> Bob<br><b>Subject:</b> Plans</p></div>')
 # name: (body, folded, text that must stay visible or None)
@@ -53,12 +53,12 @@ cases={
  'plain_quote_only':(P.format('&gt; q only'),False,None),
  'plain_original':(P.format('Thanks\n\n-----Original Message-----\nFrom: x\nold text'),True,'Thanks'),
 }
-CSS='<style>.vireo-plain{white-space:pre-wrap}</style>'
-frames=''.join(f'<iframe class="vireo-frame" id="{k}" srcdoc="{(CSS+v[0]).replace("&","&amp;").replace(chr(34),"&quot;")}"></iframe>' for k,v in cases.items())
-html=f'<!doctype html><html><head><style>iframe{{width:380px;height:220px;display:block}}.vireo-quote.open{{position:absolute;left:0}}</style></head><body>{frames}<script>{stubs}{js}</script></body></html>'
+CSS='<style>.buzon-plain{white-space:pre-wrap}</style>'
+frames=''.join(f'<iframe class="buzon-frame" id="{k}" srcdoc="{(CSS+v[0]).replace("&","&amp;").replace(chr(34),"&quot;")}"></iframe>' for k,v in cases.items())
+html=f'<!doctype html><html><head><style>iframe{{width:380px;height:220px;display:block}}.buzon-quote.open{{position:absolute;left:0}}</style></head><body>{frames}<script>{stubs}{js}</script></body></html>'
 
-PROBE = """(function(){var r={};var fs=document.querySelectorAll('iframe.vireo-frame');
-for(var i=0;i<fs.length;i++){var f=fs[i];quote(f);var b=f.nextSibling;var folded=!!(b&&b.className==='vireo-quote');
+PROBE = """(function(){var r={};var fs=document.querySelectorAll('iframe.buzon-frame');
+for(var i=0;i<fs.length;i++){var f=fs[i];quote(f);var b=f.nextSibling;var folded=!!(b&&b.className==='buzon-quote');
 var vis=f.contentDocument.body.innerText.trim();var placed=null;
 if(folded){b.click();var sp=null,ds=f.contentDocument.querySelectorAll('div');
 for(var j=0;j<ds.length;j++)if(ds[j].style.height==='28px')sp=ds[j];
@@ -68,7 +68,7 @@ b.click();placed=placed&&!b.classList.contains('open')&&f.contentDocument.body.i
 r[f.id]={folded:folded,visible:vis,placed:placed};}
 return JSON.stringify(r);})()"""
 
-app=Gtk.Application(application_id='co.hyprlab.QuoteTest')
+app=Gtk.Application(application_id='dev.danielmiguelt.QuoteTest')
 def activate(a):
     w=Gtk.Window(application=a); v=WebKit.WebView(); w.set_child(v); w.set_default_size(400,300); w.present()
     def loaded(view,ev):

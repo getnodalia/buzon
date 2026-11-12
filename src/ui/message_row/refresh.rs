@@ -82,7 +82,7 @@ impl Row {
         } else {
             &["focus-fade", "away"]
         });
-        let ring = format!("hylki-acct-ring-{}", msg.account_id);
+        let ring = format!("buzon-acct-ring-{}", msg.account_id);
         if look.ringed.contains(&msg.account_id) {
             w.avatar.set_css_classes(&[ring.as_str()]);
         } else {
@@ -174,7 +174,7 @@ impl Row {
                 Some(i18n("High importance")),
             ),
             Importance::Low => (
-                "hylki-importance-low-symbolic",
+                "buzon-importance-low-symbolic",
                 "importance-low",
                 Some(i18n("Low importance")),
             ),

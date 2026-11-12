@@ -292,7 +292,7 @@ fn colon_listing_becomes_keys() {
 tru::1:1757000000:0:3:1:5\n\
 pub:u:255:22:7949BE459D0D7AF2:1750000000:0::u:::scESC::::::23::0:\n\
 fpr:::::::::79277AB4A01A00F9574FD84E7949BE459D0D7AF2:\n\
-uid:u::::1750000000::ABCDEF::jason@hyprlab.co <jason@hyprlab.co>::::::::::0:\n\
+uid:u::::1750000000::ABCDEF::jason@getnodalia.com <jason@getnodalia.com>::::::::::0:\n\
 sub:u:255:18:94D25AE427F6BE67:1750000000:0:::::e::::::23:\n\
 fpr:::::::::1111111111111111111111111194D25AE427F6BE67:\n\
 pub:-:4096:1:51300FD844417A2E:1757000000:1820000000::-:::scSC::::::23::0:\n\
@@ -306,7 +306,7 @@ uid:r::::1757000000::ABCDEF::Old Name <old@example.org>::::::::::0:\n";
     assert_eq!(k.key_id, "7949BE459D0D7AF2");
     assert!(k.can_encrypt && k.can_sign);
     assert_eq!(k.validity, KeyValidity::Ultimate);
-    assert!(k.matches_address("Jason@Hyprlab.co"));
+    assert!(k.matches_address("Jason@Getnodalia.com"));
     assert_eq!(
         k.fingerprint_display(),
         "7927 7AB4 A01A 00F9 574F D84E 7949 BE45 9D0D 7AF2"
@@ -378,7 +378,7 @@ fn round_trip_through_a_throwaway_keyring() {
         eprintln!("gpg not installed; skipping");
         return;
     }
-    let home = std::env::temp_dir().join(format!("hylki-gpg-test-{}", std::process::id()));
+    let home = std::env::temp_dir().join(format!("buzon-gpg-test-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&home);
     std::fs::create_dir_all(&home).unwrap();
     #[cfg(unix)]
@@ -397,7 +397,7 @@ fn round_trip_through_a_throwaway_keyring() {
             "--pinentry-mode",
             "loopback",
             "--quick-gen-key",
-            "Test Hylki <test@hylki.invalid>",
+            "Test Buzon <test@buzon.invalid>",
             "default",
             "default",
             "never",
@@ -421,7 +421,7 @@ fn round_trip_through_a_throwaway_keyring() {
             "--passphrase",
             "",
             "--recipient",
-            "test@hylki.invalid",
+            "test@buzon.invalid",
             "--sign",
             "--encrypt",
         ],
@@ -434,7 +434,7 @@ fn round_trip_through_a_throwaway_keyring() {
         enc.status_lines
     );
     let mail = format!(
-        "From: test@hylki.invalid\r\nSubject: s\r\nMIME-Version: 1.0\r\n\
+        "From: test@buzon.invalid\r\nSubject: s\r\nMIME-Version: 1.0\r\n\
          Content-Type: multipart/encrypted; protocol=\"application/pgp-encrypted\"; boundary=\"enc\"\r\n\r\n\
          --enc\r\nContent-Type: application/pgp-encrypted\r\n\r\nVersion: 1\r\n\
          --enc\r\nContent-Type: application/octet-stream\r\n\r\n{armored}\r\n--enc--\r\n"
@@ -463,14 +463,14 @@ fn round_trip_through_a_throwaway_keyring() {
             "--trust-model",
             "always",
             "--recipient",
-            "test@hylki.invalid",
+            "test@buzon.invalid",
             "--encrypt",
         ],
         PROTECTED.as_bytes(),
     );
     let armored = String::from_utf8(enc.stdout.clone()).unwrap();
     let mail = format!(
-        "From: test@hylki.invalid\r\nSubject: ...\r\nMIME-Version: 1.0\r\n\
+        "From: test@buzon.invalid\r\nSubject: ...\r\nMIME-Version: 1.0\r\n\
          Content-Type: multipart/encrypted; protocol=\"application/pgp-encrypted\"; boundary=\"enc\"\r\n\r\n\
          --enc\r\nContent-Type: application/pgp-encrypted\r\n\r\nVersion: 1\r\n\
          --enc\r\nContent-Type: application/octet-stream\r\n\r\n{armored}\r\n--enc--\r\n"
@@ -494,7 +494,7 @@ fn round_trip_through_a_throwaway_keyring() {
     );
     let sig = String::from_utf8(sig.stdout).unwrap();
     let mail = format!(
-        "From: test@hylki.invalid\r\nMIME-Version: 1.0\r\n\
+        "From: test@buzon.invalid\r\nMIME-Version: 1.0\r\n\
          Content-Type: multipart/signed; micalg=pgp-sha256; protocol=\"application/pgp-signature\"; boundary=\"b\"\r\n\r\n\
          --b\r\n{}\r\n--b\r\nContent-Type: application/pgp-signature\r\n\r\n{sig}\r\n--b--\r\n",
         String::from_utf8_lossy(part)
@@ -517,8 +517,8 @@ fn round_trip_through_a_throwaway_keyring() {
     // The same good, trusted signature under someone else's From is not
     // green: the key carries no user id for that address.
     let forged = mail.replace(
-        "From: test@hylki.invalid",
-        "From: Boss <boss@hylki.invalid>",
+        "From: test@buzon.invalid",
+        "From: Boss <boss@buzon.invalid>",
     );
     let u = unwrap_message(forged.as_bytes(), &gpg).expect("recognised");
     assert!(
@@ -538,12 +538,12 @@ fn round_trip_through_a_throwaway_keyring() {
         u.status
             .notes
             .iter()
-            .any(|n| n.contains("boss@hylki.invalid")),
+            .any(|n| n.contains("boss@buzon.invalid")),
         "{:?}",
         u.status.notes
     );
     // Case in the From is no mismatch.
-    let shouted = mail.replace("From: test@hylki.invalid", "From: TEST@Hylki.Invalid");
+    let shouted = mail.replace("From: test@buzon.invalid", "From: TEST@Buzon.Invalid");
     let u = unwrap_message(shouted.as_bytes(), &gpg).expect("recognised");
     assert!(
         matches!(
@@ -577,11 +577,11 @@ fn round_trip_through_a_throwaway_keyring() {
     let mine = list_keys(&gpg, true);
     assert_eq!(mine.len(), 1, "{mine:?}");
     assert!(mine[0].can_encrypt && mine[0].secret);
-    assert!(secret_key_for(&gpg, "TEST@hylki.invalid").is_some());
-    assert!(public_key_for(&gpg, "test@hylki.invalid").is_some());
-    assert!(public_key_for(&gpg, "nobody@hylki.invalid").is_none());
+    assert!(secret_key_for(&gpg, "TEST@buzon.invalid").is_some());
+    assert!(public_key_for(&gpg, "test@buzon.invalid").is_some());
+    assert!(public_key_for(&gpg, "nobody@buzon.invalid").is_none());
     let fpr =
-        generate_key(&gpg, "Second Key", "second@hylki.invalid", "1y", "pw").expect("generated");
+        generate_key(&gpg, "Second Key", "second@buzon.invalid", "1y", "pw").expect("generated");
     let second = key_by_fingerprint(&gpg, &fpr).expect("listed");
     assert!(
         second.can_encrypt,
@@ -591,7 +591,7 @@ fn round_trip_through_a_throwaway_keyring() {
     let armored = export_public(&gpg, &fpr).expect("exported");
     assert!(String::from_utf8_lossy(&armored).contains("BEGIN PGP PUBLIC KEY BLOCK"));
     // Into a second, empty keyring: imported, untrusted, then vouched for.
-    let home2 = std::env::temp_dir().join(format!("hylki-gpg-test2-{}", std::process::id()));
+    let home2 = std::env::temp_dir().join(format!("buzon-gpg-test2-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&home2);
     std::fs::create_dir_all(&home2).unwrap();
     #[cfg(unix)]
@@ -611,29 +611,29 @@ fn round_trip_through_a_throwaway_keyring() {
         key_by_fingerprint(&gpg2, &fpr).unwrap().validity,
         KeyValidity::Unknown
     );
-    assert!(!public_key_for(&gpg2, "second@hylki.invalid")
+    assert!(!public_key_for(&gpg2, "second@buzon.invalid")
         .expect("found")
-        .vouched_for("second@hylki.invalid"));
+        .vouched_for("second@buzon.invalid"));
     assert!(
         trust_key(&gpg2, &fpr, None).is_err(),
         "no key of one's own to sign with"
     );
-    let own = generate_key(&gpg2, "", "me@hylki.invalid", "never", "").expect("own key");
+    let own = generate_key(&gpg2, "", "me@buzon.invalid", "never", "").expect("own key");
     trust_key(&gpg2, &fpr, Some(&own)).expect("signed");
     assert!(key_by_fingerprint(&gpg2, &fpr).unwrap().validity.trusted());
     // The composer asks about an imported key until it is vouched for.
-    let imported = public_key_for(&gpg2, "second@hylki.invalid").expect("found");
-    assert!(imported.vouched_for("second@hylki.invalid"));
+    let imported = public_key_for(&gpg2, "second@buzon.invalid").expect("found");
+    assert!(imported.vouched_for("second@buzon.invalid"));
     // Encrypt to the imported key from the second keyring; the first opens it.
     let ct = encrypt(
         &gpg2,
         b"Content-Type: text/plain\r\n\r\nfor second",
-        &["second@hylki.invalid".into()],
+        &["second@buzon.invalid".into()],
         &[],
         Some(&own),
     )
     .expect("encrypted");
-    let mail = format!("From: me@hylki.invalid\r\nMIME-Version: 1.0\r\nContent-Type: multipart/encrypted; protocol=\"application/pgp-encrypted\"; boundary=\"e\"\r\n\r\n--e\r\nContent-Type: application/pgp-encrypted\r\n\r\nVersion: 1\r\n--e\r\nContent-Type: application/octet-stream\r\n\r\n{}\r\n--e--\r\n", String::from_utf8_lossy(&ct));
+    let mail = format!("From: me@buzon.invalid\r\nMIME-Version: 1.0\r\nContent-Type: multipart/encrypted; protocol=\"application/pgp-encrypted\"; boundary=\"e\"\r\n\r\n--e\r\nContent-Type: application/pgp-encrypted\r\n\r\nVersion: 1\r\n--e\r\nContent-Type: application/octet-stream\r\n\r\n{}\r\n--e--\r\n", String::from_utf8_lossy(&ct));
     // The second key has a passphrase, fed through the loopback for the test.
     let gpg_pw = Gpg {
         home: Some(home.clone()),
@@ -662,7 +662,7 @@ fn round_trip_through_a_throwaway_keyring() {
         &gpg2,
         b"Content-Type: text/plain\r\n\r\nfor a bcc",
         &[],
-        &["second@hylki.invalid".into()],
+        &["second@buzon.invalid".into()],
         None,
     )
     .expect("encrypted");
@@ -823,12 +823,12 @@ fn an_address_added_after_trusting_a_key_is_not_vouched_for() {
         eprintln!("gpg not installed; skipping");
         return;
     }
-    let root = std::env::temp_dir().join(format!("hylki-gpg-added-{}", std::process::id()));
+    let root = std::env::temp_dir().join(format!("buzon-gpg-added-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     let me = keyring(&root, "me");
     let eve = keyring(&root, "eve");
-    generate_key(&me, "Me", "me@hylki.invalid", "never", "").expect("own key");
-    let fpr = generate_key(&eve, "Eve", "eve@hylki.invalid", "never", "").expect("eve's key");
+    generate_key(&me, "Me", "me@buzon.invalid", "never", "").expect("own key");
+    let fpr = generate_key(&eve, "Eve", "eve@buzon.invalid", "never", "").expect("eve's key");
     import_keys(&me, &export_public(&eve, &fpr).expect("exported")).expect("imported");
     trust_key(&me, &fpr, None).expect("trusted");
     assert!(key_by_fingerprint(&me, &fpr).unwrap().fully_vouched());
@@ -841,8 +841,8 @@ fn an_address_added_after_trusting_a_key_is_not_vouched_for() {
             "--passphrase",
             "",
             "--quick-add-uid",
-            "eve@hylki.invalid",
-            "Boss <boss@hylki.invalid>",
+            "eve@buzon.invalid",
+            "Boss <boss@buzon.invalid>",
         ],
         b"",
         None,
@@ -852,9 +852,9 @@ fn an_address_added_after_trusting_a_key_is_not_vouched_for() {
     let key = key_by_fingerprint(&me, &fpr).unwrap();
     assert!(key.validity.trusted(), "gpg still calls the key trusted");
     assert!(!key.fully_vouched());
-    assert!(key.trust_details().contains("boss@hylki.invalid"));
+    assert!(key.trust_details().contains("boss@buzon.invalid"));
 
-    let mail = signed_mail(&eve, &fpr, "Boss <boss@hylki.invalid>");
+    let mail = signed_mail(&eve, &fpr, "Boss <boss@buzon.invalid>");
     let u = unwrap_message(mail.as_bytes(), &me).expect("recognised");
     assert!(
         matches!(
@@ -876,14 +876,14 @@ fn an_address_added_after_trusting_a_key_is_not_vouched_for() {
         u.status.notes
     );
     // The address it was trusted for stays green.
-    let mail = signed_mail(&eve, &fpr, "Eve <eve@hylki.invalid>");
+    let mail = signed_mail(&eve, &fpr, "Eve <eve@buzon.invalid>");
     let u = unwrap_message(mail.as_bytes(), &me).expect("recognised");
     assert_eq!(u.status.css_class(), "pgp-good", "{:?}", u.status);
 
     // Trusting again signs the new address beside the one already signed.
     trust_key(&me, &fpr, None).expect("trusted again");
     assert!(key_by_fingerprint(&me, &fpr).unwrap().fully_vouched());
-    let mail = signed_mail(&eve, &fpr, "Boss <boss@hylki.invalid>");
+    let mail = signed_mail(&eve, &fpr, "Boss <boss@buzon.invalid>");
     let u = unwrap_message(mail.as_bytes(), &me).expect("recognised");
     assert_eq!(u.status.css_class(), "pgp-good", "{:?}", u.status);
     let _ = std::fs::remove_dir_all(&root);
@@ -898,12 +898,12 @@ fn trusting_works_with_an_imported_key_of_ones_own() {
         eprintln!("gpg not installed; skipping");
         return;
     }
-    let root = std::env::temp_dir().join(format!("hylki-gpg-imported-{}", std::process::id()));
+    let root = std::env::temp_dir().join(format!("buzon-gpg-imported-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
     let old_computer = keyring(&root, "old");
     let me = keyring(&root, "me");
     let peer = keyring(&root, "peer");
-    let own = generate_key(&old_computer, "Me", "me@hylki.invalid", "never", "").expect("own key");
+    let own = generate_key(&old_computer, "Me", "me@buzon.invalid", "never", "").expect("own key");
     let exported = run(
         &old_computer,
         &[
@@ -919,7 +919,7 @@ fn trusting_works_with_an_imported_key_of_ones_own() {
         None,
     );
     import_keys(&me, &exported.stdout).expect("own key imported");
-    let fpr = generate_key(&peer, "Peer", "peer@hylki.invalid", "never", "").expect("peer's key");
+    let fpr = generate_key(&peer, "Peer", "peer@buzon.invalid", "never", "").expect("peer's key");
     import_keys(&me, &export_public(&peer, &fpr).expect("exported")).expect("imported");
 
     // What an earlier build left behind: signed, and gpg does not count it.
@@ -927,8 +927,8 @@ fn trusting_works_with_an_imported_key_of_ones_own() {
     assert!(!key_by_fingerprint(&me, &fpr).unwrap().validity.trusted());
 
     trust_key(&me, &fpr, None).expect("trusted");
-    let key = public_key_for(&me, "peer@hylki.invalid").expect("found");
-    assert!(key.vouched_for("peer@hylki.invalid"));
+    let key = public_key_for(&me, "peer@buzon.invalid").expect("found");
+    assert!(key.vouched_for("peer@buzon.invalid"));
     assert!(key.fully_vouched());
     let _ = std::fs::remove_dir_all(&root);
 }
@@ -974,6 +974,9 @@ uid:-::::1700000000::HASH::Ada <ada@example.org>::::::::::0:\n";
     );
     assert_eq!(
         listed,
-        vec![accepted("ada@example.org", '2'), accepted("zed@example.org", '1')]
+        vec![
+            accepted("ada@example.org", '2'),
+            accepted("zed@example.org", '1')
+        ]
     );
 }

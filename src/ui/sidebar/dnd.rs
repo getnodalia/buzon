@@ -4,13 +4,13 @@
 use super::tree::path_is_under;
 use super::*;
 
-/// The dragged messages in a drop payload: the marker "vireo-move" followed by
+/// The dragged messages in a drop payload: the marker "buzon-move" followed by
 /// one tab-separated (account, folder, uid, id) group per message. A drag from a
 /// multi-selection carries every selected message (#23); anything malformed
 /// yields nothing rather than a partial move.
 pub(super) fn parse_move_payload(payload: &str) -> Vec<(u32, u32, u32, u32)> {
     let parts: Vec<&str> = payload.split('\t').collect();
-    if parts.first() != Some(&"vireo-move") || parts.len() < 5 || parts.len() % 4 != 1 {
+    if parts.first() != Some(&"buzon-move") || parts.len() < 5 || parts.len() % 4 != 1 {
         return Vec::new();
     }
     let items: Vec<(u32, u32, u32, u32)> = parts[1..]
@@ -68,9 +68,9 @@ pub(super) enum FolderDrop {
 /// A dragged folder, read from its payload: account, path, and whether it
 /// is a main folder (Inbox, Sent…), which can be reordered but not moved.
 pub(super) fn dragged_folder(payload: &str) -> Option<(u32, &str, bool)> {
-    let (main, rest) = match payload.strip_prefix("vireo-folder-main\t") {
+    let (main, rest) = match payload.strip_prefix("buzon-folder-main\t") {
         Some(rest) => (true, rest),
-        None => (false, payload.strip_prefix("vireo-folder\t")?),
+        None => (false, payload.strip_prefix("buzon-folder\t")?),
     };
     let (account, path) = rest.split_once('\t')?;
     Some((account.parse().ok()?, path, main))
@@ -423,7 +423,7 @@ impl Sidebar {
     ) {
         // A dragged folder, not messages: reparent it (#51). Folders
         // never cross accounts — mailboxes belong to one server.
-        if let Some(rest) = payload.strip_prefix("vireo-folder\t") {
+        if let Some(rest) = payload.strip_prefix("buzon-folder\t") {
             let mut it = rest.splitn(2, '\t');
             let src_account = it.next().and_then(|s| s.parse::<u32>().ok());
             let src_path = it.next().map(String::from);

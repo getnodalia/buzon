@@ -1,5 +1,5 @@
 //! The disk side of the remote-content cache: one file per URL under
-//! `~/.cache/hylki/remote`, named by the URL's SHA-256, holding the content
+//! `~/.cache/buzon/remote`, named by the URL's SHA-256, holding the content
 //! type on its first line and the bytes after it.
 //!
 //! An entry is used for a week from its fetch, then fetched again; pictures
@@ -30,17 +30,17 @@ pub(crate) struct Entry {
     pub(crate) bytes: Vec<u8>,
 }
 
-/// The cache folder, `~/.cache/hylki/remote`. Blocking: the first call of a
+/// The cache folder, `~/.cache/buzon/remote`. Blocking: the first call of a
 /// session clears out the folder earlier releases used.
 fn dir() -> Option<PathBuf> {
     static RETIRED: std::sync::Once = std::sync::Once::new();
     let base = crate::config::cache_base()?;
     RETIRED.call_once(|| retire(&base.join("remote")));
-    Some(base.join("hylki").join("remote"))
+    Some(base.join("buzon").join("remote"))
 }
 
 /// Releases from 1.46.0 kept the cache in `~/.cache/remote` (#614), a name
-/// other programs may use too: only Hylki's own entries are taken out of it,
+/// other programs may use too: only Buzón's own entries are taken out of it,
 /// and the folder goes only if that leaves it empty.
 fn retire(old: &Path) {
     let Ok(read) = std::fs::read_dir(old) else {
@@ -211,7 +211,7 @@ mod tests {
     use super::*;
 
     fn temp_dir(name: &str) -> PathBuf {
-        let d = std::env::temp_dir().join(format!("hylki-remote-{name}-{}", std::process::id()));
+        let d = std::env::temp_dir().join(format!("buzon-remote-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&d);
         d
     }
@@ -283,7 +283,7 @@ mod tests {
         assert!(theirs.exists() && upper.exists());
         std::fs::remove_file(&theirs).unwrap();
         std::fs::remove_file(&upper).unwrap();
-        // With only Hylki's entries in it, the folder goes too.
+        // With only Buzón's entries in it, the folder goes too.
         std::fs::write(&ours, b"x").unwrap();
         retire(&dir);
         assert!(!dir.exists());

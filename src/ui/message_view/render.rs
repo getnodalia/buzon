@@ -107,7 +107,7 @@ impl MessageView {
         self.autoscroll_lone = self.thread.len() <= 1;
         let n = self.seq.get().wrapping_add(1);
         self.seq.set(n);
-        self.latest_uri = format!("https://hylki.localhost/message/{n}");
+        self.latest_uri = format!("https://buzon.localhost/message/{n}");
         self.load_after_paint(html, self.latest_uri.clone());
         true
     }
@@ -308,10 +308,10 @@ fn body_stamps(s: &BodyStamps) -> String {
             .anchor
             .map(|(a, i, o)| {
                 let g = if s.anchor_gutter { ":g" } else { "" };
-                format!(" data-hylki-anchor=\"{a}:{i}:{o}{g}\"")
+                format!(" data-buzon-anchor=\"{a}:{i}:{o}{g}\"")
             })
             .unwrap_or_default();
-        format!(" data-hylki-noscroll=\"1\"{anchor}")
+        format!(" data-buzon-noscroll=\"1\"{anchor}")
     } else {
         String::new()
     };
@@ -319,24 +319,24 @@ fn body_stamps(s: &BodyStamps) -> String {
     let pgp_icons = if s.pgp_labels {
         ""
     } else {
-        " data-hylki-pgpicons"
+        " data-buzon-pgpicons"
     };
     // The newest member, for the open-scroll fallback (#101): with no
     // unread mail the reader lands on the newest message rather than
     // wherever the document happens to start.
     let newest = s
         .newest
-        .map(|(aid, id)| format!(" data-hylki-newest=\"{aid}:{id}\""))
+        .map(|(aid, id)| format!(" data-buzon-newest=\"{aid}:{id}\""))
         .unwrap_or_default();
     // Read-marking policy (#100): the observer marks conversation members
     // as they come into view; "manual" installs no observer at all.
     let readmark = match s.read_mark {
-        crate::config::ReadMark::Shown => " data-hylki-readmark=\"250\"",
-        crate::config::ReadMark::Delay => " data-hylki-readmark=\"2000\"",
+        crate::config::ReadMark::Shown => " data-buzon-readmark=\"250\"",
+        crate::config::ReadMark::Delay => " data-buzon-readmark=\"2000\"",
         crate::config::ReadMark::Manual => "",
     };
     let copied = format!(
-        " data-hylki-copied=\"{}\"",
+        " data-buzon-copied=\"{}\"",
         i18n("Copied").replace('"', "&quot;")
     );
     format!("{noscroll}{pgp_icons}{newest}{readmark}{copied}")
@@ -360,7 +360,7 @@ mod tests {
 
     #[test]
     fn a_first_render_stamps_little() {
-        assert_eq!(body_stamps(&stamps()), " data-hylki-copied=\"Copied\"");
+        assert_eq!(body_stamps(&stamps()), " data-buzon-copied=\"Copied\"");
     }
 
     #[test]
@@ -375,9 +375,9 @@ mod tests {
         };
         assert_eq!(
             body_stamps(&s),
-            " data-hylki-noscroll=\"1\" data-hylki-anchor=\"1:2:30:g\" \
-             data-hylki-pgpicons data-hylki-newest=\"1:9\" \
-             data-hylki-readmark=\"2000\" data-hylki-copied=\"Copied\""
+            " data-buzon-noscroll=\"1\" data-buzon-anchor=\"1:2:30:g\" \
+             data-buzon-pgpicons data-buzon-newest=\"1:9\" \
+             data-buzon-readmark=\"2000\" data-buzon-copied=\"Copied\""
         );
     }
 
@@ -391,8 +391,8 @@ mod tests {
         };
         assert_eq!(
             body_stamps(&s),
-            " data-hylki-noscroll=\"1\" data-hylki-anchor=\"3:4:0\" \
-             data-hylki-readmark=\"250\" data-hylki-copied=\"Copied\""
+            " data-buzon-noscroll=\"1\" data-buzon-anchor=\"3:4:0\" \
+             data-buzon-readmark=\"250\" data-buzon-copied=\"Copied\""
         );
         // Without the open scroll done, a saved anchor is not stamped.
         let s = BodyStamps {

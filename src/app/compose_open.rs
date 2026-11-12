@@ -102,11 +102,11 @@ impl AppModel {
         };
         // Fetched ahead (see `draft_copies`): the editor opens at once.
         if let Some(raw) = self.kept_draft(&m, &path) {
-            tracing::debug!(target: "hylki::drafts", "draft {} opened from its kept copy", m.uid);
+            tracing::debug!(target: "buzon::drafts", "draft {} opened from its kept copy", m.uid);
             self.compose_from_draft_raw(m, &raw, inline, extra, sender);
             return;
         }
-        tracing::debug!(target: "hylki::drafts", "draft {} not kept yet: fetching it", m.uid);
+        tracing::debug!(target: "buzon::drafts", "draft {} not kept yet: fetching it", m.uid);
         // Not kept yet: the reader says it is loading while the bytes come,
         // rather than leave what it showed before.
         if inline && self.reading_pane == config::ReadingPane::Right {
@@ -199,7 +199,7 @@ impl AppModel {
     ) {
         let e = crate::worker::editable_from_raw(raw, &[]);
         let mut attachments = stage_attachments(
-            &format!("hylki-draft-{}-{}", m.account_id, m.uid),
+            &format!("buzon-draft-{}-{}", m.account_id, m.uid),
             &e.attachments,
         );
         attachments.extend(extra.attach);
@@ -319,7 +319,7 @@ impl AppModel {
             .attachment_cache
             .get(&body_key(&m))
             .map(|items| {
-                stage_attachments(&format!("hylki-forward-{}-{}", m.account_id, m.id), items)
+                stage_attachments(&format!("buzon-forward-{}-{}", m.account_id, m.id), items)
             })
             .unwrap_or_default();
         tracing::info!(
@@ -356,7 +356,7 @@ impl AppModel {
         let attachments = self
             .attachment_cache
             .get(&body_key(&m))
-            .map(|items| stage_attachments(&format!("hylki-copy-{}-{}", m.account_id, m.id), items))
+            .map(|items| stage_attachments(&format!("buzon-copy-{}-{}", m.account_id, m.id), items))
             .unwrap_or_default();
         tracing::info!(
             "edit as new: copying {}:{} ({} attachment(s))",
@@ -541,7 +541,7 @@ impl AppModel {
                 crate::desktop::notify::withdraw_compose_ready();
                 crate::desktop::session::present_window(&self.window);
                 // Messages an assistant prepared while the user was busy
-                // in Hylki wait unshown until asked for.
+                // in Buzón wait unshown until asked for.
                 for h in self
                     .composers
                     .iter()
@@ -573,7 +573,7 @@ impl AppModel {
         // along invisibly if a web link (rather than Nautilus)
         // carried the parameter. The ones that don't are reported,
         // not dropped in silence: from inside the Flatpak sandbox a
-        // path the file manager can see may be one Hylki cannot.
+        // path the file manager can see may be one Buzón cannot.
         let (attachments, dropped): (Vec<_>, Vec<_>) = std::mem::take(&mut prefill.attachments)
             .into_iter()
             .partition(|p| p.is_file());
@@ -590,7 +590,7 @@ impl AppModel {
         );
         if !attachments.is_empty() {
             // Files came along (Files' own "Email…" entry): the same
-            // choice of destination as "Send with Hylki".
+            // choice of destination as "Send with Buzón".
             self.begin_hand_off(
                 FileHandOff {
                     base: prefill,

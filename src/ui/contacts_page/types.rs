@@ -52,14 +52,14 @@ pub(crate) struct TreeBook {
     pub(crate) uid: String,
     /// The account the book is in, for the line under its name ("CardDAV —
     /// a@b.org", or the service of a book that is its account alone);
-    /// empty for the Hylki book.
+    /// empty for the Buzón book.
     pub(crate) account: String,
     /// What the books of one account share: the books with one key are
     /// listed under their account.
     pub(crate) key: String,
     pub(crate) name: String,
     pub(crate) count: usize,
-    /// Hylki can write to it, so contacts can be copied or moved in.
+    /// Buzón can write to it, so contacts can be copied or moved in.
     pub(crate) writable: bool,
     pub(crate) takes_groups: bool,
     /// An LDAP directory, searched rather than listed.
@@ -100,13 +100,13 @@ pub(crate) enum TreeAction {
         book: String,
         uid: String,
     },
-    /// Give the book a name of its own in Hylki.
+    /// Give the book a name of its own in Buzón.
     RenameBook(String),
 }
 
 /// The start of what a contact row carries when dragged, before a line of
 /// book and UID per contact.
-pub(super) const DRAG_MARK: &str = "hylki-contacts";
+pub(super) const DRAG_MARK: &str = "buzon-contacts";
 
 /// The "Show only" filters of the sort and filter button, as the message
 /// list has for mail. They narrow the people and leave the groups, except
@@ -288,7 +288,7 @@ pub(crate) struct ContactsPage {
     /// UID: an imported card keeps the UID of the book it came from.
     pub(super) deleted: std::collections::HashSet<(String, String)>,
     /// The books new contacts can go to, the chosen default first; the
-    /// Hylki book is always among them.
+    /// Buzón book is always among them.
     pub(super) books: Vec<crate::contacts::Book>,
     /// The books the sidebar lists: (book UID, name).
     pub(super) filter_books: Vec<(String, String)>,
@@ -366,7 +366,7 @@ pub(crate) enum ContactsPageInput {
     Edit,
     EditIndex(usize),
     /// The header's "+": a blank editor for a new contact, or a new group
-    /// (always in the Hylki book).
+    /// (always in the Buzón book).
     NewContact,
     NewGroup,
     /// Write to everyone in the group at this index.
@@ -377,7 +377,7 @@ pub(crate) enum ContactsPageInput {
         group: usize,
         person: usize,
     },
-    /// The header's import button: choose `.vcf` files for the Hylki book.
+    /// The header's import button: choose `.vcf` files for the Buzón book.
     ImportContacts,
     CancelEdit,
     SaveEdit,
@@ -492,9 +492,9 @@ pub(crate) enum ContactsPageOutput {
     CopyContacts { to: String, cards: Vec<String> },
     /// The books and groups changed: the sidebar lists them anew.
     Tree(ContactTree),
-    /// Name an address book in Hylki (`None`: its own name again).
+    /// Name an address book in Buzón (`None`: its own name again).
     RenameBook { uid: String, name: Option<String> },
-    /// `.vcf` files chosen for import into the local Hylki book.
+    /// `.vcf` files chosen for import into the local Buzón book.
     ImportContacts(Vec<std::path::PathBuf>),
     /// Show the contact's photo in the app lightbox.
     ShowPhoto { name: String, data: Vec<u8> },

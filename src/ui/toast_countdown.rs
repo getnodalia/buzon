@@ -37,7 +37,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for ToastCountdown {
-        const NAME: &'static str = "HylkiToastCountdown";
+        const NAME: &'static str = "BuzonToastCountdown";
         type Type = super::ToastCountdown;
         type ParentType = gtk::Widget;
 

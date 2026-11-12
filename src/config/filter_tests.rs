@@ -551,7 +551,7 @@ fn date_groups_default_reaches_existing_installs_once() {
 
 /// An account from before #445 has one `signature`, which reads as a
 /// list of one that new messages start with; a list written now keeps
-/// `signature` on its default for an older Hylki, and no default
+/// `signature` on its default for an older Buzón, and no default
 /// leaves it empty.
 #[test]
 fn signatures_read_old_configs_and_write_for_them() {
@@ -667,7 +667,7 @@ fn settings_bundle_roundtrip_parses() {
         cloud: Some(vec![crate::services::cloud::CloudAccount::empty()]),
         spell_words: Some(std::collections::BTreeMap::from([(
             "en_US".to_string(),
-            vec!["Hylki".to_string()],
+            vec!["Buzón".to_string()],
         )])),
     };
     let text = toml::to_string_pretty(&bundle).unwrap();

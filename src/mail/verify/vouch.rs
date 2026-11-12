@@ -99,9 +99,9 @@ impl Vouchers {
             "Nothing here proves this came from {from} — or that it didn't.",
             &[("from", from)],
         );
-        check
-            .findings
-            .push(i18n("These checks aren't known to come from your mail provider"));
+        check.findings.push(i18n(
+            "These checks aren't known to come from your mail provider",
+        ));
     }
 }
 
@@ -167,9 +167,15 @@ mod tests {
         for site in ["a.example", "b.example", "c.example"] {
             v.note(1, &pass(site, ""));
         }
-        assert_eq!(shown(&v, Some(1), &pass("d.example", "")), SenderTrust::Pass);
+        assert_eq!(
+            shown(&v, Some(1), &pass("d.example", "")),
+            SenderTrust::Pass
+        );
         let none = check("d.example", None, SenderTrust::Suspicious);
-        assert_eq!(shown(&Vouchers::default(), None, &none), SenderTrust::Suspicious);
+        assert_eq!(
+            shown(&Vouchers::default(), None, &none),
+            SenderTrust::Suspicious
+        );
         let failed = check("d.example", Some("evil.example"), SenderTrust::Fail);
         assert_eq!(shown(&v, Some(1), &failed), SenderTrust::Unverified);
     }

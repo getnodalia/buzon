@@ -271,7 +271,7 @@ pub(super) fn names_groups(q: &str) -> bool {
             .any(|w| w.to_lowercase() == q)
 }
 
-/// Ask for `.vcf` files to import into the Hylki book, and hand their paths
+/// Ask for `.vcf` files to import into the Buzón book, and hand their paths
 /// to `done` (never called for a cancelled dialog or no files).
 pub(crate) fn choose_vcf_files(
     parent: Option<&gtk::Window>,

@@ -388,14 +388,14 @@ impl Sidebar {
                 }
                 row.set_visible(!hidden);
                 if !self.collapsed {
-                    let payload = format!("vireo-folder\t{id}\t{}", folder.path);
+                    let payload = format!("buzon-folder\t{id}\t{}", folder.path);
                     row.add_controller(folder_drag_source(&row, payload));
                 }
             } else if !self.collapsed && essential.len() > 1 {
                 // The main folders can be put in another order among
                 // themselves; where they sit on the server is not
                 // theirs to change.
-                let payload = format!("vireo-folder-main\t{id}\t{}", folder.path);
+                let payload = format!("buzon-folder-main\t{id}\t{}", folder.path);
                 row.add_controller(folder_drag_source(&row, payload));
             }
             list.append(&row);
@@ -467,7 +467,7 @@ impl Sidebar {
                 // Custom folders can be picked up and dropped on a new
                 // parent (#51), or on a sibling's edge to reorder them.
                 if !self.collapsed {
-                    let payload = format!("vireo-folder\t{id}\t{}", folder.path);
+                    let payload = format!("buzon-folder\t{id}\t{}", folder.path);
                     row.add_controller(folder_drag_source(&row, payload));
                 }
                 if has_children {

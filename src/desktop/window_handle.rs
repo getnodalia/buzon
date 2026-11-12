@@ -5,7 +5,7 @@
 //! On Wayland the handle is an xdg-foreign export, which lives until it is
 //! dropped, so [`ExportedHandle`] drops it when it goes. The GDK backend
 //! functions are looked up at run time, not linked: a GTK built without one
-//! of the backends must still run Hylki.
+//! of the backends must still run Buzón.
 
 use std::cell::RefCell;
 use std::ffi::{c_char, c_ulong, c_void, CStr, CString};

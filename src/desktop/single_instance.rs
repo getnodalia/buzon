@@ -26,7 +26,7 @@ impl UriKind {
     }
 }
 
-/// A view a launcher action opens (`hylki --contacts`, `hylki --attachments`):
+/// A view a launcher action opens (`buzon --contacts`, `buzon --attachments`):
 /// the desktop file's Contacts and Attachments actions.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StartView {
@@ -177,16 +177,16 @@ mod tests {
     fn view_flags_are_taken_out_of_the_arguments() {
         let args = |a: &[&str]| a.iter().map(|s| s.to_string()).collect::<Vec<_>>();
         assert_eq!(
-            StartView::strip(args(&["hylki", "--contacts"])),
-            (args(&["hylki"]), Some(StartView::Contacts))
+            StartView::strip(args(&["buzon", "--contacts"])),
+            (args(&["buzon"]), Some(StartView::Contacts))
         );
         assert_eq!(
-            StartView::strip(args(&["hylki", "--contacts", "mailto:", "--attachments"])),
-            (args(&["hylki", "mailto:"]), Some(StartView::Attachments))
+            StartView::strip(args(&["buzon", "--contacts", "mailto:", "--attachments"])),
+            (args(&["buzon", "mailto:"]), Some(StartView::Attachments))
         );
         assert_eq!(
-            StartView::strip(args(&["hylki", "a.pdf"])),
-            (args(&["hylki", "a.pdf"]), None)
+            StartView::strip(args(&["buzon", "a.pdf"])),
+            (args(&["buzon", "a.pdf"]), None)
         );
     }
 

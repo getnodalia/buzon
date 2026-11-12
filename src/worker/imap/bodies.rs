@@ -144,7 +144,7 @@ async fn fetch_raw_message(
             .await?;
         if let Some(raw) = fetches.iter().find_map(raw_of) {
             if n > 0 {
-                tracing::info!(target: "hylki::imap", "message {uid}: content came with {items}");
+                tracing::info!(target: "buzon::imap", "message {uid}: content came with {items}");
             }
             return Ok(Raw::Message(raw));
         }
@@ -154,11 +154,11 @@ async fn fetch_raw_message(
                 .await
                 .is_ok_and(|present| !present.contains(&uid))
         {
-            tracing::info!(target: "hylki::imap", "message {uid}: no longer in the folder");
+            tracing::info!(target: "buzon::imap", "message {uid}: no longer in the folder");
             return Ok(Raw::Gone);
         }
         tracing::warn!(
-            target: "hylki::imap",
+            target: "buzon::imap",
             "message {uid}: {} FETCH item(s) came back for {items}, none carrying the message: {}",
             fetches.len(),
             fetches.iter().map(|f| format!("{f:?}")).collect::<Vec<_>>().join(" | ").chars().take(600).collect::<String>()

@@ -1,19 +1,17 @@
 # Security policy
 
-Hylki reads untrusted content (every message it opens was written by someone
+Buzón reads untrusted content (every message it opens was written by someone
 else), so security reports are welcome and taken seriously.
 
 ## Reporting a vulnerability
 
-**Please report privately, not as a public issue.** Either channel works:
+**Please report privately, not as a public issue**, through GitHub:
 
-- **GitHub private vulnerability reporting:** <https://github.com/hyprlab/hylki/security/advisories/new>
-  (Security → Report a vulnerability). This is the preferred route: it keeps the
-  report, the discussion and the eventual advisory in one place.
-- **Email:** hyprlab@proton.me
+- **GitHub private vulnerability reporting:** <https://github.com/getnodalia/buzon/security/advisories/new>
+  (Security → Report a vulnerability). It keeps the report, the discussion and
+  the eventual advisory in one place.
 
-You should get a first reply within **5 days**. If you don't, assume the mail
-went astray and open a public issue saying only that you're trying to reach a
+You should get a first reply within **5 days**. If you don't, open a public issue saying only that you're trying to reach a
 maintainer privately, with no details.
 
 Useful things to include, none of them required: affected version, the file and
@@ -33,7 +31,7 @@ Nothing here is meant to restrict what you may say about your own research.
 ## Supported versions
 
 Fixes go into the next release from `main`. Older versions are not patched
-separately. Hylki ships as a Flatpak, an RPM and a Debian package, and all
+separately. Buzón ships as a Flatpak, an RPM and a Debian package, and all
 three track releases.
 
 ## Scope
@@ -47,7 +45,7 @@ In scope, roughly in order of interest:
 - Credential handling: the keyring, OAuth, what reaches disk.
 - TLS: verification, downgrade, `STARTTLS` handling.
 - Sandbox escapes and over-broad Flatpak permissions.
-- File permissions on anything Hylki writes.
+- File permissions on anything Buzón writes.
 
 Out of scope: vulnerabilities in the user's own mail server, findings that need
 an attacker who already has local code execution as the user, and reports

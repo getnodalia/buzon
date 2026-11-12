@@ -46,7 +46,7 @@ enum Choice {
 pub(crate) fn unlock_cache() -> bool {
     // The demo keeps its mail in memory and never opens the real cache, so
     // it has no key to read; the cache stays locked for its whole run.
-    if std::env::var_os("HYLKI_DEMO").is_some() {
+    if std::env::var_os("BUZON_DEMO").is_some() {
         return true;
     }
     let db = match crate::cache::Cache::db_path() {

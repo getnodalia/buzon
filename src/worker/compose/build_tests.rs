@@ -58,9 +58,9 @@ fn recipient_less_draft_builds_but_send_does_not() {
         .to_string();
     assert!(err.contains("missing destination"), "{err}");
     // With a recipient the draft is built the ordinary way.
-    msg.to = "Peer <peer@hylki.invalid>".into();
+    msg.to = "Peer <peer@buzon.invalid>".into();
     let raw = build_draft(&account, &msg).expect("builds").formatted();
-    assert!(String::from_utf8_lossy(&raw).contains("peer@hylki.invalid"));
+    assert!(String::from_utf8_lossy(&raw).contains("peer@buzon.invalid"));
 }
 
 /// A draft or template written for a mail merge (#447) keeps the fields
@@ -108,7 +108,7 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
         eprintln!("gpg not installed; skipping");
         return;
     }
-    let home = std::env::temp_dir().join(format!("hylki-gpg-send-{}", std::process::id()));
+    let home = std::env::temp_dir().join(format!("buzon-gpg-send-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&home);
     std::fs::create_dir_all(&home).unwrap();
     #[cfg(unix)]
@@ -117,17 +117,17 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
         std::fs::set_permissions(&home, std::fs::Permissions::from_mode(0o700)).unwrap();
     }
     // `Gpg::system()` (what build_email uses) honours this override.
-    std::env::set_var("HYLKI_GNUPGHOME", &home);
+    std::env::set_var("BUZON_GNUPGHOME", &home);
     let gpg = crate::mail::pgp::Gpg::system();
     let mut account = sample_account();
-    account.email = "sender@hylki.invalid".into();
-    let fpr = crate::mail::pgp::generate_key(&gpg, "Sender", "sender@hylki.invalid", "never", "")
+    account.email = "sender@buzon.invalid".into();
+    let fpr = crate::mail::pgp::generate_key(&gpg, "Sender", "sender@buzon.invalid", "never", "")
         .expect("own key");
-    crate::mail::pgp::generate_key(&gpg, "Peer", "peer@hylki.invalid", "never", "")
+    crate::mail::pgp::generate_key(&gpg, "Peer", "peer@buzon.invalid", "never", "")
         .expect("peer key");
 
     let mut msg = sample_outgoing();
-    msg.to = "Peer <peer@hylki.invalid>".into();
+    msg.to = "Peer <peer@buzon.invalid>".into();
     msg.body = "signed body text".into();
     msg.sign = true;
     let raw = build_email(&account, &msg).expect("builds").formatted();
@@ -163,7 +163,7 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
     msg.encrypt = true;
     msg.body = "secret body text".into();
     msg.subject = "Secret plans".into();
-    msg.bcc = "Hidden <sender@hylki.invalid>".into();
+    msg.bcc = "Hidden <sender@buzon.invalid>".into();
     let raw = build_email(&account, &msg).expect("builds").formatted();
     let text = String::from_utf8_lossy(&raw);
     assert!(text.contains("multipart/encrypted"), "{text}");
@@ -190,7 +190,7 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
     assert!(inner.contains("secret body text"), "{inner}");
     assert!(inner.contains("protected-headers=\"v1\""), "{inner}");
     assert!(
-        inner.contains("peer@hylki.invalid"),
+        inner.contains("peer@buzon.invalid"),
         "the To travels inside: {inner}"
     );
     assert!(
@@ -205,8 +205,8 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
     );
     // A Bcc with a key of its own is in the packet without its key id,
     // which the To and the Cc would otherwise see.
-    crate::mail::pgp::generate_key(&gpg, "Bcc", "bcc@hylki.invalid", "never", "").expect("bcc key");
-    msg.bcc = "Hidden <bcc@hylki.invalid>".into();
+    crate::mail::pgp::generate_key(&gpg, "Bcc", "bcc@buzon.invalid", "never", "").expect("bcc key");
+    msg.bcc = "Hidden <bcc@buzon.invalid>".into();
     let raw = build_email(&account, &msg).expect("builds").formatted();
     let text = String::from_utf8_lossy(&raw);
     let begin = text.find("-----BEGIN PGP MESSAGE-----").expect("armour");
@@ -260,17 +260,17 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
     account.plain_subject = false;
 
     // A recipient without a key is refused by name; a From without a key too.
-    msg.cc = "nobody@hylki.invalid".into();
+    msg.cc = "nobody@buzon.invalid".into();
     let err = build_email(&account, &msg)
         .expect_err("no key for nobody")
         .to_string();
-    assert!(err.contains("nobody@hylki.invalid"), "{err}");
+    assert!(err.contains("nobody@buzon.invalid"), "{err}");
     msg.cc.clear();
-    account.email = "keyless@hylki.invalid".into();
+    account.email = "keyless@buzon.invalid".into();
     let err = build_email(&account, &msg)
         .expect_err("no own key")
         .to_string();
-    assert!(err.contains("keyless@hylki.invalid"), "{err}");
+    assert!(err.contains("keyless@buzon.invalid"), "{err}");
     // The account's chosen key overrides the address match.
     account.pgp_key = Some(fpr);
     build_email(&account, &msg).expect("chosen key signs");
@@ -284,7 +284,7 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
     let raw = build_email(&account, &plain).expect("builds").formatted();
     assert!(String::from_utf8_lossy(&raw).contains("secret body text"));
 
-    std::env::remove_var("HYLKI_GNUPGHOME");
+    std::env::remove_var("BUZON_GNUPGHOME");
     let _ = std::process::Command::new("gpgconf")
         .env("GNUPGHOME", &home)
         .args(["--kill", "all"])
@@ -293,7 +293,7 @@ fn build_email_signs_and_encrypts_with_pgp_mime() {
 }
 
 /// A reply with no In-Reply-To/References is a new conversation to every
-/// client that receives it — including Hylki's own threading.
+/// client that receives it — including Buzón's own threading.
 #[test]
 fn reply_to_header_reaches_the_wire() {
     let mut msg = sample_outgoing();
@@ -401,7 +401,7 @@ fn build_email_carries_attachments() {
     // "Name <addr>" string — which 1.8.x did for From/To and 1.9.0 replaced
     // with mailboxes built from parts. This pins the attachment path itself,
     // including a name that would have needed quoting and a UTF-8 filename.
-    let dir = std::env::temp_dir().join(format!("hylki-test-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("buzon-test-{}", std::process::id()));
     std::fs::create_dir_all(&dir).expect("temp dir");
     let file = dir.join("Meeting notes, final.pdf");
     // Binary, so the encoder has to base64 it — as it would a real PDF.
@@ -480,7 +480,7 @@ fn plain_text_declares_its_charset() {
 /// bytes arrive unchanged and no lone LF reaches the wire.
 #[test]
 fn a_unix_text_attachment_leaves_no_bare_newline() {
-    let dir = std::env::temp_dir().join(format!("hylki-lf-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("buzon-lf-{}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
     let file = dir.join("notes.txt");
     std::fs::write(&file, b"one\ntwo\n").unwrap();

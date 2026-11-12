@@ -207,7 +207,7 @@ impl View {
         toolbar.set_content(Some(&content));
 
         let window = adw::Window::new();
-        window.set_title(Some("Hylki"));
+        window.set_title(Some("Buzón"));
         window.set_default_size(440, -1);
         window.set_resizable(false);
         window.set_content(Some(&toolbar));

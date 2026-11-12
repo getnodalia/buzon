@@ -104,7 +104,7 @@ pub(super) fn send_failed(
 /// Send Later (#145): park the message in the Outbox until `at`. The bytes are
 /// built now, like a failed send's, so the attachments are read while they
 /// exist; the app's clock sends it when the time comes, or the next launch
-/// does if Hylki was not running then. Replaces the queued row it was edited
+/// does if Buzón was not running then. Replaces the queued row it was edited
 /// from, and drops the draft it was opened from (the caller handles the
 /// server-side copy).
 pub(super) fn schedule_send(
@@ -470,7 +470,7 @@ mod tests {
         let account = sample_account();
         let mut msg = sample_outgoing();
         msg.to = "ann@example.com".into();
-        msg.attachments = vec!["/nonexistent/hylki-test/moved.pdf".into()];
+        msg.attachments = vec!["/nonexistent/buzon-test/moved.pdf".into()];
         let events = std::cell::RefCell::new(Vec::new());
         send_failed(
             Some(&cache),
@@ -685,15 +685,15 @@ mod tests {
         let folders = vec![
             folder(1, "INBOX", FolderKind::Inbox),
             folder(2, "Sent", FolderKind::Sent),
-            folder(3, "Projects/Hylki", FolderKind::Custom),
+            folder(3, "Projects/Buzón", FolderKind::Custom),
             folder(4, "[Gmail]/All Mail", FolderKind::Archive),
             folder(5, "Trash", FolderKind::Trash),
         ];
         let held = |paths: &[&str]| paths.iter().map(|p| p.to_string()).collect::<Vec<_>>();
         let pick = |choice, paths: &[&str]| pick_reply_folder(choice, &folders, &held(paths));
         assert_eq!(
-            pick(ReplyCopies::Original, &["Projects/Hylki"]).as_deref(),
-            Some("Projects/Hylki")
+            pick(ReplyCopies::Original, &["Projects/Buzón"]).as_deref(),
+            Some("Projects/Buzón")
         );
         assert_eq!(
             pick(ReplyCopies::Original, &["INBOX"]).as_deref(),
@@ -704,10 +704,10 @@ mod tests {
         assert_eq!(
             pick(
                 ReplyCopies::OriginalNotInbox,
-                &["INBOX", "[Gmail]/All Mail", "Projects/Hylki"]
+                &["INBOX", "[Gmail]/All Mail", "Projects/Buzón"]
             )
             .as_deref(),
-            Some("Projects/Hylki"),
+            Some("Projects/Buzón"),
         );
         assert_eq!(
             pick(ReplyCopies::Original, &["INBOX", "[Gmail]/All Mail"]).as_deref(),
@@ -787,11 +787,11 @@ mod tests {
             due: 0,
             labels: Vec::new(),
         };
-        cache.upsert_messages(1, "Projects/Hylki", std::slice::from_ref(&original));
+        cache.upsert_messages(1, "Projects/Buzón", std::slice::from_ref(&original));
         let on = account(ReplyCopies::Original, false);
         assert_eq!(
             reply_copy_path(&on, 1, Some(&cache), "<Parent@Example.com>", None).as_deref(),
-            Some("Projects/Hylki"),
+            Some("Projects/Buzón"),
         );
         assert_eq!(
             reply_copy_path(&on, 2, Some(&cache), "parent@example.com", None),

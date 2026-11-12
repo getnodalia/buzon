@@ -26,10 +26,10 @@
 pub(super) const HISTORY_SCRIPT: &str =
     concat!("<script>", include_str!("history.js"), "</script>");
 
-/// The editor's side of its emoji chooser (#348). `__hylkiEmojiMark` keeps
+/// The editor's side of its emoji chooser (#348). `__buzonEmojiMark` keeps
 /// the caret, for the emoji to go to once the chooser has had the focus,
 /// and says where it is (`x,y,w,h` in CSS pixels) for the chooser to point
-/// at. `__hylkiEmojiPut` types the emoji there. A `<textarea>` (source
+/// at. `__buzonEmojiPut` types the emoji there. A `<textarea>` (source
 /// mode) keeps its own caret, and the chooser points at the field.
 pub(super) const EMOJI_SCRIPT: &str = concat!("<script>", include_str!("emoji.js"), "</script>");
 
@@ -37,7 +37,7 @@ pub(super) const EMOJI_SCRIPT: &str = concat!("<script>", include_str!("emoji.js
 /// #524): `dir="auto"` on its blocks, and a line of a plain `<div>` or `<p>`
 /// kept as a block of its own while the message is written, joined back to
 /// a `<br>` line in what the document hands back. Its helpers reach
-/// [`PASTE_SCRIPT`] through `__hylkiLines`, so it goes in first.
+/// [`PASTE_SCRIPT`] through `__buzonLines`, so it goes in first.
 pub(super) const LINES_SCRIPT: &str = concat!("<script>", include_str!("lines.js"), "</script>");
 
 /// A spreadsheet's cells made into a table that carries its own look
@@ -46,8 +46,8 @@ pub(super) const SHEETS_SCRIPT: &str = concat!("<script>", include_str!("sheets.
 
 /// The paste choke point: every paste — shortcut, context menu, editing
 /// command — raises a DOM `paste` event here, where the clipboard's flavours
-/// can be inspected. `__hylkiPasteRich` is the standing mode (the user's
-/// preference, stamped at document build); `__hylkiPasteOnce` overrides it for
+/// can be inspected. `__buzonPasteRich` is the standing mode (the user's
+/// preference, stamped at document build); `__buzonPasteOnce` overrides it for
 /// exactly one paste (Ctrl+V and the context-menu items set it just before
 /// running the Paste command, so a live preference change is honored).
 ///
@@ -60,7 +60,7 @@ pub(super) const SHEETS_SCRIPT: &str = concat!("<script>", include_str!("sheets.
 pub(super) const PASTE_SCRIPT: &str = concat!("<script>", include_str!("paste.js"), "</script>");
 
 /// The quoted original of a reply or forward, folded behind a button while
-/// `__hylkiFoldQuote` is set (#549). After [`PASTE_SCRIPT`], whose plain
+/// `__buzonFoldQuote` is set (#549). After [`PASTE_SCRIPT`], whose plain
 /// view flattens the body first.
 pub(super) const FOLD_SCRIPT: &str = concat!("<script>", include_str!("fold.js"), "</script>");
 

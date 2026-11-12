@@ -1,6 +1,6 @@
 //! OpenPGP (#133), first slice: decrypt and verify what arrives, through the
 //! user's own GnuPG — `gpg` on the path, the keyring in `~/.gnupg`, the agent
-//! (and its pinentry) for passphrases. Hylki never sees a secret key and never
+//! (and its pinentry) for passphrases. Buzón never sees a secret key and never
 //! writes anything decrypted to disk: the worker renders a decrypted message
 //! straight to the reader and leaves the cache alone.
 //!
@@ -48,11 +48,11 @@ impl Gpg {
         Gpg { home: Some(home) }
     }
 
-    /// The user's GnuPG (honouring `HYLKI_GNUPGHOME`, for trying an
+    /// The user's GnuPG (honouring `BUZON_GNUPGHOME`, for trying an
     /// alternative keyring without touching the real one).
     pub(crate) fn system() -> Gpg {
         Gpg {
-            home: std::env::var_os("HYLKI_GNUPGHOME").map(PathBuf::from),
+            home: std::env::var_os("BUZON_GNUPGHOME").map(PathBuf::from),
         }
     }
 
@@ -109,7 +109,7 @@ fn run(gpg: &Gpg, args: &[&str], input: &[u8], detached_sig: Option<&[u8]>) -> R
     cmd.args(args);
     let sig_path = detached_sig.map(|sig| {
         let path = std::env::temp_dir().join(format!(
-            "vireo-sig-{}-{}.asc",
+            "buzon-sig-{}-{}.asc",
             std::process::id(),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
@@ -161,7 +161,7 @@ fn run(gpg: &Gpg, args: &[&str], input: &[u8], detached_sig: Option<&[u8]>) -> R
     // level the exported log keeps.
     if let Some(line) = stderr.lines().find(|l| l.contains("waiting for lock")) {
         tracing::warn!(
-            target: "hylki::pgp",
+            target: "buzon::pgp",
             "gpg {} waited on a keyring lock: {}",
             args.last().copied().unwrap_or(""),
             line.trim_start_matches("gpg: ").trim()
@@ -174,12 +174,12 @@ fn run(gpg: &Gpg, args: &[&str], input: &[u8], detached_sig: Option<&[u8]>) -> R
             status_lines.push(s.to_string());
         } else if !line.trim().is_empty() {
             let l = line.trim_start_matches("gpg: ").trim().to_string();
-            tracing::debug!(target: "hylki::pgp", "gpg: {l}");
+            tracing::debug!(target: "buzon::pgp", "gpg: {l}");
             detail = Some(l);
         }
     }
     for s in &status_lines {
-        tracing::debug!(target: "hylki::pgp", "[GNUPG:] {s}");
+        tracing::debug!(target: "buzon::pgp", "[GNUPG:] {s}");
     }
     Run {
         stdout: output.stdout,

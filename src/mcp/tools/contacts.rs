@@ -27,7 +27,7 @@ struct PersonOut {
     #[serde(skip_serializing_if = "String::is_empty")]
     name: String,
     email: String,
-    /// Where Hylki knows them from.
+    /// Where Buzón knows them from.
     source: &'static str,
     /// How many messages in the user's mail they are on.
     #[serde(skip_serializing_if = "is_zero")]
@@ -74,8 +74,8 @@ fn is_zero(n: &u32) -> bool {
 impl Mail {
     #[tool(
         description = "People and contact groups whose name or address holds `query`: \
-        from the user's address books (GNOME Contacts, CardDAV, Hylki's own), the people in \
-        their mail, and their LDAP and Microsoft 365 directories, as Hylki's composer suggests \
+        from the user's address books (GNOME Contacts, CardDAV, Buzón's own), the people in \
+        their mail, and their LDAP and Microsoft 365 directories, as Buzón's composer suggests \
         them, as far as the user allows each. Find every recipient's address here before \
         drafting; never guess one from a name.",
         annotations(read_only_hint = true)

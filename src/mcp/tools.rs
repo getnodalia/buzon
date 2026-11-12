@@ -52,22 +52,22 @@ const OFFSET_MAX: usize = 50_000;
 const BODY_MAX: usize = 32 * 1024;
 
 /// What an assistant is told a message's text is when it is encrypted.
-const ENCRYPTED_NOTE: &str = "This message is encrypted. Hylki never gives encrypted mail to \
+const ENCRYPTED_NOTE: &str = "This message is encrypted. Buzón never gives encrypted mail to \
     agents: the user reads it themselves.";
 
 /// What an assistant is told about a message with nothing to read.
 const NO_TEXT_NOTE: &str = "This message has no text to show: it may be only pictures or files.";
 
 pub(super) const INSTRUCTIONS: &str =
-    "Access to the mail in Hylki, the user's email app, while it runs, limited to what the user \
-allowed in Settings: hylki_status says what that is, and a tool that is not allowed says so. Do \
+    "Access to the mail in Buzón, the user's email app, while it runs, limited to what the user \
+allowed in Settings: buzon_status says what that is, and a tool that is not allowed says so. Do \
 not ask the user to widen it unless the task needs it. \
 Every tool reads all shared accounts unless `account` (an address from list_accounts) narrows \
 it. Folders are named by role (inbox, sent, drafts, archive, junk, trash, starred, templates, \
 snoozed) or by the path list_folders gives. Pass the `id` of a listed message to read_message. \
-search looks in what Hylki has downloaded, at once; search_server asks the mail servers, more \
+search looks in what Buzón has downloaded, at once; search_server asks the mail servers, more \
 slowly, and also finds what is not downloaded yet: use it when search misses something. \
-compose_message, reply_to_message and forward_message prepare a message and open it in Hylki \
+compose_message, reply_to_message and forward_message prepare a message and open it in Buzón \
 for the user to check and send; nothing is ever sent from here. Write plain text only. \
 read_open_thread shows the message the user has open now: start there when the user says \
 \"this message\". list_drafts and read_draft show messages being written, and update_draft \
@@ -122,7 +122,7 @@ struct ListMessagesArgs {
 
 #[derive(Deserialize, JsonSchema)]
 struct SearchArgs {
-    /// What to look for, as in Hylki's search field. Each word must be found somewhere in the
+    /// What to look for, as in Buzón's search field. Each word must be found somewhere in the
     /// message, in any order, and also matches as the start of a longer one ("invo" finds
     /// "invoice"); "quotes" keep a phrase together. Also from:, to:, subject:, in:,
     /// has:attachment, is:unread, is:read, is:starred.
@@ -262,11 +262,11 @@ impl Mail {
     }
 
     #[tool(
-        description = "Whether Hylki's mail tools are available, and what the user allows \
+        description = "Whether Buzón's mail tools are available, and what the user allows \
         through them: account by account, and for contacts.",
         annotations(read_only_hint = true)
     )]
-    async fn hylki_status(&self) -> CallToolResult {
+    async fn buzon_status(&self) -> CallToolResult {
         let policy = self.policy();
         let accounts: Vec<AccountOut> = self
             .shared_accounts(&policy)
@@ -392,7 +392,7 @@ impl Mail {
     #[tool(
         description = "Search subjects, people, previews and, where the user allows reading, \
         the text of downloaded messages, across all shared accounts or one. Understands what \
-        Hylki's search field does: every word must be found, \"quotes\" keep a phrase together, \
+        Buzón's search field does: every word must be found, \"quotes\" keep a phrase together, \
         and from:, to:, subject:, in:, has:attachment, is:unread, is:read, is:starred narrow it. \
         Returns summaries, newest first.",
         annotations(read_only_hint = true)
@@ -493,7 +493,7 @@ impl ServerHandler for Mail {
             .tool_router
             .call(ToolCallContext::new(self, request, context))
             .await;
-        if tool != "hylki_status" {
+        if tool != "buzon_status" {
             let ok =
                 matches!(&answer, Ok(CallToolResponse::Complete(r)) if r.is_error != Some(true));
             let _ = self.app.send(AppMsg::Assistant(AppCall::Activity(
@@ -651,7 +651,7 @@ impl Mail {
                     None,
                     false,
                     Some(format!(
-                        "Hylki could not download the body of this message: {why}. Only its \
+                        "Buzón could not download the body of this message: {why}. Only its \
                          preview is shown."
                     )),
                     Some(msg.preview.clone()).filter(|p| !p.is_empty()),

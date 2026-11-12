@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: fmt, clippy and tests
+    runs-on: ubuntu-latest
+    # Fedora carries the GTK, libadwaita and WebKitGTK versions Buzón builds
+    # against; Ubuntu's are older.
+    container: fedora:43
+    timeout-minutes: 60
+    steps:
+      - name: Install the build dependencies
+        run: |
+          dnf install -y --setopt=install_weak_deps=False \
+            git gcc gcc-c++ rust cargo rustfmt clippy \
+            gtk4-devel libadwaita-devel webkitgtk6.0-devel poppler-glib-devel \
+            openssl-devel gettext-devel wayland-devel \
+            xorg-x11-server-Xvfb /usr/bin/xvfb-run dbus-daemon
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+      - name: Tests
+        run: dbus-run-session -- xvfb-run -a cargo test --locked

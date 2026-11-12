@@ -184,7 +184,7 @@ mod tests {
             for (n, mailbox) in [(1, &asked_id), (2, &asked_id), (3, &other_id)] {
                 let raw = format!(
                     "From: Ann <ann@example.test>\r\nTo: me@example.test\r\nSubject: note {n}\r\n\
-                     Message-ID: <hylki-mcp-{pid}-{n}@example.test>\r\n\r\nThe {word} file.\r\n"
+                     Message-ID: <buzon-mcp-{pid}-{n}@example.test>\r\n\r\nThe {word} file.\r\n"
                 );
                 let email = serde_json::json!({ "mailboxIds": { mailbox.clone(): true } });
                 ids.push(jmap_import_email(&s, raw.as_bytes(), email).expect("import"));

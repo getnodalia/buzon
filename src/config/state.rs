@@ -315,7 +315,9 @@ fn update_state(change: impl FnOnce(&mut StateFile)) {
 /// read-modify-writes that overlap would lose one of them (#642).
 fn edit_state(change: impl FnOnce(&mut StateFile) -> bool) {
     static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-    let _held = LOCK.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+    let _held = LOCK
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
     let mut s = load_state();
     if change(&mut s) {
         save_state(&s);

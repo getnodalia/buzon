@@ -227,7 +227,7 @@ impl AppModel {
             .get(&target)
             .map(|items| {
                 stage_attachments(
-                    &format!("hylki-autofwd-{account_id}-{folder_id}-{uid}"),
+                    &format!("buzon-autofwd-{account_id}-{folder_id}-{uid}"),
                     items,
                 )
             })

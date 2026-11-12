@@ -10,7 +10,7 @@ async fn full_access_opens_all_but_junk_and_trash_and_still_not_what_no_setting_
     grant.folders.insert("Private".into(), false);
     let mut s = Session::start(policy, Ok(plain_raw("text"))).await;
 
-    let status = data(&s.call("hylki_status", json!({})).await);
+    let status = data(&s.call("buzon_status", json!({})).await);
     assert_eq!(
         status["accounts"][0]["allowed"].as_array().unwrap().len(),
         AssistantCap::ALL

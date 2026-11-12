@@ -187,7 +187,7 @@ pub(super) async fn send_raw_smtp(
     let mailer = smtp_transport(account, alias).await?;
     // The SMTP leg for the console: size and recipient count, then the verdict.
     tracing::debug!(
-        target: "hylki::smtp",
+        target: "buzon::smtp",
         "> send {} bytes to {} recipient(s) via {}",
         raw.len(),
         envelope.to().len(),
@@ -195,8 +195,8 @@ pub(super) async fn send_raw_smtp(
     );
     let r = mailer.send_raw(envelope, raw).await;
     match &r {
-        Ok(_) => tracing::debug!(target: "hylki::smtp", "< OK (send)"),
-        Err(e) => tracing::warn!(target: "hylki::smtp", "< {e} (send)"),
+        Ok(_) => tracing::debug!(target: "buzon::smtp", "< OK (send)"),
+        Err(e) => tracing::warn!(target: "buzon::smtp", "< {e} (send)"),
     }
     r?;
     Ok(())

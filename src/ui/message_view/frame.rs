@@ -256,7 +256,7 @@ pub(super) fn message_frame(
         // correctly on its first frame. Without it every card starts at the
         // browser's default and jumps once its content is measured, which is a
         // visible lurch on a thread that has simply been reopened.
-        // The `.hylki-pan` wrapper is the horizontal scroller for mail wider
+        // The `.buzon-pan` wrapper is the horizontal scroller for mail wider
         // than the pane. The frame itself is widened to its content (see
         // `s(f)`), so the sandboxed document is never scrollable — WebKit
         // latches wheel gestures to the innermost scrollable area under the
@@ -264,7 +264,7 @@ pub(super) fn message_frame(
         // vertical wheel deltas it cannot use, leaving the reader stuck.
         // A top-document div has no such latch: unused vertical deltas
         // bubble on to the page.
-        "<div class=\"hylki-pan\"><iframe class=\"hylki-frame\" data-key=\"{aid}:{id}\"{style} \
+        "<div class=\"buzon-pan\"><iframe class=\"buzon-frame\" data-key=\"{aid}:{id}\"{style} \
          sandbox=\"allow-same-origin allow-popups\" srcdoc=\"{doc}\"></iframe></div>",
         aid = key.0,
         id = key.1,

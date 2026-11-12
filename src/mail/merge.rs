@@ -459,7 +459,7 @@ pub(crate) fn group_columns(addresses: bool) -> Vec<String> {
 
 /// The domain of the stand-in addresses below. `.invalid` is reserved
 /// (RFC 2606), so nothing is ever delivered there.
-const FIELD_DOMAIN: &str = "hylki.invalid";
+const FIELD_DOMAIN: &str = "buzon.invalid";
 
 /// The address a draft or template gives a field in To, Cc or Bcc, which
 /// a saved message's headers take only as addresses. The field is the

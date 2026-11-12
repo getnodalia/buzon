@@ -63,7 +63,7 @@ pub(crate) struct OpenThread {
     pub(crate) members: Vec<Shown>,
 }
 
-/// What the user has open in Hylki now, by place only: what an assistant may
+/// What the user has open in Buzón now, by place only: what an assistant may
 /// know of each is decided from the cache, as for any other message.
 #[derive(Debug, Clone, Default)]
 pub(crate) struct OpenNow {
@@ -141,7 +141,7 @@ pub(crate) enum AppCall {
 static LISTENING: std::sync::Mutex<Option<PathBuf>> = std::sync::Mutex::new(None);
 
 /// Take away the socket, as the app quits: a relay started after finds
-/// nothing there, and says Hylki is not running.
+/// nothing there, and says Buzón is not running.
 pub(crate) fn remove_socket() {
     if let Some(path) = LISTENING.lock().ok().and_then(|mut l| l.take()) {
         let _ = std::fs::remove_file(path);
@@ -179,7 +179,7 @@ impl Server {
         });
         let (stop, stopped) = tokio::sync::oneshot::channel();
         let thread = std::thread::Builder::new()
-            .name("hylki-mcp".into())
+            .name("buzon-mcp".into())
             .spawn(move || listen(listener, stopped, app, shared))
             .map_err(|e| e.to_string())?;
         tracing::info!("mcp: listening at {}", path.display());
@@ -207,8 +207,8 @@ impl Drop for Server {
 }
 
 /// The socket, in a directory only the user can enter, itself only the
-/// user's. A socket left by a Hylki that did not quit cleanly is taken
-/// over; one another Hylki still answers on is not.
+/// user's. A socket left by a Buzón that did not quit cleanly is taken
+/// over; one another Buzón still answers on is not.
 fn bind(path: &Path) -> Result<std::os::unix::net::UnixListener, String> {
     use std::os::unix::fs::PermissionsExt;
     let at = |e: std::io::Error| format!("{}: {e}", path.display());
@@ -223,7 +223,7 @@ fn bind(path: &Path) -> Result<std::os::unix::net::UnixListener, String> {
     if path.exists() {
         if std::os::unix::net::UnixStream::connect(path).is_ok() {
             return Err(format!(
-                "{}: another Hylki is already listening",
+                "{}: another Buzón is already listening",
                 path.display()
             ));
         }
@@ -247,7 +247,7 @@ fn listen(
     // thread a slow search would hold up the stop the window is waiting for.
     let runtime = match tokio::runtime::Builder::new_multi_thread()
         .worker_threads(2)
-        .thread_name("hylki-mcp-tool")
+        .thread_name("buzon-mcp-tool")
         .enable_all()
         .build()
     {
@@ -321,7 +321,7 @@ mod tests {
 
     #[test]
     fn a_stale_socket_is_taken_over_and_a_live_one_is_not() {
-        let dir = std::env::temp_dir().join(format!("hylki-mcp-test-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("buzon-mcp-test-{}", std::process::id()));
         let path = dir.join("sub").join("mcp.sock");
         let first = bind(&path).expect("binds where nothing is");
         let mode = |p: &std::path::Path| std::fs::metadata(p).unwrap().permissions().mode() & 0o777;

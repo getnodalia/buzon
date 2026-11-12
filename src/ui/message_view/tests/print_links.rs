@@ -39,7 +39,7 @@ fn printing_inlines_the_message_instead_of_framing_it() {
     // cut off at the frame's on-screen height, because a print engine draws an
     // iframe as a box rather than paginating what is inside it.
     let doc = print_document(
-        "<div class=\"hylki-print-hdr\">HEADER</div>",
+        "<div class=\"buzon-print-hdr\">HEADER</div>",
         &[(
             String::new(),
             "<!DOCTYPE html><html><head><style>p{color:red}</style></head>\
@@ -107,21 +107,21 @@ fn one_message_cannot_restyle_the_whole_printout() {
         "<style>body{font-family:monospace}\
          @media print{html,body>p{color:red}}\
          .bodyguard{margin:0}</style><p>hi</p>",
-        ".hylki-print-m1",
+        ".buzon-print-m1",
     );
     assert!(
-        out.contains(".hylki-print-m1{font-family:monospace}"),
+        out.contains(".buzon-print-m1{font-family:monospace}"),
         "{out}"
     );
     assert!(
-        out.contains("@media print{.hylki-print-m1,.hylki-print-m1>p{color:red}}"),
+        out.contains("@media print{.buzon-print-m1,.buzon-print-m1>p{color:red}}"),
         "{out}"
     );
     // Only whole tag names: a class that merely contains "body" is untouched,
     // and so are declarations that mention one.
     assert!(out.contains(".bodyguard{margin:0}"), "{out}");
     assert!(out.contains("<p>hi</p>"));
-    assert!(!scope_styles("<p>body{x}</p>", ".hylki-print-m0").contains("hylki-print-m0"));
+    assert!(!scope_styles("<p>body{x}</p>", ".buzon-print-m0").contains("buzon-print-m0"));
     // Each message gets a class of its own, so the first sender's rules stop
     // at the first message.
     let doc = print_document(
@@ -132,8 +132,8 @@ fn one_message_cannot_restyle_the_whole_printout() {
         ],
         false,
     );
-    assert!(doc.contains(".hylki-print-m0{color:red}"), "{doc}");
-    assert!(doc.contains("hylki-print-msg hylki-print-m1"), "{doc}");
+    assert!(doc.contains(".buzon-print-m0{color:red}"), "{doc}");
+    assert!(doc.contains("buzon-print-msg buzon-print-m1"), "{doc}");
 }
 
 #[test]
@@ -150,11 +150,11 @@ fn a_printed_conversation_says_who_sent_what() {
 fn a_preview_uri_is_escaped() {
     // Subjects become filenames, and mail subjects are full of spaces and
     // brackets: "file://" + path is not a URI, and GIO opens nothing.
-    let path = std::path::Path::new("/tmp/vireo-print/[hyprlab] Sync 1.11.0.pdf");
+    let path = std::path::Path::new("/tmp/buzon-print/[hyprlab] Sync 1.11.0.pdf");
     let uri = gtk::gio::File::for_path(path).uri().to_string();
     assert!(!uri.contains(' '), "{uri}");
     assert!(uri.contains("%20"), "{uri}");
-    assert!(uri.starts_with("file:///tmp/vireo-print/"), "{uri}");
+    assert!(uri.starts_with("file:///tmp/buzon-print/"), "{uri}");
 }
 
 #[test]
@@ -280,7 +280,7 @@ fn names_a_remote_picture_from_its_address() {
 #[test]
 fn a_cached_picture_gives_back_its_web_address() {
     assert_eq!(
-        crate::services::remote_content::web_url("hylki-https://img.example/a.png").as_deref(),
+        crate::services::remote_content::web_url("buzon-https://img.example/a.png").as_deref(),
         Some("https://img.example/a.png")
     );
     assert!(crate::services::remote_content::web_url("https://img.example/a.png").is_none());

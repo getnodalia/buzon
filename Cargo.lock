@@ -350,6 +350,61 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72f5acc6cb2ba439de613abc23857ec3d78374d8ed5ac84e9d11336e87da8649"
 
 [[package]]
+name = "buzon"
+version = "0.1.0"
+dependencies = [
+ "ammonia",
+ "async-imap",
+ "async-native-tls",
+ "base64 0.22.1",
+ "cairo-rs",
+ "cfb",
+ "chrono",
+ "css-inline",
+ "dirs",
+ "flate2",
+ "futures",
+ "getrandom 0.2.17",
+ "gettext-rs",
+ "glib-build-tools",
+ "gtk4",
+ "html5ever",
+ "keyring",
+ "ksni",
+ "lettre",
+ "libadwaita",
+ "libc",
+ "libloading",
+ "mail-parser",
+ "markup5ever_rcdom",
+ "pangocairo",
+ "poppler-rs",
+ "pulldown-cmark",
+ "relm4",
+ "rfc2047-decoder",
+ "rmcp",
+ "rusqlite",
+ "schemars",
+ "serde",
+ "serde_json",
+ "sha2",
+ "siphasher",
+ "tar",
+ "tokio",
+ "toml 0.8.23",
+ "tracing",
+ "tracing-subscriber",
+ "ureq",
+ "wayland-backend",
+ "wayland-client",
+ "wayland-scanner",
+ "webkit6",
+ "whatlang",
+ "zbus 4.4.0",
+ "zip",
+]
+
+[[package]]
 name = "bytes"
 version = "1.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1459,61 +1514,6 @@ name = "httpdate"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"
-
-[[package]]
-name = "hylki"
-version = "1.48.0"
-dependencies = [
- "ammonia",
- "async-imap",
- "async-native-tls",
- "base64 0.22.1",
- "cairo-rs",
- "cfb",
- "chrono",
- "css-inline",
- "dirs",
- "flate2",
- "futures",
- "getrandom 0.2.17",
- "gettext-rs",
- "glib-build-tools",
- "gtk4",
- "html5ever",
- "keyring",
- "ksni",
- "lettre",
- "libadwaita",
- "libc",
- "libloading",
- "mail-parser",
- "markup5ever_rcdom",
- "pangocairo",
- "poppler-rs",
- "pulldown-cmark",
- "relm4",
- "rfc2047-decoder",
- "rmcp",
- "rusqlite",
- "schemars",
- "serde",
- "serde_json",
- "sha2",
- "siphasher",
- "tar",
- "tokio",
- "toml 0.8.23",
- "tracing",
- "tracing-subscriber",
- "ureq",
- "wayland-backend",
- "wayland-client",
- "wayland-scanner",
- "webkit6",
- "whatlang",
- "zbus 4.4.0",
- "zip",
-]
 
 [[package]]
 name = "iana-time-zone"

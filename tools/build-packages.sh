@@ -7,8 +7,8 @@
 #   tools/build-packages.sh deb        # builds the Debian package
 #
 # Output lands in packaging/out/:
-#   hylki-<ver>-1.fc44.<arch>.rpm       - packaged from the host (Fedora) cargo build
-#   hylki_<ver>-1_<arch>.deb            - packaged from a Debian 13 cargo build
+#   buzon-<ver>-1.fc44.<arch>.rpm       - packaged from the host (Fedora) cargo build
+#   buzon_<ver>-1_<arch>.deb            - packaged from a Debian 13 cargo build
 #                                         (a beta's <ver> is 1.43.0~beta.8 in both)
 #
 # Each package wraps a release binary built against its own distribution's
@@ -20,7 +20,7 @@
 # from docs/BUILDING.md and dpkg-dev, the deb is built in place.
 set -euo pipefail
 
-APP_ID="co.hyprlab.Hylki"
+APP_ID="dev.danielmiguelt.Buzon"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/packaging/out"
 VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' "$ROOT/Cargo.toml" | head -1)"
@@ -29,12 +29,12 @@ VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' "$ROOT/Cargo.toml" | head -1)"
 # stable release replaces the beta.
 PKG_VERSION="${VERSION//-/\~}"
 WHAT="${1:-all}"
-DEB_IMAGE="${HYLKI_DEB_IMAGE:-docker.io/library/rust:1-trixie}"
+DEB_IMAGE="${BUZON_DEB_IMAGE:-docker.io/library/rust:1-trixie}"
 
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 # /out is the host's packaging/out when the deb build re-ran this script in
 # its container.
-[ -n "${HYLKI_DEB_CONTAINER:-}" ] && OUT=/out
+[ -n "${BUZON_DEB_CONTAINER:-}" ] && OUT=/out
 mkdir -p "$OUT"
 
 # The payload both packages carry, staged into $1: the release binary, the
@@ -43,26 +43,26 @@ mkdir -p "$OUT"
 stage_payload() {
     local stage="$1" po lang size
     mkdir -p "$stage/icons/256x256" "$stage/icons/512x512" "$stage/icons/scalable" "$stage/icons/symbolic"
-    cp "$ROOT/target/release/hylki"              "$stage/hylki"
-    cp "$ROOT/LICENSE"                          "$stage/LICENSE"
+    cp "$ROOT/target/release/buzon"              "$stage/buzon"
+    cp "$ROOT/COPYING"                          "$stage/COPYING"
     msgfmt --desktop --template="$ROOT/data/$APP_ID.desktop" -d "$ROOT/po" -o "$stage/$APP_ID.desktop"
     msgfmt --xml --template="$ROOT/data/$APP_ID.metainfo.xml" -d "$ROOT/po" -o "$stage/$APP_ID.metainfo.xml"
     for po in "$ROOT"/po/*.po; do
         [ -e "$po" ] || continue
         lang=$(basename "$po" .po)
         mkdir -p "$stage/locale/$lang/LC_MESSAGES"
-        msgfmt -o "$stage/locale/$lang/LC_MESSAGES/hylki.mo" "$po"
+        msgfmt -o "$stage/locale/$lang/LC_MESSAGES/buzon.mo" "$po"
     done
     for size in 256x256 512x512; do
         cp "$ROOT/data/icons/hicolor/$size/apps/$APP_ID.png" "$stage/icons/$size/$APP_ID.png"
     done
     cp "$ROOT/data/icons/hicolor/scalable/apps/$APP_ID.svg" "$stage/icons/scalable/$APP_ID.svg"
-    cp "$ROOT/data/icons/hicolor/symbolic/apps/co.hyprlab.Hylki-symbolic.svg" "$stage/icons/symbolic/$APP_ID-symbolic.svg"
+    cp "$ROOT/data/icons/hicolor/symbolic/apps/dev.danielmiguelt.Buzon-symbolic.svg" "$stage/icons/symbolic/$APP_ID-symbolic.svg"
 }
 
 build_rpm() {
     # Keep the version in the spec file in lockstep with Cargo.toml
-    sed -i "s/^Version:.*/Version:        $PKG_VERSION/" "$ROOT/packaging/fedora/hylki.spec"
+    sed -i "s/^Version:.*/Version:        $PKG_VERSION/" "$ROOT/packaging/fedora/buzon.spec"
 
     echo "==> Building release binary (host)"
     ( cd "$ROOT" && cargo build --release )
@@ -70,19 +70,15 @@ build_rpm() {
     echo "==> Staging RPM payload"
     local work stage
     work="$(mktemp -d)"
-    stage="$work/hylki-$PKG_VERSION-bin"
+    stage="$work/buzon-$PKG_VERSION-bin"
     stage_payload "$stage"
-    # The dnf repository on hylki.hyprlab.co, so an RPM installed from a
-    # download keeps updating with the rest of the system.
-    cp "$ROOT/packaging/fedora/hylki.repo"      "$stage/hylki.repo"
-    cp "$ROOT/packaging/fedora/hylki-beta.repo" "$stage/hylki-beta.repo"
     mkdir -p "$work/rpmbuild/SOURCES"
-    tar -C "$work" -cf "$work/rpmbuild/SOURCES/hylki-$PKG_VERSION-bin.tar" "hylki-$PKG_VERSION-bin"
+    tar -C "$work" -cf "$work/rpmbuild/SOURCES/buzon-$PKG_VERSION-bin.tar" "buzon-$PKG_VERSION-bin"
 
     echo "==> rpmbuild"
-    rpmbuild -bb --define "_topdir $work/rpmbuild" "$ROOT/packaging/fedora/hylki.spec"
+    rpmbuild -bb --define "_topdir $work/rpmbuild" "$ROOT/packaging/fedora/buzon.spec"
     # x86_64 here; aarch64 when the arm64 CI job runs this on Fedora.
-    cp "$work/rpmbuild/RPMS/$(rpm --eval '%{_arch}')/"hylki-*.rpm "$OUT/"
+    cp "$work/rpmbuild/RPMS/$(rpm --eval '%{_arch}')/"buzon-*.rpm "$OUT/"
     rm -rf "$work"
     echo "==> RPM done"
 }
@@ -96,11 +92,11 @@ build_deb() {
         # `label=disable` spares relabelling the working tree for SELinux.
         podman run --rm \
             --security-opt label=disable \
-            -e HYLKI_DEB_CONTAINER=1 \
+            -e BUZON_DEB_CONTAINER=1 \
             -v "$ROOT":/src:ro \
             -v "$OUT":/out \
-            -v hylki-deb-target:/build/target \
-            -v hylki-deb-cargo:/usr/local/cargo/registry \
+            -v buzon-deb-target:/build/target \
+            -v buzon-deb-cargo:/usr/local/cargo/registry \
             "$DEB_IMAGE" \
             sh -euc '
                 mkdir -p /build
@@ -113,7 +109,7 @@ build_deb() {
         return
     fi
 
-    if [ -n "${HYLKI_DEB_CONTAINER:-}" ]; then
+    if [ -n "${BUZON_DEB_CONTAINER:-}" ]; then
         echo "==> Installing build dependencies"
         apt-get update -qq
         DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
@@ -129,10 +125,10 @@ build_deb() {
     local work stage pkg arch deps mo
     work="$(mktemp -d)"
     stage="$work/payload"
-    pkg="$work/hylki"
+    pkg="$work/buzon"
     arch="$(dpkg --print-architecture)"
     stage_payload "$stage"
-    install -Dm755 "$stage/hylki" "$pkg/usr/bin/hylki"
+    install -Dm755 "$stage/buzon" "$pkg/usr/bin/buzon"
     install -Dm644 "$stage/$APP_ID.desktop" "$pkg/usr/share/applications/$APP_ID.desktop"
     install -Dm644 "$stage/$APP_ID.metainfo.xml" "$pkg/usr/share/metainfo/$APP_ID.metainfo.xml"
     for size in 256x256 512x512 scalable symbolic; do
@@ -142,33 +138,23 @@ build_deb() {
     done
     # The binary looks for its catalogues under share/locale beside itself
     # (src/i18n.rs).
-    for mo in "$stage"/locale/*/LC_MESSAGES/hylki.mo; do
+    for mo in "$stage"/locale/*/LC_MESSAGES/buzon.mo; do
         [ -e "$mo" ] || continue
         install -Dm644 "$mo" "$pkg/usr/share/${mo#"$stage"/}"
     done
-    # The apt repository on hylki.hyprlab.co, the same files the site serves
-    # at /deb/hylki.sources and /deb/hylki-beta.sources (key included), so a
-    # package installed from a download keeps updating with the rest of the
-    # system. The beta's is switched off, as in the RPM: a tester turns it on
-    # once, and every package, stable or beta, carries it, so the first stable
-    # to overtake a beta does not remove it. Both are conffiles: a user's
-    # edits are kept on upgrade.
-    install -Dm644 "$ROOT/packaging/debian/hylki.sources" "$pkg/etc/apt/sources.list.d/hylki.sources"
-    install -Dm644 "$ROOT/packaging/debian/hylki-beta.sources" "$pkg/etc/apt/sources.list.d/hylki-beta.sources"
-    mkdir -p "$pkg/DEBIAN" "$pkg/usr/share/doc/hylki"
-    printf '/etc/apt/sources.list.d/hylki.sources\n/etc/apt/sources.list.d/hylki-beta.sources\n' > "$pkg/DEBIAN/conffiles"
+    mkdir -p "$pkg/DEBIAN" "$pkg/usr/share/doc/buzon"
     {
         printf 'Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n'
-        printf 'Upstream-Name: Hylki\nSource: https://github.com/hyprlab/hylki\n\n'
-        printf 'Files: *\nCopyright: Hyprlab <hyprlab@proton.me>\nLicense: AGPL-3.0-or-later\n'
-        sed 's/^[[:space:]]*$/./; s/^/ /' "$stage/LICENSE"
-    } > "$pkg/usr/share/doc/hylki/copyright"
+        printf 'Upstream-Name: Buzón\nSource: https://github.com/getnodalia/buzon\n\n'
+        printf 'Files: *\nCopyright: 2026 Daniel Miguel Tejedor\n           2026 Hyprlab and contributors\nLicense: AGPL-3.0-or-later\n'
+        sed 's/^[[:space:]]*$/./; s/^/ /' "$stage/COPYING"
+    } > "$pkg/usr/share/doc/buzon/copyright"
 
     # dpkg-shlibdeps turns the libraries the binary links into package names
     # and minimum versions; it wants a source control file to exist.
     mkdir -p "$work/debian"
-    printf 'Source: hylki\n\nPackage: hylki\nArchitecture: any\n' > "$work/debian/control"
-    deps="$(cd "$work" && dpkg-shlibdeps -O -e"$pkg/usr/bin/hylki" 2>/dev/null)"
+    printf 'Source: buzon\n\nPackage: buzon\nArchitecture: any\n' > "$work/debian/control"
+    deps="$(cd "$work" && dpkg-shlibdeps -O -e"$pkg/usr/bin/buzon" 2>/dev/null)"
     deps="${deps#shlibs:Depends=}"
     [ -n "$deps" ] || { echo "dpkg-shlibdeps found no dependencies" >&2; exit 1; }
     # The app's icons are SVG, which GTK reads through a gdk-pixbuf loader
@@ -180,26 +166,26 @@ build_deb() {
     # packages of either (up to 1.7.0) are replaced, and user data carries
     # over on first start.
     cat > "$pkg/DEBIAN/control" <<EOF
-Package: hylki
+Package: buzon
 Version: $PKG_VERSION-1
 Section: mail
 Priority: optional
 Architecture: $arch
-Maintainer: Hyprlab <hyprlab@proton.me>
+Maintainer: Daniel Miguel Tejedor <danielmigueltejedor@users.noreply.github.com>
 Installed-Size: $(du -sk --exclude=DEBIAN "$pkg" | cut -f1)
 Depends: $deps
 Recommends: gnome-keyring, gnupg, python3-nautilus
 Conflicts: veem, vireo
 Replaces: veem, vireo
-Homepage: https://hylki.hyprlab.co
+Homepage: https://getnodalia.com
 Description: Clean, fast GNOME-native email client
- Hylki is a desktop email client for Wayland that feels at home in GNOME. It
+ Buzón is a desktop email client for Wayland that feels at home in GNOME. It
  talks IMAP/SMTP directly, keeps your mail and credentials on your machine,
  and blocks trackers by default - no telemetry, no analytics.
 EOF
 
     echo "==> dpkg-deb"
-    dpkg-deb --build --root-owner-group "$pkg" "$OUT/hylki_${PKG_VERSION}-1_${arch}.deb"
+    dpkg-deb --build --root-owner-group "$pkg" "$OUT/buzon_${PKG_VERSION}-1_${arch}.deb"
     rm -rf "$work"
     echo "==> DEB done"
 }
@@ -211,6 +197,6 @@ case "$WHAT" in
     *)   echo "usage: $0 [rpm|deb|all]" >&2; exit 1 ;;
 esac
 
-[ -n "${HYLKI_DEB_CONTAINER:-}" ] && exit 0
+[ -n "${BUZON_DEB_CONTAINER:-}" ] && exit 0
 echo "==> Packages in $OUT:"
 ls -1 "$OUT"

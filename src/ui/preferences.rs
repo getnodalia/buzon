@@ -48,8 +48,7 @@ pub(crate) use messages::{PrefInit, PrefInput, PrefOutput};
 use navigation::{side_page, SIDE_PAGES};
 use pages::{
     AppearancePage, AssistantsPage, BackupPage, ComposingPage, ConversationsPage, DateTimePage,
-    FocusPage,
-    GeneralPage, ListPage, PrivacyPage, ReadingPage, SidebarPage, SystemPage,
+    FocusPage, GeneralPage, ListPage, PrivacyPage, ReadingPage, SidebarPage, SystemPage,
 };
 use rows::{compose_font_setup, middle_ellipsize, widen_combo_value, widen_page};
 pub(crate) use search::NOT_SEARCHED;

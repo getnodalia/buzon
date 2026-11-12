@@ -115,7 +115,7 @@ fn is_risky_attachment(name: &str, data: &[u8]) -> bool {
 /// [`is_risky_attachment`]).
 pub(crate) fn open_bytes(name: &str, data: &[u8], parent: Option<&gtk::Window>) {
     // An attached message is read here, in a window of its own (#622).
-    // Handed to the desktop, it came back to Hylki as a file to attach.
+    // Handed to the desktop, it came back to Buzón as a file to attach.
     if crate::mail::message_file::is_message(name, data) {
         if let Some(path) = stage(name, data) {
             crate::app::queue_message_file(path);
@@ -376,7 +376,7 @@ fn create_private(
             use std::os::unix::fs::OpenOptionsExt;
             opts.mode(0o600);
             // Refuse to follow a symlink instead of racing to check for one.
-            // 0o400000 is O_NOFOLLOW on every Linux arch Hylki ships for; the
+            // 0o400000 is O_NOFOLLOW on every Linux arch Buzón ships for; the
             // wrong constant here once passed O_DIRECTORY (0o200000) instead,
             // which made this open() fail and every attachment click a no-op.
             opts.custom_flags(0o400000 /* O_NOFOLLOW */);
@@ -390,7 +390,7 @@ fn create_private(
 
 /// This process's real user ID.
 ///
-/// Hylki has no libc dependency; `getuid` is always available and cannot fail,
+/// Buzón has no libc dependency; `getuid` is always available and cannot fail,
 /// so declaring it directly is cheaper than taking one on.
 #[cfg(unix)]
 fn our_uid() -> u32 {
@@ -427,9 +427,9 @@ fn staging_dir_for(
             std::path::Path::new(runtime_dir?)
                 .join("app")
                 .join(app_id)
-                .join("vireo-attachments"),
+                .join("buzon-attachments"),
         ),
-        None => Some(temp_dir.join("vireo-attachments")),
+        None => Some(temp_dir.join("buzon-attachments")),
     }
 }
 
@@ -438,7 +438,7 @@ fn staging_dir_for(
 /// Opened attachments used to accumulate in `/tmp` for the life of the machine —
 /// decrypted, readable, and long past the point the user considers them gone.
 /// Called once at startup, because the helper application the user opened a file
-/// with may still have it open while Hylki is running. It clears the directory
+/// with may still have it open while Buzón is running. It clears the directory
 /// [`attachment_dir`] stages in, which under Flatpak is not /tmp.
 pub(crate) fn purge_attachment_dir() {
     let Some(dir) = staging_dir() else { return };
@@ -488,7 +488,7 @@ mod tests {
     #[test]
     fn staged_files_are_new_private_and_never_written_through() {
         use std::os::unix::fs::PermissionsExt;
-        let dir = std::env::temp_dir().join(format!("hylki-stage-test-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("buzon-stage-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         let name = |base: &str| {
@@ -523,17 +523,20 @@ mod tests {
     fn the_purge_clears_where_attachments_are_staged() {
         let tmp = std::path::Path::new("/tmp");
         assert_eq!(
-            staging_dir_for(Some("co.hyprlab.Hylki"), Some("/run/user/1000"), tmp),
+            staging_dir_for(Some("dev.danielmiguelt.Buzon"), Some("/run/user/1000"), tmp),
             Some(std::path::PathBuf::from(
-                "/run/user/1000/app/co.hyprlab.Hylki/vireo-attachments"
+                "/run/user/1000/app/dev.danielmiguelt.Buzon/buzon-attachments"
             ))
         );
         assert_eq!(
             staging_dir_for(None, Some("/run/user/1000"), tmp),
-            Some(std::path::PathBuf::from("/tmp/vireo-attachments"))
+            Some(std::path::PathBuf::from("/tmp/buzon-attachments"))
         );
         // Without a runtime directory a Flatpak has nowhere to stage, and
         // nothing to purge.
-        assert_eq!(staging_dir_for(Some("co.hyprlab.Hylki"), None, tmp), None);
+        assert_eq!(
+            staging_dir_for(Some("dev.danielmiguelt.Buzon"), None, tmp),
+            None
+        );
     }
 }

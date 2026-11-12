@@ -94,13 +94,13 @@ fn a_collapsed_node_hides_descendants_and_nothing_else() {
 fn a_drop_payload_carries_every_dragged_message() {
     // One message (the single-selection case).
     assert_eq!(
-        parse_move_payload("vireo-move\t1\t2\t3\t4"),
+        parse_move_payload("buzon-move\t1\t2\t3\t4"),
         vec![(1, 2, 3, 4)]
     );
     // Three, as a multi-selection drag sends them — including a second
     // account, which the app filters out (mail can't cross accounts).
     assert_eq!(
-        parse_move_payload("vireo-move\t1\t2\t3\t4\t1\t2\t5\t6\t7\t8\t9\t10"),
+        parse_move_payload("buzon-move\t1\t2\t3\t4\t1\t2\t5\t6\t7\t8\t9\t10"),
         vec![(1, 2, 3, 4), (1, 2, 5, 6), (7, 8, 9, 10)]
     );
 }
@@ -110,10 +110,10 @@ fn a_payload_that_isnt_ours_moves_nothing() {
     for bad in [
         "",
         "some dragged text",
-        "vireo-move",
-        "vireo-move\t1\t2\t3",       // short group
-        "vireo-move\t1\t2\t3\t4\t5", // trailing partial group
-        "vireo-move\t1\t2\tx\t4",    // unparsable field
+        "buzon-move",
+        "buzon-move\t1\t2\t3",       // short group
+        "buzon-move\t1\t2\t3\t4\t5", // trailing partial group
+        "buzon-move\t1\t2\tx\t4",    // unparsable field
     ] {
         assert!(
             parse_move_payload(bad).is_empty(),
@@ -423,7 +423,7 @@ fn a_main_folder_only_reorders_among_main_folders() {
     let custom: Vec<String> = vec!["Clients".into(), "Clients/Acme".into()];
     let drop = |target: &Folder, frac| {
         folder_drop_zone(
-            "vireo-folder-main\t1\tSent",
+            "buzon-folder-main\t1\tSent",
             1,
             target,
             &custom,
@@ -460,24 +460,24 @@ fn a_custom_folder_goes_in_any_gap_or_inside_a_folder() {
     let drop = |payload: &str, target: &str, frac| {
         folder_drop_zone(payload, 1, &custom_folder(target), &custom, &gmail(), frac)
     };
-    let travel = "vireo-folder\t1\tTravel";
+    let travel = "buzon-folder\t1\tTravel";
     assert_eq!(drop(travel, "Clients", 0.1), FolderDrop::Before);
     assert_eq!(drop(travel, "Clients", 0.9), FolderDrop::After);
     assert_eq!(drop(travel, "Clients", 0.5), FolderDrop::Into);
     // Another level: a gap there too (the folder moves to that level).
     assert_eq!(drop(travel, "Clients/Acme", 0.1), FolderDrop::Before);
-    let acme = "vireo-folder\t1\tClients/Acme";
+    let acme = "buzon-folder\t1\tClients/Acme";
     assert_eq!(drop(acme, "Travel", 0.9), FolderDrop::After);
     // Not beside a folder whose parent isn't a folder ("[Gmail]"),
     // unless it already lives there; inside it is fine.
     assert_eq!(drop(travel, "[Gmail]/Important", 0.1), FolderDrop::Refuse);
     assert_eq!(drop(travel, "[Gmail]/Important", 0.5), FolderDrop::Into);
     assert_eq!(
-        drop("vireo-folder\t1\t[Gmail]/Test", "[Gmail]/Important", 0.1),
+        drop("buzon-folder\t1\t[Gmail]/Test", "[Gmail]/Important", 0.1),
         FolderDrop::Before
     );
     // Never inside itself, nor among the main folders or another account.
-    let clients = "vireo-folder\t1\tClients";
+    let clients = "buzon-folder\t1\tClients";
     assert_eq!(drop(clients, "Clients/Acme", 0.5), FolderDrop::Refuse);
     assert_eq!(drop(clients, "Clients/Acme", 0.1), FolderDrop::Refuse);
     let inbox = main(1, "INBOX", FolderKind::Inbox);
@@ -486,12 +486,12 @@ fn a_custom_folder_goes_in_any_gap_or_inside_a_folder() {
         FolderDrop::Refuse
     );
     assert_eq!(
-        drop("vireo-folder\t2\tTravel", "Clients", 0.1),
+        drop("buzon-folder\t2\tTravel", "Clients", 0.1),
         FolderDrop::Refuse
     );
     // Mail always goes in.
     assert_eq!(
-        drop("vireo-move\t1\t2\t3\t4", "Clients", 0.1),
+        drop("buzon-move\t1\t2\t3\t4", "Clients", 0.1),
         FolderDrop::Into
     );
 }
@@ -643,15 +643,15 @@ fn custom_parents_and_dragged_folder_payloads() {
     );
     assert_eq!(custom_parent("A", custom, &s), None);
     assert_eq!(
-        dragged_folder("vireo-folder\t3\tA/B"),
+        dragged_folder("buzon-folder\t3\tA/B"),
         Some((3, "A/B", false))
     );
     assert_eq!(
-        dragged_folder("vireo-folder-main\t2\tINBOX"),
+        dragged_folder("buzon-folder-main\t2\tINBOX"),
         Some((2, "INBOX", true))
     );
-    assert_eq!(dragged_folder("vireo-folder\tx\tA"), None);
-    assert_eq!(dragged_folder("vireo-folder\t3"), None);
+    assert_eq!(dragged_folder("buzon-folder\tx\tA"), None);
+    assert_eq!(dragged_folder("buzon-folder\t3"), None);
     assert_eq!(dragged_folder("other"), None);
 }
 

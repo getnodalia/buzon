@@ -37,8 +37,8 @@ impl MessageView {
         // with the row flashed so the eye lands on it.
         let js = format!(
             "(function(){{\
-             var d=document.querySelector('.hylki-atts[data-key=\"{account_id}:{id}\"]');\
-             var s=document.querySelector('.hylki-msg[data-key=\"{account_id}:{id}\"]');\
+             var d=document.querySelector('.buzon-atts[data-key=\"{account_id}:{id}\"]');\
+             var s=document.querySelector('.buzon-msg[data-key=\"{account_id}:{id}\"]');\
              var t=(d&&d.children.length)?d:s;if(!t)return;\
              t.scrollIntoView({{behavior:'smooth',block:'center'}});\
              if(d){{d.classList.remove('flash');void d.offsetWidth;d.classList.add('flash');\
@@ -75,13 +75,13 @@ impl MessageView {
         // blip ClearDot avoids in the other direction).
         let js = format!(
             "(function(){{\
-             var s=document.querySelector('.hylki-msg[data-key=\"{account_id}:{id}\"]');\
+             var s=document.querySelector('.buzon-msg[data-key=\"{account_id}:{id}\"]');\
              if(s)s.classList.add('unread');\
-             var h=document.querySelector('.hylki-msg-hdr[data-key=\"{account_id}:{id}\"]');\
-             if(!h||h.querySelector('.hylki-dot'))return;\
-             var d=document.createElement('span');d.className='hylki-dot';\
+             var h=document.querySelector('.buzon-msg-hdr[data-key=\"{account_id}:{id}\"]');\
+             if(!h||h.querySelector('.buzon-dot'))return;\
+             var d=document.createElement('span');d.className='buzon-dot';\
              d.setAttribute('data-key','{account_id}:{id}');\
-             var f=h.querySelector('.hylki-from');\
+             var f=h.querySelector('.buzon-from');\
              if(f)f.parentNode.insertBefore(d,f);else h.appendChild(d);}})()"
         );
         self.run_js_or_warn(&js, "unread-dot patch");
@@ -146,7 +146,7 @@ impl MessageView {
         let before = self.webview.root().and_then(|r| r.focus());
         let webview = self.webview.clone();
         self.webview.evaluate_javascript(
-            "window.__hylkiCopySel && window.__hylkiCopySel()",
+            "window.__buzonCopySel && window.__buzonCopySel()",
             None,
             None,
             gtk::gio::Cancellable::NONE,
@@ -212,7 +212,7 @@ impl MessageView {
         // it the card stops flush under the bar above, its top border and
         // selection outline hidden (#587).
         let js = format!(
-            "(function(){{var s=document.querySelector('.hylki-msg[data-key=\"{}:{}\"]');\
+            "(function(){{var s=document.querySelector('.buzon-msg[data-key=\"{}:{}\"]');\
              if(s){{s.style.scrollMarginTop='14px';\
              s.scrollIntoView({{behavior:'smooth',block:'start'}});}}}})()",
             key.0, key.1
@@ -298,9 +298,9 @@ impl MessageView {
         }
         let js = format!(
             "(function(){{\
-             var d=document.querySelector('.hylki-dot[data-key=\"{account_id}:{id}\"]');\
+             var d=document.querySelector('.buzon-dot[data-key=\"{account_id}:{id}\"]');\
              if(d)d.remove();\
-             var s=document.querySelector('.hylki-msg[data-key=\"{account_id}:{id}\"]');\
+             var s=document.querySelector('.buzon-msg[data-key=\"{account_id}:{id}\"]');\
              if(s)s.classList.remove('unread');}})()"
         );
         self.run_js_or_warn(&js, "clear-dot patch");
@@ -328,7 +328,7 @@ impl MessageView {
         let chips = tag_chips_html(&self.tags, &keywords, &labels);
         let js = format!(
             "(function(){{\
-             var t=document.querySelector('.hylki-tags[data-key=\"{account_id}:{id}\"]');\
+             var t=document.querySelector('.buzon-tags[data-key=\"{account_id}:{id}\"]');\
              if(t)t.innerHTML={chips};}})()",
             chips = serde_json::to_string(&chips).unwrap_or_else(|_| "''".into()),
         );
@@ -343,7 +343,7 @@ impl MessageView {
         }
         let js = format!(
             "(function(){{\
-             var s=document.querySelector('.hylki-msg[data-key=\"{account_id}:{id}\"]');\
+             var s=document.querySelector('.buzon-msg[data-key=\"{account_id}:{id}\"]');\
              if(s)s.classList.{0}('starred');}})()",
             if starred { "add" } else { "remove" },
         );
@@ -366,10 +366,10 @@ impl MessageView {
             }
             let js = format!(
                     "(function(){{\
-                     if(!document.body.classList.contains('hylki-conv'))return;\
-                     var s=document.querySelector('.hylki-msg[data-key=\"{account_id}:{id}\"]');\
+                     if(!document.body.classList.contains('buzon-conv'))return;\
+                     var s=document.querySelector('.buzon-msg[data-key=\"{account_id}:{id}\"]');\
                      if(!s)return;\
-                     document.querySelectorAll('.hylki-msg.selected').forEach(function(e){{e.classList.remove('selected');}});\
+                     document.querySelectorAll('.buzon-msg.selected').forEach(function(e){{e.classList.remove('selected');}});\
                      s.classList.add('selected');\
                      s.style.scrollMarginTop='14px';\
                      s.scrollIntoView({{behavior:'smooth',block:'start'}});}})()"
@@ -385,7 +385,7 @@ impl MessageView {
     pub(super) fn on_blur_card(&mut self) {
         self.focus_gen.set(self.focus_gen.get() + 1);
         self.webview.evaluate_javascript(
-            "(function(){document.querySelectorAll('.hylki-msg.selected')\
+            "(function(){document.querySelectorAll('.buzon-msg.selected')\
              .forEach(function(e){e.classList.remove('selected');});})()",
             None,
             None,

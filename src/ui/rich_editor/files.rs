@@ -15,7 +15,7 @@ use webkit6::prelude::WebViewExt;
 /// if the same picture was pasted twice.
 pub(super) fn detach_ctx_image(webview: &webkit6::WebView, cb: AttachCallback) {
     webview.evaluate_javascript(
-        "(function(){var n=window.__hylkiCtxImg;\
+        "(function(){var n=window.__buzonCtxImg;\
           if(!n){var sel=getSelection();\
             if(sel.rangeCount===1){var r=sel.getRangeAt(0);\
               if(r.startContainer===r.endContainer&&r.endOffset-r.startOffset===1){\
@@ -23,7 +23,7 @@ pub(super) fn detach_ctx_image(webview: &webkit6::WebView, cb: AttachCallback) {
                 if(c&&c.tagName==='IMG')n=c;}}}\
           if(!n||n.tagName!=='IMG')return 'E:none';\
           var s=n.src;if(s.indexOf('data:image/')!==0)return 'E:src:'+s.slice(0,40);\
-          n.remove();window.__hylkiCtxImg=null;return s;})()",
+          n.remove();window.__buzonCtxImg=null;return s;})()",
         None,
         None,
         gtk::gio::Cancellable::NONE,
@@ -70,7 +70,7 @@ fn data_uri_to_temp_file(uri: &str) -> Option<std::path::PathBuf> {
         "image/svg+xml" => "svg",
         _ => "png",
     };
-    let dir = std::env::temp_dir().join("vireo-inline-images");
+    let dir = std::env::temp_dir().join("buzon-inline-images");
     std::fs::create_dir_all(&dir).ok()?;
     let stamp = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -104,7 +104,7 @@ impl PasteAs {
         }
     }
 
-    /// The value of `__hylkiPasteOnce` the paste handler reads.
+    /// The value of `__buzonPasteOnce` the paste handler reads.
     fn js(self) -> &'static str {
         match self {
             Self::Formatted => "true",
@@ -163,7 +163,7 @@ pub(super) fn paste_into(
 fn paste_via_webkit(webview: &webkit6::WebView, mode: PasteAs) {
     let v = webview.clone();
     webview.evaluate_javascript(
-        &format!("window.__hylkiPasteOnce={};", mode.js()),
+        &format!("window.__buzonPasteOnce={};", mode.js()),
         None,
         None,
         gtk::gio::Cancellable::NONE,
@@ -209,7 +209,7 @@ pub(super) fn deliver_files(
                 exec(
                     webview,
                     &format!(
-                        "window.__hylkiInsertImageURL(\
+                        "window.__buzonInsertImageURL(\
                          'data:{mime};base64,{b64}','{mime}','{name}',{x},{y})"
                     ),
                 );

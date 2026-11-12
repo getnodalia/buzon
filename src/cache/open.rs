@@ -187,7 +187,7 @@ impl Cache {
         Ok(Cache { conn, protection })
     }
 
-    /// The cache's directory, `~/.local/share/hylki`, created if needed and
+    /// The cache's directory, `~/.local/share/buzon`, created if needed and
     /// kept to its owner.
     pub(crate) fn dir() -> rusqlite::Result<std::path::PathBuf> {
         // No `temp_dir` fallback: this database holds message bodies, attachment
@@ -200,18 +200,18 @@ impl Cache {
                     "no XDG data directory for the mail cache",
                 ))
             })?
-            .join("hylki");
+            .join("buzon");
         let _ = std::fs::create_dir_all(&path);
         restrict(&path, 0o700);
         Ok(path)
     }
 
-    /// The cache database, `~/.local/share/hylki/cache.db`.
+    /// The cache database, `~/.local/share/buzon/cache.db`.
     pub(crate) fn db_path() -> rusqlite::Result<std::path::PathBuf> {
         Ok(Self::dir()?.join("cache.db"))
     }
 
-    /// Open (creating if needed) the cache DB at `~/.local/share/hylki/cache.db`,
+    /// Open (creating if needed) the cache DB at `~/.local/share/buzon/cache.db`,
     /// keyed as [`at_rest::prepare`] decided. Fails while the cache is locked.
     pub(crate) fn open() -> rusqlite::Result<Cache> {
         let protection = at_rest::unlocked()?;
@@ -364,7 +364,7 @@ impl Cache {
     pub(super) fn drop_soft_broken_plain_bodies(conn: &Connection) {
         let _ = conn.execute(
             "DELETE FROM bodies \
-             WHERE (instr(body, 'class=\"hylki-plain\"') > 0 \
+             WHERE (instr(body, 'class=\"buzon-plain\"') > 0 \
                     OR instr(body, 'sans-serif;white-space:pre-wrap') > 0) \
                AND (instr(body, ' ' || char(10)) > 0 OR instr(body, ' ' || char(13)) > 0)",
             [],
@@ -581,7 +581,7 @@ const ADDED_COLUMNS: [&str; 18] = [
     // And the read receipt asked for (#520). A check stored before has
     // none, so mail that arrived earlier never asks.
     "ALTER TABLE sender_checks ADD COLUMN receipt TEXT NOT NULL DEFAULT ''",
-    // And whose verdict it is (VIREO-11). A RENDER_VERSION bump came with
+    // And whose verdict it is (BUZON-11). A RENDER_VERSION bump came with
     // them, so no row is left without.
     "ALTER TABLE sender_checks ADD COLUMN authority TEXT",
     "ALTER TABLE sender_checks ADD COLUMN from_domain TEXT NOT NULL DEFAULT ''",

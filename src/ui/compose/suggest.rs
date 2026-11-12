@@ -304,7 +304,7 @@ impl Compose {
             let narrowed = own.is_some();
             if let Some(own) = own {
                 tracing::debug!(
-                    target: "hylki::graph",
+                    target: "buzon::graph",
                     "suggestions narrowed to {}: its directory and {} addresses from its mail",
                     own.account.email,
                     own.addresses.len()

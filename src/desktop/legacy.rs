@@ -1,18 +1,18 @@
 //! Carrying an earlier install across.
 //!
-//! The app was Veem through 1.5.1 and Vireo through 1.34.0. A Hylki install
-//! finds whatever those left behind and brings it over on its first start
+//! When an app ID is retired, its entry in [`PREDECESSORS`] lets a Buzón
+//! install find whatever it left behind and bring it over on its first start
 //! — accounts, settings, the mail cache, credentials, the GNOME Files
 //! extension — without changing or removing anything of theirs, so the
 //! old app keeps working until the user removes it.
 //!
 //! Three shapes of predecessor data:
 //!
-//! * **Under the same base** (`~/.config/vireo` beside `~/.config/hylki`):
+//! * **Under the same base** (`~/.config/<old>` beside `~/.config/buzon`):
 //!   a native install, or a Flatpak that `flatpak update` rebased from the
-//!   old ID (Flatpak renames `~/.var/app/co.hyprlab.Vireo` to the new ID
-//!   and leaves the inner `config/vireo` as it was). Renamed in place.
-//! * **In the old app's own sandbox** (`~/.var/app/co.hyprlab.Vireo`),
+//!   old ID (Flatpak renames `~/.var/app/<old ID>` to the new ID
+//!   and leaves the inner `config/<old>` as it was). Renamed in place.
+//! * **In the old app's own sandbox** (`~/.var/app/<old ID>`),
 //!   which the manifest mounts read-only: copied.
 //! * **Keyring entries** under the old service name: copied lazily as each
 //!   is first needed (`config::load_key`).
@@ -37,24 +37,7 @@ pub(crate) struct Predecessor {
 }
 
 /// Newest first, so the most recent data wins when more than one is found.
-pub(crate) const PREDECESSORS: &[Predecessor] = &[
-    Predecessor {
-        app_id: "co.hyprlab.Vireo",
-        dir: "vireo",
-        keyring_service: "co.hyprlab.Vireo",
-        nautilus_file: "vireo-nautilus.py",
-        launcher_mark: "X-Vireo-Icon-Launcher",
-        name: "Vireo",
-    },
-    Predecessor {
-        app_id: "com.getveem.Veem",
-        dir: "veem",
-        keyring_service: "com.getveem.Veem",
-        nautilus_file: "veem-nautilus.py",
-        launcher_mark: "X-Veem-Icon-Launcher",
-        name: "Veem",
-    },
-];
+pub(crate) const PREDECESSORS: &[Predecessor] = &[];
 
 /// Which predecessor this start brought data across from, if any — set
 /// once by [`migrate_dirs`], read by the first-run notice.
@@ -79,14 +62,14 @@ fn bases() -> Vec<(&'static str, PathBuf)> {
 }
 
 /// Bring an earlier install's directories across, once: for each base, the
-/// first predecessor with data there fills in `<base>/hylki` when it does
+/// first predecessor with data there fills in `<base>/buzon` when it does
 /// not exist yet. Runs before anything reads its settings.
 pub(crate) fn migrate_dirs() {
     let mut from: Option<&'static Predecessor> = None;
     let in_flatpak = crate::desktop::platform::is_flatpak();
     let home = dirs::home_dir();
     for (sub, base) in bases() {
-        let new = base.join("hylki");
+        let new = base.join("buzon");
         if new.exists() {
             continue;
         }
@@ -314,96 +297,26 @@ pub(crate) fn default_mailer() -> Option<&'static Predecessor> {
     None
 }
 
-/// The class and data-attribute names the app wrote into mail before they
-/// took its own name: in drafts, templates and sent mail on the server, and in
-/// bodies cached on disk.
-const OLD_MARKUP_NAMES: &[(&str, &str)] = &[
-    ("vireo-quote-attr", "hylki-quote-attr"),
-    ("vireo-quote-mail", "hylki-quote-mail"),
-    ("vireo-sig", "hylki-sig"),
-    ("vireo-plain", "hylki-plain"),
-    ("vireo-inline", "hylki-inline"),
-    ("data-vireo-fit", "data-hylki-fit"),
-];
-
-/// A message body with the markup names an earlier version wrote replaced by
-/// today's, so its signature, quote and plain-text parts are still known for
-/// what they are. Only tags and style sheets are touched: a message that
-/// merely mentions one of the names, such as a diff of this code, keeps its
-/// text.
-pub(crate) fn current_markup(html: String) -> String {
-    if !html.contains("vireo-") {
-        return html;
-    }
-    let rename = |part: &str| {
-        let mut part = part.to_string();
-        for (old, new) in OLD_MARKUP_NAMES {
-            part = part.replace(old, new);
-        }
-        part
-    };
-    let lower = html.to_ascii_lowercase();
-    let mut out = String::with_capacity(html.len());
-    let mut at = 0;
-    while let Some(open) = html[at..].find('<').map(|i| at + i) {
-        out.push_str(&html[at..open]);
-        let Some(close) = html[open..].find('>').map(|i| open + i + 1) else {
-            at = open;
-            break;
-        };
-        // A style element is renamed whole, its rules with its tag.
-        let end = if lower[open..].starts_with("<style") {
-            lower[close..].find("</style").map_or(close, |i| close + i)
-        } else {
-            close
-        };
-        out.push_str(&rename(&html[open..end]));
-        at = end;
-    }
-    out.push_str(&html[at..]);
-    out
-}
-
 #[cfg(test)]
 mod tests {
-    /// Old mail's markup comes out under today's names; its text does not.
-    #[test]
-    fn old_markup_names_are_renamed_in_tags_only() {
-        use super::current_markup;
-        let old = "<style>.vireo-plain{white-space:pre-wrap}</style>\
-                   <div class=\"vireo-plain\">diff: .vireo-plain{}</div>\
-                   <div class=\"x vireo-sig\">Ann</div><img data-vireo-fit=\"1\">";
-        assert_eq!(
-            current_markup(old.to_string()),
-            "<style>.hylki-plain{white-space:pre-wrap}</style>\
-             <div class=\"hylki-plain\">diff: .vireo-plain{}</div>\
-             <div class=\"x hylki-sig\">Ann</div><img data-hylki-fit=\"1\">"
-        );
-        assert_eq!(current_markup("plain".to_string()), "plain");
-        assert_eq!(current_markup("a < vireo-sig".to_string()), "a < vireo-sig");
-    }
-
     use super::*;
 
     #[test]
     fn same_tree_sees_through_a_symlink() {
-        let root = std::env::temp_dir().join(format!("hylki-legacy-test-{}", std::process::id()));
-        let new_base = root.join("co.hyprlab.Hylki/config");
+        let root = std::env::temp_dir().join(format!("buzon-legacy-test-{}", std::process::id()));
+        let new_base = root.join("dev.danielmiguelt.Buzon/config");
         std::fs::create_dir_all(&new_base).unwrap();
-        std::os::unix::fs::symlink(root.join("co.hyprlab.Hylki"), root.join("co.hyprlab.Vireo"))
-            .unwrap();
-        let old = root.join("co.hyprlab.Vireo/config/vireo");
+        std::os::unix::fs::symlink(
+            root.join("dev.danielmiguelt.Buzon"),
+            root.join("dev.example.Old"),
+        )
+        .unwrap();
+        let old = root.join("dev.example.Old/config/old");
         std::fs::create_dir_all(&old).unwrap();
-        assert!(same_tree(&old, &new_base.join("hylki")));
-        let elsewhere = root.join("other/config/vireo");
+        assert!(same_tree(&old, &new_base.join("buzon")));
+        let elsewhere = root.join("other/config/old");
         std::fs::create_dir_all(&elsewhere).unwrap();
-        assert!(!same_tree(&elsewhere, &new_base.join("hylki")));
+        assert!(!same_tree(&elsewhere, &new_base.join("buzon")));
         let _ = std::fs::remove_dir_all(&root);
-    }
-
-    #[test]
-    fn predecessors_are_newest_first() {
-        assert_eq!(PREDECESSORS[0].app_id, "co.hyprlab.Vireo");
-        assert_eq!(PREDECESSORS[1].app_id, "com.getveem.Veem");
     }
 }

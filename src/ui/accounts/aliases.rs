@@ -213,7 +213,9 @@ impl AccountsWindow {
         // (#647): this one is for a server that files in this account too.
         let saves_row = adw::SwitchRow::builder()
             .title(i18n("Server saves its own copy of sent mail"))
-            .subtitle(i18n("Only when this server files sent mail in this account."))
+            .subtitle(i18n(
+                "Only when this server files sent mail in this account.",
+            ))
             .build();
         saves_row.set_active(alias.server_saves_sent);
         smtp_group.add(&smtp_switch);

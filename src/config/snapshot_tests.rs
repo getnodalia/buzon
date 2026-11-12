@@ -460,7 +460,7 @@ fn settings_bundle() {
         state: None,
         cloud: None,
         spell_words: Some(
-            [("en_US".to_string(), vec!["Hylki".to_string()])]
+            [("en_US".to_string(), vec!["Buzón".to_string()])]
                 .into_iter()
                 .collect(),
         ),
@@ -478,7 +478,7 @@ fn keyring_keys() {
         "smtp-alias:Ada@Example.org:alias@example.org"
     );
     assert_eq!(oauth_key("Ada@Example.org"), "oauth:Ada@Example.org");
-    assert_eq!(KEYRING_SERVICE, "co.hyprlab.Hylki");
+    assert_eq!(KEYRING_SERVICE, "dev.danielmiguelt.Buzon");
 }
 
 /// state.toml's fetch modes: every combination, and its name, read back.

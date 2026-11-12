@@ -221,7 +221,7 @@
      nothing else, as markup ready to insert; null otherwise. `one` lets a
      single cell through, which a paste as text would rather have as its
      value. */
-  window.__hylkiSheet = function(doc, one){
+  window.__buzonSheet = function(doc, one){
     var body = doc.body;
     if(!body) return null;
     var rules = rulesOf(doc);
@@ -249,7 +249,7 @@
        heights were measured against; the editor's is taller. */
     if(!t.style.lineHeight) t.style.lineHeight = 'normal';
     links.forEach(function(l){ l[0].setAttribute('href', l[1]); });
-    if(colored(t)) t.setAttribute('class', 'hylki-sheet');
+    if(colored(t)) t.setAttribute('class', 'buzon-sheet');
     return t.outerHTML;
   };
 })();

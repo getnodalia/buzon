@@ -1,4 +1,4 @@
-//! Swiping a row (`SwipeSurface`, "HylkiSwipeSurface", an AdwSwipeable):
+//! Swiping a row (`SwipeSurface`, "BuzonSwipeSurface", an AdwSwipeable):
 //! the surface, its progress, and the row's swipe actions and animation.
 
 use super::row::Row;
@@ -96,7 +96,7 @@ mod swipe_surface_imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for SwipeSurface {
-        const NAME: &'static str = "HylkiSwipeSurface";
+        const NAME: &'static str = "BuzonSwipeSurface";
         type Type = super::SwipeSurface;
         type ParentType = gtk::Widget;
         type Interfaces = (adw::Swipeable,);

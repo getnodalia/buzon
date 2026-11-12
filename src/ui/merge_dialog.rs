@@ -577,10 +577,10 @@ pub(crate) fn show(
     showcase(&dialog, &file_row, &blank_row, &*use_table);
 }
 
-/// HYLKI_SHOWCASE_MERGE=<csv>:<png> (demo only) reads the file as if it
+/// BUZON_SHOWCASE_MERGE=<csv>:<png> (demo only) reads the file as if it
 /// were chosen and captures the dialog two seconds later; with
-/// HYLKI_SHOWCASE_MERGE_BLANK missing fields are left empty first, and
-/// with HYLKI_SHOWCASE_MERGE_SEND it then sends.
+/// BUZON_SHOWCASE_MERGE_BLANK missing fields are left empty first, and
+/// with BUZON_SHOWCASE_MERGE_SEND it then sends.
 #[allow(deprecated)] // adw::MessageDialog, see ui::dialog
 fn showcase(
     dialog: &adw::MessageDialog,
@@ -589,8 +589,8 @@ fn showcase(
     use_table: &dyn Fn(Source),
 ) {
     let (Ok(v), Some(_)) = (
-        std::env::var("HYLKI_SHOWCASE_MERGE"),
-        std::env::var_os("HYLKI_DEMO"),
+        std::env::var("BUZON_SHOWCASE_MERGE"),
+        std::env::var_os("BUZON_DEMO"),
     ) else {
         return;
     };
@@ -599,13 +599,13 @@ fn showcase(
     };
     file_row.set_subtitle(csv);
     use_table((read_table(Path::new(csv)), file_name(Path::new(csv))));
-    if std::env::var_os("HYLKI_SHOWCASE_MERGE_BLANK").is_some() {
+    if std::env::var_os("BUZON_SHOWCASE_MERGE_BLANK").is_some() {
         blank_row.set_active(true);
     }
     let (dialog, png) = (dialog.clone(), png.to_string());
     gtk::glib::timeout_add_seconds_local_once(2, move || {
         crate::ui::showcase::showcase_capture(dialog.upcast_ref(), &png);
-        if std::env::var_os("HYLKI_SHOWCASE_MERGE_SEND").is_some() {
+        if std::env::var_os("BUZON_SHOWCASE_MERGE_SEND").is_some() {
             dialog.response("send");
         }
     });

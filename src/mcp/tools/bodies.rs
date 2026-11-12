@@ -68,11 +68,11 @@ impl Mail {
                 uid: m.uid,
                 done,
             }))
-            .map_err(|_| NoRaw::Unavailable("Hylki is closing".into()))?;
+            .map_err(|_| NoRaw::Unavailable("Buzón is closing".into()))?;
         let raw = match tokio::time::timeout(FETCH_WAIT, answer).await {
             Ok(Ok(Ok(raw))) => raw,
             Ok(Ok(Err(why))) => return Err(NoRaw::Unavailable(why)),
-            Ok(Err(_)) => return Err(NoRaw::Unavailable("Hylki stopped waiting for it".into())),
+            Ok(Err(_)) => return Err(NoRaw::Unavailable("Buzón stopped waiting for it".into())),
             Err(_) => {
                 tracing::info!("mcp: no message {} {} in {FETCH_WAIT:?}", m.path, m.uid);
                 return Err(NoRaw::Unavailable(

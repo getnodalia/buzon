@@ -72,7 +72,7 @@ pub(crate) struct PrivacyFile {
     #[serde(default = "default_on")]
     pub(crate) tag_row_tint: bool,
     /// The address book new contacts go to: an EDS source UID, or the
-    /// Hylki book's. Empty picks the first writable EDS book, else Hylki.
+    /// Buzón book's. Empty picks the first writable EDS book, else Buzón.
     #[serde(default)]
     pub(crate) contact_book: String,
     /// How dates are written (#32).
@@ -153,7 +153,7 @@ pub(crate) struct PrivacyFile {
     /// subject in the reader header. On by default.
     #[serde(default = "default_on")]
     pub(crate) account_chip: bool,
-    /// Draw icons from the desktop's icon theme instead of Hylki's own
+    /// Draw icons from the desktop's icon theme instead of Buzón's own
     /// (Settings → Appearance). Off: the app looks the same everywhere.
     #[serde(default)]
     pub(crate) desktop_icons: bool,
@@ -457,7 +457,7 @@ pub(crate) struct PrivacyFile {
     /// before the default changed keeps its own choice.
     #[serde(default)]
     pub(crate) single_key_shortcuts: bool,
-    /// Gmail's keys in place of Hylki's own for the single-key shortcuts
+    /// Gmail's keys in place of Buzón's own for the single-key shortcuts
     /// (#392): j/k move without opening, o opens, e archives, # deletes, g
     /// then a letter goes to a folder. Off by default.
     #[serde(default)]

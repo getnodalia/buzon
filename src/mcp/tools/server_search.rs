@@ -1,4 +1,4 @@
-//! Asking the mail servers. `search` looks only in what Hylki holds; a
+//! Asking the mail servers. `search` looks only in what Buzón holds; a
 //! server also knows the text of mail not downloaded, and mail the index has
 //! not reached. Each server is asked for its words by the account's own
 //! worker, which saves what it finds, so the ids handed out work like any
@@ -109,7 +109,7 @@ fn passes_operators(query: &Query, path: &str, m: &Message) -> bool {
 #[tool_router(router = server_search_tools, vis = "pub(super)")]
 impl Mail {
     #[tool(
-        description = "Search on the mail servers themselves, for text in mail Hylki has not \
+        description = "Search on the mail servers themselves, for text in mail Buzón has not \
         downloaded and mail older than it has reached. Slower than search, which should be \
         tried first: up to a minute. The search words go to the account's mail server. Returns \
         summaries, newest first, whose ids work like any other, and says which accounts could \
@@ -190,7 +190,7 @@ impl Mail {
                 ask,
             };
             if self.app.send(AppMsg::Assistant(call)).is_err() {
-                return failure("Hylki is closing".into());
+                return failure("Buzón is closing".into());
             }
         }
         drop(answer);

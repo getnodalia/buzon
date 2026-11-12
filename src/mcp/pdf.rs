@@ -158,7 +158,7 @@ mod tests {
     /// square on it when asked for. Made with cairo, as printing makes them.
     fn pdf(pages: &[(&str, bool)]) -> Vec<u8> {
         let dir = std::env::temp_dir().join(format!(
-            "hylki-pdf-test-{}-{:?}",
+            "buzon-pdf-test-{}-{:?}",
             std::process::id(),
             std::thread::current().id()
         ));

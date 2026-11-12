@@ -223,7 +223,7 @@ impl Mail {
     }
 
     #[tool(
-        description = "The conversation the user has open in Hylki now: the one in the \
+        description = "The conversation the user has open in Buzón now: the one in the \
         window they were in last, the main window (the message open in the reader, or \
         selected in the list with the reading pane off) or a message window of its own. \
         Its messages in full, oldest first, as far as they are shared; `selected_id` is the \
@@ -246,11 +246,11 @@ impl Mail {
             .send(AppMsg::Assistant(AppCall::ReadOpen { done }))
             .is_err()
         {
-            return failure("Hylki is closing".into());
+            return failure("Buzón is closing".into());
         }
         let open = match tokio::time::timeout(OPEN_WAIT, answer).await {
             Ok(Ok(open)) => open,
-            _ => return failure("Hylki did not answer".into()),
+            _ => return failure("Buzón did not answer".into()),
         };
         // What the user is on, by where they were last: if that is out of
         // reach nothing else stands in for it, or "this message" would

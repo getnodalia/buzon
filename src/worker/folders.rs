@@ -146,7 +146,7 @@ pub(super) fn restore_folders(
     }
 }
 
-/// Put a folder listing in the order Hylki keeps and number it 1..n:
+/// Put a folder listing in the order Buzón keeps and number it 1..n:
 /// the essential folders first in [`folder_order`], the custom ones by
 /// their full path (case-insensitively), so sub-folders sit under their
 /// parents whatever order the server listed them in. Folder ids are
