@@ -89,7 +89,7 @@ cargo run --release
 |---|---|
 | Mail engine (IMAP, POP3, JMAP, SMTP, sync, search) | Working |
 | App icon | Done |
-| Buzón names, app ID and settings folder | In progress |
+| Buzón names, app ID and settings folder | Done |
 | Nodalia interface: theme, islands, window controls, main menu | Planned |
 | Global menu in the top bar (D-Bus) | Planned |
 | Installable packages (Flatpak, AppImage, .deb, .rpm, DMG) | Planned |

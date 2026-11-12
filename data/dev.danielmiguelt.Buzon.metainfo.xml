@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2026 Daniel Miguel Tejedor; 2026 Hyprlab and contributors -->
+<component type="desktop-application">
+  <id>dev.danielmiguelt.Buzon</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-or-later</project_license>
+
+  <name>Buzón</name>
+  <summary>The email client of the Nodalia suite</summary>
+
+  <description>
+    <p>
+      Buzón is the email client of the Nodalia suite: a native desktop app,
+      written in Rust with GTK 4. Your mail and credentials stay on your machine, remote content
+      is blocked until you allow it, and there is no telemetry. It works with
+      IMAP, POP3, JMAP and Microsoft 365, and with any server from iCloud to
+      Proton Bridge to a Stalwart of your own.
+    </p>
+    <p>Accounts and mail:</p>
+    <ul>
+      <li>Multiple accounts with a unified Inboxes view; Google, Microsoft and custom OAuth sign-in, or an account imported from GNOME Online Accounts</li>
+      <li>Whole-mailbox sync and search, conversation threading, and changes made on other devices synced back</li>
+      <li>Folder management, filters, tags, unified and filtered folders, and Trash and Junk emptied by hand or on a schedule</li>
+      <li>An attachment gallery, an Outbox for sends that fail, and Send Later</li>
+    </ul>
+    <p>Writing:</p>
+    <ul>
+      <li>Rich text, Markdown, HTML or plain text, with HTML signatures, inline images, spell check and undo</li>
+      <li>Drafts, quote folding, split replies, and forwarding that keeps the attachments</li>
+      <li>Large files uploaded to your own Nextcloud, OneDrive, Dropbox or Seafile; a Send with Buzón entry in GNOME Files</li>
+    </ul>
+    <p>Reading:</p>
+    <ul>
+      <li>Reader View, your own font and colors, and per-message light or dark rendering</li>
+      <li>OpenPGP signing, encryption and reading; DKIM, SPF and DMARC checked on arrival</li>
+      <li>Meeting invitations answered in place, and one-click unsubscribe from list mail</li>
+    </ul>
+    <p>The app:</p>
+    <ul>
+      <li>Adaptive three-pane layout, five appearance themes, Focus Mode, a customizable toolbar and swipe actions</li>
+      <li>Gmail-style single-key shortcuts, notifications with actions, an optional tray icon and background running</li>
+      <li>GNOME Contacts integration, your choice of language and clock, and passwords kept in the system keyring</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">dev.danielmiguelt.Buzon.desktop</launchable>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#f2a29d</color>
+    <color type="primary" scheme_preference="dark">#d4241b</color>
+  </branding>
+
+  <url type="homepage">https://getnodalia.com</url>
+  <url type="bugtracker">https://github.com/getnodalia/buzon/issues</url>
+  <url type="vcs-browser">https://github.com/getnodalia/buzon</url>
+
+  <developer id="dev.danielmiguelt">
+    <name>Daniel Miguel Tejedor</name>
+  </developer>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="0.1.0" date="2026-11-12">
+      <description>
+        <p>The first version of Buzón.</p>
+      </description>
+    </release>
+  </releases>
+</component>
