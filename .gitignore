@@ -1,0 +1,18 @@
+/target
+**/*.rs.bk
+*.log
+__pycache__/
+
+# Local OAuth client credentials. Never commit real secrets.
+oauth.toml
+
+# Packaging output
+/dist/
+/AppDir/
+/packaging/out/
+cargo-sources.json
+po/.build/
+
+# plan/ is an optional local notebook
+/plan/
+.claude/
