@@ -1,0 +1,184 @@
+name: Release Linux
+
+# Builds Buzón's Linux packages (the AppImage with its .zsync, the Fedora .rpm and the Debian
+# .deb), each in the distribution its script targets, and only then attaches them to a GitHub
+# release.
+#
+# "Release from main" (release-auto.yml) runs this with the tag when a version and its notes
+# land on main, and publishes the release once its files are attached. Run it by hand with
+# tag=vX.Y.Z to rebuild a release's files; without a tag it only uploads workflow artifacts.
+
+on:
+  # A change to this workflow or the packaging scripts builds the packages (artifacts only).
+  pull_request:
+    paths:
+      - ".github/workflows/release-linux.yml"
+      - "tools/build-appimage.sh"
+      - "tools/build-packages.sh"
+      - "packaging/**"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to attach the packages to, e.g. v0.1.0 (empty: artifacts only)"
+        required: false
+        default: ""
+  # release-auto.yml, once a version with its notes lands on main.
+  workflow_call:
+    inputs:
+      tag:
+        description: "Release tag to attach the packages to"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-linux-${{ inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Version
+        id: ver
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          version="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
+          test -n "$version"
+          # A tag must describe the code it is built from.
+          if [[ -n "$TAG" && "${TAG#v}" != "$version" ]]; then
+            echo "Tag $TAG does not match Cargo.toml's version $version" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Release notes are written
+        if: inputs.tag != ''
+        env:
+          TAG: ${{ inputs.tag }}
+        run: scripts/check-release-notes.sh "$TAG"
+
+  appimage:
+    # Arch, for current GTK and WebKitGTK; the script builds in place inside it.
+    needs: version
+    runs-on: ubuntu-24.04
+    container: ghcr.io/pkgforge-dev/archlinux:latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build the AppImage
+        run: tools/build-appimage.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: buzon-appimage
+          path: packaging/out/
+          if-no-files-found: error
+
+  rpm:
+    needs: version
+    runs-on: ubuntu-24.04
+    container: fedora:43
+    timeout-minutes: 60
+    steps:
+      - name: Build dependencies
+        run: |
+          dnf install -y --setopt=install_weak_deps=False \
+            git gcc gcc-c++ rust cargo rpm-build \
+            gtk4-devel libadwaita-devel webkitgtk6.0-devel poppler-glib-devel \
+            openssl-devel gettext gettext-devel wayland-devel
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build the RPM
+        run: tools/build-packages.sh rpm
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: buzon-rpm
+          path: packaging/out/*.rpm
+          if-no-files-found: error
+
+  deb:
+    # Debian 13, the oldest release with the libadwaita Buzón needs; what builds there runs on
+    # the Ubuntu releases that have it too.
+    needs: version
+    runs-on: ubuntu-24.04
+    container: rust:1-trixie
+    timeout-minutes: 60
+    env:
+      BUZON_DEB_CONTAINER: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build the Debian package
+        run: |
+          mkdir -p /out
+          tools/build-packages.sh deb
+          mkdir -p dist && cp /out/*.deb dist/
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: buzon-deb
+          path: dist/*.deb
+          if-no-files-found: error
+
+  checksums:
+    needs: [appimage, rpm, deb]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: buzon-*
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        working-directory: dist
+        run: |
+          ls -lh
+          sha256sum -- * > SHA256SUMS-linux
+          cat SHA256SUMS-linux
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linux-release
+          path: dist/
+          if-no-files-found: error
+
+  attach:
+    # Nothing reaches a release unless every package above was built.
+    needs: [version, checksums]
+    if: inputs.tag != ''
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: linux-release
+          path: dist
+      - name: Attach to the release draft
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          (cd dist && sha256sum -c SHA256SUMS-linux)
+          tagged="$(gh api "repos/$REPO/commits/$TAG" --jq .sha)"
+          if [[ "$tagged" != "$SHA" ]]; then
+            echo "Tag $TAG points at $tagged, not at $SHA (the commit built here)" >&2
+            exit 1
+          fi
+          # Only a draft takes files: --clobber on a published release would swap what people downloaded.
+          if [[ "$(gh release view "$TAG" --repo "$REPO" --json isDraft --jq .isDraft)" != "true" ]]; then
+            echo "Release $TAG is not a draft; not touching its files" >&2
+            exit 1
+          fi
+          gh release upload "$TAG" dist/* --repo "$REPO" --clobber
