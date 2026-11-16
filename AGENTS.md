@@ -59,5 +59,13 @@ WebKitGTK. `CLAUDE.md` imports this file; edit this one only.
   Dependabot.
 - `main` changes through pull requests. A pull request merges once its required checks pass and
   its reviews are resolved.
-- Each release ships a macOS DMG with its own designed install window (background in Buzón's
-  colour), built in CI, unsigned.
+- Releases are automatic. A pull request that bumps `version` in `Cargo.toml` and adds
+  `docs/release-notes/vX.Y.Z.md` (format in that folder's README; the **Release notes are
+  written** check runs `scripts/check-release-notes.sh`) releases it when it merges:
+  `release-auto.yml` tags the merge through Foundation's `release-tag`, `release-linux.yml` builds
+  and attaches the AppImage, .rpm and .deb, and Foundation's `release-publish` publishes the
+  release. Nobody pushes a tag by hand. Add the version's section to `docs/RELEASE_NOTES.md` too
+  (the in-app "What's new").
+- Each release is to ship a macOS DMG with its own designed install window (background in Buzón's
+  colour), built in CI, unsigned. There is no macOS build yet; when there is, it becomes
+  `release-macos.yml`, called from `release-auto.yml`.
