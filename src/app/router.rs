@@ -230,6 +230,11 @@ impl AppModel {
             | AppMsg::ImportContacts(..)
             | AppMsg::ContactsImported(..)) => self.on_contacts(msg, sender),
             msg @ AppMsg::OpenAbout => self.on_about(msg, sender),
+            msg @ (AppMsg::CheckForUpdates { .. }
+            | AppMsg::UpdateChecked { .. }
+            | AppMsg::InstallUpdate
+            | AppMsg::OpenReleasePage
+            | AppMsg::UpdateInstalled(..)) => self.on_updates(msg, sender),
             msg @ (AppMsg::AllowSender(..)
             | AppMsg::AddSender(..)
             | AppMsg::RemoveSender(..)

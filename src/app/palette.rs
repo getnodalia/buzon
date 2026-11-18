@@ -340,6 +340,9 @@ impl AppModel {
         add(i18n("Keyboard Shortcuts"), &action, "Ctrl+?", || {
             AppMsg::ShowShortcuts
         });
+        add(i18n("Check for Updates…"), &action, "", || {
+            AppMsg::CheckForUpdates { user: true }
+        });
         add(i18n("About Buzón"), &action, "", || AppMsg::OpenAbout);
         {
             let mut focus = self.focus;
@@ -594,6 +597,10 @@ impl AppModel {
         self.help_menu.append(
             Some(i18n("Keyboard Shortcuts").as_str()),
             Some("win.shortcuts"),
+        );
+        self.help_menu.append(
+            Some(i18n("Check for Updates…").as_str()),
+            Some("win.check-updates"),
         );
         self.help_menu.append(
             Some(format!("{} {}", i18n("About"), crate::APP_NAME).as_str()),

@@ -11,7 +11,7 @@ use super::accounts::finish_keyring_writes;
 use super::model::AppModel;
 use super::msg::AppMsg;
 use super::{
-    AboutAction, AccountsAction, AppModelWidgets, ConsoleAction, FindAction, FullscreenAction,
+    AboutAction, AccountsAction, AppModelWidgets, CheckUpdatesAction, ConsoleAction, FindAction, FullscreenAction,
     PreferencesAction, PrintAction, PrintPreviewAction, RedoAction, ShortcutsAction,
     StatusBarAction, UndoAction, WindowActionGroup,
 };
@@ -302,6 +302,10 @@ pub(super) fn install_window_actions(
     group.add_action(RelmAction::<AboutAction>::new_stateless(move |_| {
         about_sender.input(AppMsg::OpenAbout);
     }));
+    let updates_sender = sender.clone();
+    group.add_action(RelmAction::<CheckUpdatesAction>::new_stateless(move |_| {
+        updates_sender.input(AppMsg::CheckForUpdates { user: true });
+    }));
     let shortcuts_sender = sender.clone();
     group.add_action(RelmAction::<ShortcutsAction>::new_stateless(move |_| {
         shortcuts_sender.input(AppMsg::ShowShortcuts);
@@ -395,6 +399,7 @@ pub(super) fn install_window_actions(
 fn global_menu(root: &ndl::ApplicationWindow) {
     let about = format!("{} {}", i18n("About"), crate::APP_NAME);
     let [settings, shortcuts, quit] = [i18n("Settings"), i18n("Keyboard Shortcuts"), i18n("Quit")];
+    let check_updates = i18n("Check for Updates…");
     let [print_preview, print] = [i18n("Print Preview…"), i18n("Print Message…")];
     let [undo, redo, find] = [i18n("Undo"), i18n("Redo"), i18n("Find")];
     let [accounts, focus, fullscreen] = [
@@ -404,7 +409,10 @@ fn global_menu(root: &ndl::ApplicationWindow) {
     ];
     let [file, edit, view, help] = [i18n("File"), i18n("Edit"), i18n("View"), i18n("Help")];
     let app_menu: [&[ndl::MenuEntry<'_>]; 3] = [
-        &[(about.as_str(), "win.about")],
+        &[
+            (about.as_str(), "win.about"),
+            (check_updates.as_str(), "win.check-updates"),
+        ],
         &[
             (settings.as_str(), "win.accounts"),
             (shortcuts.as_str(), "win.shortcuts"),
@@ -428,6 +436,7 @@ fn global_menu(root: &ndl::ApplicationWindow) {
     ];
     let help_menu: [&[ndl::MenuEntry<'_>]; 1] = [&[
         (shortcuts.as_str(), "win.shortcuts"),
+        (check_updates.as_str(), "win.check-updates"),
         (about.as_str(), "win.about"),
     ]];
     let menus: [ndl::TopMenu<'_>; 5] = [

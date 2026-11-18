@@ -10563,3 +10563,30 @@ msgstr "Controles de ventana del escritorio"
 
 msgid "Use your desktop's buttons instead of Buzón's round ones. Applies after a restart."
 msgstr "Usa los botones de tu escritorio en vez de los redondos de Buzón. Se aplica al reiniciar."
+
+msgid "Check for Updates…"
+msgstr "Buscar actualizaciones…"
+
+msgid "The check for updates stopped."
+msgstr "La búsqueda de actualizaciones se ha detenido."
+
+msgid "Buzón {version} is the latest version"
+msgstr "Buzón {version} es la versión más reciente"
+
+msgid "Buzón {version} is available"
+msgstr "Buzón {version} está disponible"
+
+msgid "Install and Restart"
+msgstr "Instalar y reiniciar"
+
+msgid "Open Download Page"
+msgstr "Abrir la página de descarga"
+
+msgid "Downloading Buzón {version}…"
+msgstr "Descargando Buzón {version}…"
+
+msgid "The update stopped."
+msgstr "La actualización se ha detenido."
+
+msgid "Update Buzón the way you installed it: with your software center, your package manager or the new release's package."
+msgstr "Actualiza Buzón como lo instalaste: con tu centro de software, tu gestor de paquetes o el paquete de la versión nueva."

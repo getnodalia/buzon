@@ -18,6 +18,7 @@ relm4::new_stateless_action!(AccountsAction, WindowActionGroup, "accounts");
 relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");
 relm4::new_stateless_action!(AboutAction, WindowActionGroup, "about");
 relm4::new_stateless_action!(ShortcutsAction, WindowActionGroup, "shortcuts");
+relm4::new_stateless_action!(CheckUpdatesAction, WindowActionGroup, "check-updates");
 relm4::new_stateless_action!(PrintAction, WindowActionGroup, "print");
 relm4::new_stateless_action!(PrintPreviewAction, WindowActionGroup, "print-preview");
 /// Store a setting the user changed and save the settings, if it really
@@ -130,6 +131,7 @@ mod undo;
 mod unified;
 mod unified_starred;
 mod unsubscribe;
+mod updates;
 mod uri_queue;
 mod view_flags;
 mod window;
@@ -138,6 +140,7 @@ mod workers;
 pub(crate) use accounts::finish_keyring_writes;
 pub(crate) use model::AppModel;
 pub(crate) use msg::AppMsg;
+pub(crate) use updates::wait_for_the_old_version;
 pub(crate) use uri_queue::{
     is_message_file, queue_attach_files, queue_mailto, queue_message_file, queue_mid,
     queue_start_view,
@@ -921,6 +924,7 @@ impl SimpleComponent for AppModel {
         model.sidebar_header = Some(widgets.sidebar_header.clone());
         model.sidebar_menu = Some(widgets.sidebar_menu.clone());
         model.init_refresh_buttons(&widgets, &sender);
+        updates::schedule_startup_check(&sender);
 
         model.install_app_actions(&root, &sender);
 

@@ -1,6 +1,6 @@
 [package]
 name = "buzon"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "The email client of the Nodalia suite"
 license = "AGPL-3.0-or-later"
@@ -24,6 +24,7 @@ gtk = { package = "gtk4", version = "0.11", features = ["v4_20"] }
 # AdwStyleManager:accent-color, which the System theme swatch reads.
 # libadwaita 1.7 is a 2025 release; the GNOME 50 runtime has 1.9.
 nodalia-gtk = { git = "https://github.com/danielmigueltejedor/nodalia-design", rev = "5cda41eb011afa8eb93c02d8aa7d62c9642ad977", features = ["relm4"] }
+nodalia-update = { git = "https://github.com/danielmigueltejedor/nodalia-design", rev = "114848a2ff1a7c29c9a5432fb12e955fbe0aeef2" }
 relm4 = { version = "0.11", default-features = false, features = ["macros"] }
 # v2_44 for WebKitEditorState::changed: the composer's undo (#200) has to know
 # when the body's own text history gains or loses a step, and that signal is

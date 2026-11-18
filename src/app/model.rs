@@ -133,6 +133,8 @@ pub(crate) struct AppModel {
     /// Messages on their way out (#434), shared with the quit paths, which
     /// park any still waiting out the Undo Send delay in the Outbox.
     pub(super) outgoing: super::outgoing::OutgoingList,
+    /// The in-app updater's state between its messages.
+    pub(super) updates: super::updates::UpdateUi,
     /// Mail merges under way (#447), shared with the quit paths too.
     pub(super) merges: super::merge_send::MergeRuns,
     /// The last ticket handed to a send; 0 is never used.
