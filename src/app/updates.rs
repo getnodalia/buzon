@@ -221,7 +221,10 @@ impl AppModel {
             &[("version", release.version.as_str())],
         );
         let dialog = MessageDialog::new(Some(&self.window), Some(&heading), None);
-        let spinner = gtk::Spinner::builder().spinning(true).margin_top(12).build();
+        let spinner = gtk::Spinner::builder()
+            .spinning(true)
+            .margin_top(12)
+            .build();
         dialog.set_extra_child(Some(&spinner));
         dialog.present();
         self.updates.progress = Some(dialog);

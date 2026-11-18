@@ -11,9 +11,9 @@ use super::accounts::finish_keyring_writes;
 use super::model::AppModel;
 use super::msg::AppMsg;
 use super::{
-    AboutAction, AccountsAction, AppModelWidgets, CheckUpdatesAction, ConsoleAction, FindAction, FullscreenAction,
-    PreferencesAction, PrintAction, PrintPreviewAction, RedoAction, ShortcutsAction,
-    StatusBarAction, UndoAction, WindowActionGroup,
+    AboutAction, AccountsAction, AppModelWidgets, CheckUpdatesAction, ConsoleAction, FindAction,
+    FullscreenAction, PreferencesAction, PrintAction, PrintPreviewAction, RedoAction,
+    ShortcutsAction, StatusBarAction, UndoAction, WindowActionGroup,
 };
 
 /// Saves the window's size and maximized state. Only the geometry: on
