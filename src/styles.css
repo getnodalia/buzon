@@ -42,11 +42,11 @@ row.compose-row {
 }
 
 row.compose-row:hover {
-  background-color: shade(@accent_bg_color, 1.1);
+  background-color: var(--ndl-color-accent-hover);
 }
 
 row.compose-row:active {
-  background-color: shade(@accent_bg_color, 0.9);
+  background-color: var(--ndl-color-accent-pressed);
 }
 
 row.compose-row .folder-icon,
@@ -135,8 +135,8 @@ headerbar.rail-header {
   min-width: 36px;
   min-height: 36px;
   border-radius: 18px;
-  background: linear-gradient(135deg, @accent_bg_color, shade(@accent_bg_color, 0.8));
-  color: #fff;
+  background-color: var(--ndl-color-accent-default);
+  color: var(--ndl-color-text-on-accent);
 }
 
 /* Version pill on the About window. */
@@ -158,7 +158,7 @@ headerbar.rail-header {
 
 .account-avatar label {
   font-weight: 700;
-  color: #fff;
+  color: var(--ndl-color-text-on-accent);
 }
 
 .account-name {
@@ -343,23 +343,23 @@ headerbar.rail-header {
 }
 
 .protocol-pill.imap {
-  background-color: #005bff;
-  color: #ffffff;
+  background-color: var(--ndl-color-status-info-bg);
+  color: var(--ndl-color-status-info-fg);
 }
 
 .protocol-pill.pop3 {
-  background-color: #e7414a;
-  color: #ffffff;
+  background-color: var(--ndl-color-status-warning-bg);
+  color: var(--ndl-color-status-warning-fg);
 }
 
 .protocol-pill.jmap {
-  background-color: #c01c28;
-  color: #ffffff;
+  background-color: var(--ndl-color-status-success-bg);
+  color: var(--ndl-color-status-success-fg);
 }
 
 .protocol-pill.oauth {
-  background-color: #fec11e;
-  color: #241f31;
+  background-color: var(--ndl-color-accent-subtle);
+  color: var(--ndl-color-accent-text);
 }
 
 .account-source-badge.goa {
@@ -407,7 +407,7 @@ headerbar.rail-header {
 /* A set star (reader toolbar, list palette, popout): the flagged state is
    color alone — the glyph stays the same as every other icon. */
 button.star-active {
-  color: #e5a50a;
+  color: var(--ndl-color-status-warning-fg);
 }
 
 /* The account page's storage bar (#298): the accent until the mailbox is
@@ -627,7 +627,7 @@ flowbox.attach-flow > flowboxchild {
   border-radius: 12px;
   background-color: @view_bg_color;
   color: @view_fg_color;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--ndl-elevation-overlay);
 }
 
 .message-drag-count {
@@ -1384,7 +1384,7 @@ flowbox.attach-flow > flowboxchild {
 }
 
 .star-icon {
-  color: #e5a50a;
+  color: var(--ndl-color-status-warning-fg);
   opacity: 0.9;
 }
 
@@ -1494,12 +1494,12 @@ headerbar box.list-tools.compact button {
   min-width: 44px;
   min-height: 44px;
   border-radius: 22px;
-  background: linear-gradient(135deg, @accent_bg_color, shade(@accent_bg_color, 0.75));
+  background-color: var(--ndl-color-accent-default);
 }
 
 .reader-avatar label {
   font-weight: 700;
-  color: #fff;
+  color: var(--ndl-color-text-on-accent);
 }
 
 .reader-from-name {
@@ -1534,16 +1534,16 @@ headerbar box.list-tools.compact button {
 
 /* ---- Notifications ---- */
 
-/* The bar is always the same blue, whatever the accent color; errors and
-   the offline line turn it amber. */
+/* The bar is NDL's info status; errors and the offline line turn it to the
+   warning status. */
 .notify-area {
-  background-color: #3383e0;
-  color: #ffffff;
+  background-color: var(--ndl-color-status-info-bg);
+  color: var(--ndl-color-status-info-fg);
 }
 
 .notify-area.error {
-  background-color: #ffca28;
-  color: rgba(0, 0, 0, 0.85);
+  background-color: var(--ndl-color-status-warning-bg);
+  color: var(--ndl-color-status-warning-fg);
 }
 
 .notify-bar {
@@ -1561,32 +1561,32 @@ headerbar box.list-tools.compact button {
   padding: 14px 12px 4px 12px;
 }
 
-/* Toast-like cards floating on the colored bar. Fixed amber with dark text
-   (no light/dark switch); slightly deeper than the bar behind for separation. */
+/* Toast-like cards floating on the colored bar: raised NDL surfaces. */
 .toast-card {
-  background-color: #ffca28;
-  color: rgba(0, 0, 0, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  border-radius: 12px;
+  background-color: var(--ndl-color-surface-raised);
+  color: var(--ndl-color-text-primary);
+  border: var(--ndl-border-width-thin) solid var(--ndl-color-border-subtle);
+  border-radius: var(--ndl-radius-lg);
   padding: 10px 8px 10px 14px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--ndl-elevation-raised);
 }
 .toast-card:dir(rtl) {
   padding: 10px 14px 10px 8px;
 }
 
 .toast-card label {
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--ndl-color-text-primary);
 }
 
 .toast-card-icon {
-  color: rgba(0, 0, 0, 0.75);
+  color: var(--ndl-color-status-warning-fg);
   margin-top: 2px;
 }
 
-/* Header notification icon turns yellow while there are errors to see. */
+/* Header notification icon takes the warning color while there are errors
+   to see. */
 .attention-icon {
-  color: #ffca28;
+  color: var(--ndl-color-status-warning-fg);
 }
 
 /* Count pill in the header button. */
@@ -1613,9 +1613,7 @@ headerbar box.list-tools.compact button {
 }
 
 .remote-alert image {
-  /* Amber, deepened to orange on light mode by the scheme-dependent provider
-     (`install_scheme_css`) — amber alone washes out on a light ground. */
-  color: #ffca28;
+  color: var(--ndl-color-status-warning-fg);
   /* A step up from the 16px default, matching the taller bar. */
   -gtk-icon-size: 18px;
 }
@@ -1631,8 +1629,8 @@ headerbar box.list-tools.compact button {
 /* A failed or suspicious sender gets the loudest treatment in the reader — red,
    full width, above everything else. It has to survive being glanced past. */
 .spoof-alert {
-  background-color: #c01c28;
-  color: #ffffff;
+  background-color: var(--ndl-color-status-danger-bg);
+  color: var(--ndl-color-status-danger-fg);
   padding: 8px 10px 8px 14px;
 }
 .spoof-alert:dir(rtl) {
@@ -1640,7 +1638,7 @@ headerbar box.list-tools.compact button {
 }
 
 .spoof-alert image {
-  color: #ffffff;
+  color: var(--ndl-color-status-danger-fg);
 }
 
 /* Sender-check badge in the reader toolbar: an icon button like its neighbours,
@@ -1674,8 +1672,8 @@ headerbar box.list-tools.compact button {
 /* Link destination plaque, bottom-left of the message body — the same idea as a
    browser's status bubble, so a link's real target is visible before clicking. */
 .link-preview {
-  background-color: rgba(0, 0, 0, 0.82);
-  color: #ffffff;
+  background-color: var(--ndl-color-surface-inverse);
+  color: var(--ndl-color-text-inverse);
   padding: 3px 10px;
   border-radius: 6px 6px 0 0;
   font-size: 0.85em;
@@ -1877,18 +1875,18 @@ headerbar box.list-tools.compact button {
   opacity: 0.85;
 }
 
-/* Type-tinted attachment icons (symbolic icons follow `color`). Colors read
-   on both light and dark backgrounds. */
-.ftype-pdf      { color: #e01b24; } /* red    — PDF */
-.ftype-doc      { color: #3584e4; } /* blue   — Word / documents */
-.ftype-sheet    { color: #2ec27e; } /* green  — Excel / spreadsheets */
-.ftype-slides   { color: #ff7800; } /* orange — PowerPoint / presentations */
-.ftype-archive  { color: #e5a50a; } /* amber  — zip / archives */
-.ftype-audio    { color: #9141ac; } /* purple — audio */
-.ftype-video    { color: #e6689e; } /* pink   — video */
-.ftype-calendar { color: #009e8f; } /* teal   — calendar */
-.ftype-image    { color: #1c9bd8; } /* cyan   — images */
-.ftype-generic  { color: #8c8c8c; } /* grey   — everything else */
+/* Type-tinted attachment icons (symbolic icons follow `color`), from NDL's
+   status and accent tokens so they follow the scheme. */
+.ftype-pdf      { color: var(--ndl-color-status-danger-fg); }
+.ftype-doc,
+.ftype-image    { color: var(--ndl-color-status-info-fg); }
+.ftype-sheet    { color: var(--ndl-color-status-success-fg); }
+.ftype-slides,
+.ftype-archive  { color: var(--ndl-color-status-warning-fg); }
+.ftype-audio,
+.ftype-video,
+.ftype-calendar { color: var(--ndl-color-accent-text); }
+.ftype-generic  { color: var(--ndl-color-text-tertiary); }
 
 /* Quick-open button on the thumbnail, revealed on hover. */
 .gallery-open {
@@ -2103,38 +2101,38 @@ headerbar box.list-tools.compact button {
 
 /* ---- First-run welcome wizard (welcome.rs) ---- */
 
-/* The window is the brand blue, the website hero's own #005bff; every page
-   floats on it and the text on the ground is white. The wizard is always
-   light (app.rs holds the scheme while it is open). */
+/* The window is NDL's window ground and every page floats on it as an
+   island. The wizard is always light (app.rs holds the scheme while it is
+   open). */
 window.welcome-window,
 .welcome-window > * {
-  background-color: #005bff;
+  background-color: var(--ndl-color-surface-window);
 }
 .welcome-window headerbar {
   background: transparent;
   box-shadow: none;
   border: none;
-  color: #ffffff;
+  color: var(--ndl-color-text-primary);
 }
 
 .welcome-title {
   font-size: 1.7em;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--ndl-color-text-primary);
 }
 
 .welcome-tagline {
   font-size: 1.02em;
-  color: alpha(#ffffff, 0.85);
+  color: var(--ndl-color-text-secondary);
 }
 .welcome-tagline link {
-  color: #ffffff;
+  color: var(--ndl-color-text-link);
 }
 
 .welcome-section {
   font-weight: 700;
   font-size: 0.9em;
-  color: alpha(#ffffff, 0.8);
+  color: var(--ndl-color-text-secondary);
 }
 .welcome-section:dir(ltr) {
   margin-left: 6px;
@@ -2143,11 +2141,11 @@ window.welcome-window,
   margin-right: 6px;
 }
 
-/* Content cards: the theme's card surface, lifted off the blue. */
+/* Content cards: NDL islands on the window ground. */
 .welcome-card {
-  border-radius: 14px;
-  background-color: @card_bg_color;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  border-radius: var(--ndl-radius-xl);
+  background-color: var(--ndl-color-surface-raised);
+  box-shadow: var(--ndl-elevation-raised);
 }
 
 .welcome-pill {
@@ -2156,73 +2154,70 @@ window.welcome-window,
   font-weight: 700;
 }
 
-/* Wizard action buttons are the icon's amber with dark brown lettering,
-   like the website's primary buttons on the same blue. */
+/* Wizard action buttons are NDL's accent pills. */
 .welcome-window button.suggested-action {
-  background-color: #fec11e;
-  color: #3a2b00;
+  background-color: var(--ndl-color-accent-default);
+  color: var(--ndl-color-text-on-accent);
 }
 .welcome-window button.suggested-action:hover {
-  background-color: shade(#fec11e, 1.06);
+  background-color: var(--ndl-color-accent-hover);
 }
 .welcome-window button.suggested-action:active {
-  background-color: shade(#fec11e, 0.92);
+  background-color: var(--ndl-color-accent-pressed);
 }
 
-/* The language picker sits on the ground: a white wash, white text. Only
-   the button, so the popover list keeps the theme's colors. */
+/* The language picker is an NDL control on the ground. Only the button, so
+   the popover list keeps the theme's colors. */
 .welcome-window dropdown > button {
-  background-color: alpha(#ffffff, 0.16);
-  color: #ffffff;
+  background-color: var(--ndl-color-control-bg);
+  color: var(--ndl-color-text-primary);
 }
 .welcome-window dropdown > button:hover {
-  background-color: alpha(#ffffff, 0.24);
+  background-color: var(--ndl-color-control-bg-hover);
 }
 
 .welcome-hint {
   font-size: 0.9em;
-  color: alpha(#ffffff, 0.8);
+  color: var(--ndl-color-text-secondary);
 }
-/* The theme's red and green are lost on the blue: lighter tints of them. */
 .welcome-hint.error {
-  color: #ffc4c4;
+  color: var(--ndl-color-status-danger-fg);
   font-weight: 600;
 }
 .welcome-hint.success {
-  color: #bdf5d2;
+  color: var(--ndl-color-status-success-fg);
   font-weight: 600;
 }
 .welcome-window spinner {
-  color: #ffffff;
+  color: var(--ndl-color-accent-text);
 }
 
 .welcome-added {
   font-weight: 700;
-  color: #ffffff;
+  color: var(--ndl-color-text-primary);
 }
 
 .welcome-check {
-  color: #ffffff;
+  color: var(--ndl-color-status-success-fg);
 }
 
-/* Secondary wizard buttons: the language picker's white wash, so they read
-   as buttons on the blue without competing with the amber ones. */
+/* Secondary wizard buttons: NDL controls, quieter than the accent ones. */
 .welcome-window button.welcome-secondary {
   padding: 8px 20px;
   min-height: 0;
   font-weight: 600;
-  background-color: alpha(#ffffff, 0.16);
-  color: #ffffff;
+  background-color: var(--ndl-color-control-bg);
+  color: var(--ndl-color-text-primary);
 }
 .welcome-window button.welcome-secondary:hover {
-  background-color: alpha(#ffffff, 0.24);
+  background-color: var(--ndl-color-control-bg-hover);
 }
 .welcome-window button.welcome-secondary:active {
-  background-color: alpha(#ffffff, 0.32);
+  background-color: var(--ndl-color-control-bg-pressed);
 }
 
 .welcome-window carouselindicatordots {
-  color: #ffffff;
+  color: var(--ndl-color-accent-text);
 }
 
 /* ---- App icon gallery (icon_picker.rs): Settings + wizard ---- */
@@ -2268,62 +2263,56 @@ window.welcome-window,
     linear-gradient(to left, @card_bg_color, alpha(@card_bg_color, 0)),
     linear-gradient(to left, @window_bg_color, alpha(@window_bg_color, 0));
 }
-/* In the wizard the selection ring wears the wordmark blue. */
+/* In the wizard the selection ring wears the accent. */
 .welcome-window .icon-gallery flowboxchild:hover {
   background-color: alpha(@window_fg_color, 0.06);
 }
 .welcome-window .icon-gallery flowboxchild:selected {
   background-color: alpha(@window_fg_color, 0.08);
-  box-shadow: inset 0 0 0 2px #006dff;
+  box-shadow: inset 0 0 0 2px var(--ndl-color-accent-default);
 }
 .welcome-window .icon-gallery-label {
   color: alpha(@window_fg_color, 0.75);
 }
 
-/* ---- Console mode (notifications.rs): dracula on an old tube ---- */
+/* ---- Console mode (notifications.rs): NDL's sunken surface, monospace ---- */
 
 /* The bar fades between its normal colors and the terminal's. */
 .notify-area {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 .notify-area.console-on {
-  background-color: #282a36;
-  color: #f8f8f2;
+  background-color: var(--ndl-color-surface-sunken);
+  color: var(--ndl-color-text-primary);
 }
 .notify-area.console-on .notify-bar {
-  color: #f8f8f2;
+  color: var(--ndl-color-text-primary);
 }
 
 textview.console-view,
 textview.console-view text {
-  background-color: #282a36;
-  color: #f8f8f2;
-  font-family: "Source Code Pro", "JetBrains Mono", "DejaVu Sans Mono", monospace;
+  background-color: var(--ndl-color-surface-sunken);
+  color: var(--ndl-color-text-primary);
+  font-family: var(--ndl-font-family-mono);
   font-size: 0.82em;
 }
 textview.console-view text selection {
-  background-color: #44475a;
-  color: #f8f8f2;
+  background-color: var(--ndl-color-selection-bg);
+  color: var(--ndl-color-text-primary);
 }
 
-/* Scanlines: thin dark lines every few pixels, CSS-only. */
+/* No decoration over the console: NDL has no scanlines or glows. */
 .console-scanlines {
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.14) 0px,
-    rgba(0, 0, 0, 0.14) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  background: none;
 }
 
 /* Console resize grip: a slim rail with a pill handle. */
 .console-grip {
-  background-color: #21222c;
+  background-color: var(--ndl-color-surface-panel);
   min-height: 10px;
 }
 .console-grip-bar {
-  background-color: #44475a;
+  background-color: var(--ndl-color-border-strong);
   min-width: 36px;
   min-height: 4px;
   border-radius: 2px;
@@ -2496,11 +2485,11 @@ textview.console-view text selection {
 /* The print preview (#359): each page as paper on a desk a shade darker
    than the window, in either theme. */
 .print-desk {
-  background-color: shade(@window_bg_color, 0.85);
+  background-color: var(--ndl-color-surface-sunken);
 }
 .print-page {
   background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--ndl-elevation-overlay);
 }
 
 /* The list header's sort and filter button while any quick filter is on,

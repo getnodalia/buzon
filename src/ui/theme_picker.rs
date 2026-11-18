@@ -16,7 +16,6 @@ use std::rc::Rc;
 use gtk::prelude::*;
 
 use crate::desktop::theme::{self, Palette};
-use crate::i18n::i18n;
 
 /// The thumbnail window's size, in points.
 const THUMB_W: f64 = 70.0;
@@ -60,29 +59,26 @@ struct Mini {
     accent_fg: &'static str,
 }
 
-/// The stock GNOME look, light and dark: the colors libadwaita paints
-/// without a theme (translucent ones flattened onto their grounds). The
-/// accent is not one of them — the System card shows whatever accent the
-/// desktop is set to, so the card shows the look it stands for rather than
-/// always GNOME blue.
+/// Nodalia's own look, light and dark: NDL's grounds with Buzón's accent,
+/// the colors the app wears without a theme.
 const SYSTEM_LIGHT: Mini = Mini {
-    window: "#fafafa",
+    window: "#e4e6eb",
     header: "#ffffff",
-    sidebar: "#ebebed",
+    sidebar: "#eceef2",
     view: "#ffffff",
     card: "#ffffff",
-    border: "#d9d9d9",
-    accent: None,
+    border: "#b4b8c6",
+    accent: Some(theme::ACCENT),
     accent_fg: "#ffffff",
 };
 const SYSTEM_DARK: Mini = Mini {
-    window: "#242424",
-    header: "#303030",
-    sidebar: "#303030",
-    view: "#1e1e1e",
-    card: "#363636",
-    border: "#454545",
-    accent: None,
+    window: "#0b0c10",
+    header: "#15171e",
+    sidebar: "#101116",
+    view: "#15171e",
+    card: "#1d2029",
+    border: "#444a5c",
+    accent: Some(theme::ACCENT),
     accent_fg: "#ffffff",
 };
 
@@ -106,7 +102,8 @@ pub(crate) fn gallery(selected: &str, on_pick: Rc<dyn Fn(&str)>) -> gtk::FlowBox
     // being chosen against.
     let mut cards = vec![(
         theme::SYSTEM_ID.to_string(),
-        i18n("System"),
+        // Nodalia is a name: it reads the same in every language.
+        "Nodalia".to_string(),
         SYSTEM_LIGHT,
         SYSTEM_DARK,
     )];

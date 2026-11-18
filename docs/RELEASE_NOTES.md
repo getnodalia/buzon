@@ -3,6 +3,11 @@
 Buzón is the email client of the Nodalia suite: native, written in Rust, with no telemetry,
 remote content blocked by default and credentials kept in the system keyring.
 
+## What's new in 0.1.1
+
+- The welcome wizard, notices, console mode and avatars are drawn in the Nodalia design, with every color from its tokens and no gradients
+- The default theme is called Nodalia, and its thumbnail shows Nodalia's real colors
+
 ## What's new in 0.1.0
 
 ### First release:
