@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -367,7 +367,7 @@ impl AppModel {
         content: &impl IsA<gtk::Widget>,
         id: u32,
         sender: &ComponentSender<Self>,
-    ) -> adw::Window {
+    ) -> ndl::Window {
         let win = self.compose_window(content, id, sender);
         win.present();
         win
@@ -380,8 +380,8 @@ impl AppModel {
         content: &impl IsA<gtk::Widget>,
         id: u32,
         sender: &ComponentSender<Self>,
-    ) -> adw::Window {
-        let win = adw::Window::builder()
+    ) -> ndl::Window {
+        let win = ndl::Window::builder()
             .modal(false)
             // Room for the full compose toolbar (Cancel, Save Draft, the
             // action icons, Send) before it folds into its ⋯ menu.

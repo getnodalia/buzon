@@ -4,7 +4,7 @@
 //! the delete-attachment question, and the catch-all for settings) are
 //! kept here.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::ui::preferences::PrefOutput;
@@ -469,6 +469,7 @@ impl AppModel {
             | PrefOutput::SetLauncherBadge(..)
             | PrefOutput::SetSingleKey(..)
             | PrefOutput::SetStartFullscreen(..)
+            | PrefOutput::SetSystemWindowControls(..)
             | PrefOutput::SetKeepDownloads(..)
             | PrefOutput::SetGmailKeys(..)
             | PrefOutput::SetDesktopIcons(..)

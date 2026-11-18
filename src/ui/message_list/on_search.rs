@@ -8,7 +8,7 @@ use super::search::{
 use super::types::{MessageListInput, MessageListOutput};
 use super::MessageList;
 use crate::models::Message;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::rc::Rc;
 

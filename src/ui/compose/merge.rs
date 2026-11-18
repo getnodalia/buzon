@@ -2,7 +2,7 @@
 //! still in it, goes to the dialog, and what comes back is sent as one
 //! message per row.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::messages::{ComposeInput, ComposeOutput, OutgoingFields};

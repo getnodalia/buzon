@@ -2,7 +2,7 @@
 //! aliases, signatures, syncing, Microsoft 365, folders and OpenPGP.
 //! Filled and read by `form`, wired by `setup`.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::super::form::{REPLY_COPIES_HINT, SENT_COPY_HINT};
@@ -12,100 +12,100 @@ use crate::i18n::i18n;
 /// The page, and the widgets on it that the panel reaches later.
 #[derive(Debug)]
 pub(in crate::ui::accounts) struct EditorForm {
-    pub(in crate::ui::accounts) page: adw::PreferencesPage,
+    pub(in crate::ui::accounts) page: ndl::PreferencesPage,
     pub(in crate::ui::accounts) provider_mark: gtk::Box,
-    pub(in crate::ui::accounts) goa_banner: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) goa_enabled_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) quota_group: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) quota_row: adw::ActionRow,
+    pub(in crate::ui::accounts) goa_banner: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) goa_enabled_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) quota_group: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) quota_row: ndl::ActionRow,
     pub(in crate::ui::accounts) quota_bar: gtk::LevelBar,
-    pub(in crate::ui::accounts) label_row: adw::EntryRow,
-    pub(in crate::ui::accounts) provider_row: adw::ComboRow,
-    pub(in crate::ui::accounts) name_row: adw::EntryRow,
-    pub(in crate::ui::accounts) email_row: adw::EntryRow,
-    pub(in crate::ui::accounts) protocol_row: adw::ComboRow,
-    pub(in crate::ui::accounts) host_row: adw::EntryRow,
-    pub(in crate::ui::accounts) port_row: adw::EntryRow,
-    pub(in crate::ui::accounts) smtp_row: adw::EntryRow,
-    pub(in crate::ui::accounts) smtp_port_row: adw::EntryRow,
-    pub(in crate::ui::accounts) user_row: adw::EntryRow,
-    pub(in crate::ui::accounts) pass_row: adw::PasswordEntryRow,
-    pub(in crate::ui::accounts) jmap_token_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) oauth_client_id_row: adw::EntryRow,
-    pub(in crate::ui::accounts) oauth_secret_row: adw::PasswordEntryRow,
-    pub(in crate::ui::accounts) oauth_auth_url_row: adw::EntryRow,
-    pub(in crate::ui::accounts) oauth_token_url_row: adw::EntryRow,
-    pub(in crate::ui::accounts) oauth_scope_row: adw::EntryRow,
-    pub(in crate::ui::accounts) ms_advanced: adw::ExpanderRow,
-    pub(in crate::ui::accounts) ms_client_row: adw::EntryRow,
-    pub(in crate::ui::accounts) ms_tenant_row: adw::EntryRow,
-    pub(in crate::ui::accounts) ms_scopes_row: adw::EntryRow,
-    pub(in crate::ui::accounts) ms_redirect_row: adw::EntryRow,
+    pub(in crate::ui::accounts) label_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) provider_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) name_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) email_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) protocol_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) host_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) port_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) smtp_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) smtp_port_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) user_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) pass_row: ndl::PasswordEntryRow,
+    pub(in crate::ui::accounts) jmap_token_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) oauth_client_id_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) oauth_secret_row: ndl::PasswordEntryRow,
+    pub(in crate::ui::accounts) oauth_auth_url_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) oauth_token_url_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) oauth_scope_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) ms_advanced: ndl::ExpanderRow,
+    pub(in crate::ui::accounts) ms_client_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) ms_tenant_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) ms_scopes_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) ms_redirect_row: ndl::EntryRow,
     pub(in crate::ui::accounts) oauth_signin_btn: gtk::Button,
     pub(in crate::ui::accounts) oauth_status: gtk::Label,
     pub(in crate::ui::accounts) goa_hint: gtk::Box,
-    pub(in crate::ui::accounts) smtp_separate_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) smtp_user_row: adw::EntryRow,
-    pub(in crate::ui::accounts) smtp_pass_row: adw::PasswordEntryRow,
-    pub(in crate::ui::accounts) tls_mismatch_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) in_unified_row: adw::SwitchRow,
+    pub(in crate::ui::accounts) smtp_separate_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) smtp_user_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) smtp_pass_row: ndl::PasswordEntryRow,
+    pub(in crate::ui::accounts) tls_mismatch_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) in_unified_row: ndl::SwitchRow,
     pub(in crate::ui::accounts) test_btn: gtk::Button,
     pub(in crate::ui::accounts) test_result: gtk::Label,
     pub(in crate::ui::accounts) preview_disc: gtk::Box,
     pub(in crate::ui::accounts) color_btn: gtk::ColorDialogButton,
-    pub(in crate::ui::accounts) gravatar_row: adw::SwitchRow,
+    pub(in crate::ui::accounts) gravatar_row: ndl::SwitchRow,
     pub(in crate::ui::accounts) mode_glyph_btn: gtk::ToggleButton,
     pub(in crate::ui::accounts) mode_picture_btn: gtk::ToggleButton,
-    pub(in crate::ui::accounts) emoji_row: adw::ActionRow,
+    pub(in crate::ui::accounts) emoji_row: ndl::ActionRow,
     pub(in crate::ui::accounts) emoji_clear_btn: gtk::Button,
-    pub(in crate::ui::accounts) picture_row: adw::ActionRow,
+    pub(in crate::ui::accounts) picture_row: ndl::ActionRow,
     pub(in crate::ui::accounts) avatar_clear_btn: gtk::Button,
-    pub(in crate::ui::accounts) aliases_group: adw::PreferencesGroup,
+    pub(in crate::ui::accounts) aliases_group: ndl::PreferencesGroup,
     pub(in crate::ui::accounts) aliases_list: gtk::ListBox,
-    pub(in crate::ui::accounts) signatures_group: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) syncing_group: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) openpgp_group: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) sig_choice_row: adw::ComboRow,
-    pub(in crate::ui::accounts) sig_name_row: adw::EntryRow,
-    pub(in crate::ui::accounts) sig_sender_row: adw::EntryRow,
-    pub(in crate::ui::accounts) sig_default_row: adw::SwitchRow,
+    pub(in crate::ui::accounts) signatures_group: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) syncing_group: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) openpgp_group: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) sig_choice_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) sig_name_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) sig_sender_row: ndl::EntryRow,
+    pub(in crate::ui::accounts) sig_default_row: ndl::SwitchRow,
     pub(in crate::ui::accounts) sig_holder: gtk::Box,
-    pub(in crate::ui::accounts) push_row: adw::ComboRow,
-    pub(in crate::ui::accounts) empty_junk_row: adw::ComboRow,
-    pub(in crate::ui::accounts) empty_trash_row: adw::ComboRow,
-    pub(in crate::ui::accounts) clean_lists_row: adw::ComboRow,
-    pub(in crate::ui::accounts) offline_mail_row: adw::ComboRow,
-    pub(in crate::ui::accounts) offline_attachments_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) copy_local_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) import_group: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) graph_group: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) graph_directory_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) directory_only_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) graph_labels_row: adw::SwitchRow,
+    pub(in crate::ui::accounts) push_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) empty_junk_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) empty_trash_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) clean_lists_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) offline_mail_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) offline_attachments_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) copy_local_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) import_group: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) graph_group: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) graph_directory_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) directory_only_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) graph_labels_row: ndl::SwitchRow,
     pub(in crate::ui::accounts) graph_status: gtk::Label,
-    pub(in crate::ui::accounts) folder_sort_row: adw::ComboRow,
-    pub(in crate::ui::accounts) folder_sent_row: adw::ComboRow,
-    pub(in crate::ui::accounts) folder_sent_copy_row: adw::ComboRow,
-    pub(in crate::ui::accounts) reply_copies_row: adw::ComboRow,
-    pub(in crate::ui::accounts) server_saves_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) folder_drafts_row: adw::ComboRow,
-    pub(in crate::ui::accounts) folder_templates_row: adw::ComboRow,
-    pub(in crate::ui::accounts) folder_trash_row: adw::ComboRow,
-    pub(in crate::ui::accounts) folder_junk_row: adw::ComboRow,
-    pub(in crate::ui::accounts) folder_archive_row: adw::ComboRow,
-    pub(in crate::ui::accounts) folder_snoozed_row: adw::ComboRow,
+    pub(in crate::ui::accounts) folder_sort_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) folder_sent_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) folder_sent_copy_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) reply_copies_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) server_saves_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) folder_drafts_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) folder_templates_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) folder_trash_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) folder_junk_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) folder_archive_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) folder_snoozed_row: ndl::ComboRow,
     pub(in crate::ui::accounts) hidden_list: gtk::ListBox,
     pub(in crate::ui::accounts) hidden_empty: gtk::Label,
-    pub(in crate::ui::accounts) pgp_key_row: adw::ComboRow,
-    pub(in crate::ui::accounts) sign_default_row: adw::SwitchRow,
-    pub(in crate::ui::accounts) hide_subject_row: adw::SwitchRow,
+    pub(in crate::ui::accounts) pgp_key_row: ndl::ComboRow,
+    pub(in crate::ui::accounts) sign_default_row: ndl::SwitchRow,
+    pub(in crate::ui::accounts) hide_subject_row: ndl::SwitchRow,
     pub(in crate::ui::accounts) keyring_note: gtk::Label,
 }
 
 impl EditorForm {
     pub(in crate::ui::accounts) fn build(sender: &ComponentSender<AccountsWindow>) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
+            page = ndl::PreferencesPage {
                 // GNOME Online Accounts owns this account's servers and
                 // credentials; Buzón only mirrors them. Saying so where
                 // the greyed-out fields are is worth more than leaving
@@ -117,7 +117,7 @@ impl EditorForm {
                 // The provider's mark over the form, following
                 // the Provider picker (a protocol tile for manual
                 // IMAP and custom OAuth). Filled in apply_provider.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     #[name = "provider_mark"]
                     gtk::Box {
                         set_halign: gtk::Align::Center,
@@ -127,12 +127,12 @@ impl EditorForm {
                 },
 
                 #[name = "goa_banner"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_visible: false,
                     set_title: &i18n("GNOME Online Account"),
 
                     #[name = "goa_enabled_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Show in Buzón"),
                         set_subtitle: &i18n("Off returns it to the import list. It stays in GNOME Online Accounts."),
                         connect_active_notify[sender] => move |row| {
@@ -166,11 +166,11 @@ impl EditorForm {
                 // server has said how much is in use, never for
                 // one that keeps no limit or cannot say.
                 #[name = "quota_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_visible: false,
 
                     #[name = "quota_row"]
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Storage"),
                         add_css_class: "property",
 
@@ -184,7 +184,7 @@ impl EditorForm {
                     },
                 },
 
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Mail Account"),
 
                     // The nickname first: it is the one thing
@@ -194,51 +194,51 @@ impl EditorForm {
                     // shows up is said in the title, the way the
                     // other rows carry their hints.
                     #[name = "label_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Nickname"),
                     },
 
                     // Then the provider; the rest of the form
                     // adapts (server fields vs. OAuth sign-in).
                     #[name = "provider_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Provider"),
                         connect_selected_notify => AccountsInput::ProviderChanged,
                     },
                     #[name = "name_row"]
-                    adw::EntryRow { set_title: &i18n("Display Name") },
+                    ndl::EntryRow { set_title: &i18n("Display Name") },
                     #[name = "email_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Email Address"),
                         set_input_purpose: gtk::InputPurpose::Email,
                     },
                     #[name = "protocol_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Incoming Protocol"),
                         connect_selected_notify => AccountsInput::ProtocolChanged,
                     },
                     #[name = "host_row"]
-                    adw::EntryRow { set_title: &i18n("Incoming Server") },
+                    ndl::EntryRow { set_title: &i18n("Incoming Server") },
                     #[name = "port_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Port (IMAP 993 / POP3 995)"),
                         set_input_purpose: gtk::InputPurpose::Digits,
                     },
                     #[name = "smtp_row"]
-                    adw::EntryRow { set_title: &i18n("SMTP Server (optional)") },
+                    ndl::EntryRow { set_title: &i18n("SMTP Server (optional)") },
                     #[name = "smtp_port_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("SMTP Port (default 587)"),
                         set_input_purpose: gtk::InputPurpose::Digits,
                     },
                     #[name = "user_row"]
-                    adw::EntryRow { set_title: &i18n("Username") },
+                    ndl::EntryRow { set_title: &i18n("Username") },
                     #[name = "pass_row"]
-                    adw::PasswordEntryRow { set_title: &i18n("Password") },
+                    ndl::PasswordEntryRow { set_title: &i18n("Password") },
                     // JMAP with a bearer token in place of the
                     // username and password (#356).
                     #[name = "jmap_token_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Sign in with an API token"),
                         set_subtitle: &i18n("For servers, like Fastmail, that take a token instead of a password."),
                         set_visible: false,
@@ -247,27 +247,27 @@ impl EditorForm {
 
                     // ---- OAuth fields (shown when Authentication is an OAuth option) ----
                     #[name = "oauth_client_id_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("OAuth Client ID"),
                         set_visible: false,
                     },
                     #[name = "oauth_secret_row"]
-                    adw::PasswordEntryRow {
+                    ndl::PasswordEntryRow {
                         set_title: &i18n("OAuth Client Secret (optional)"),
                         set_visible: false,
                     },
                     #[name = "oauth_auth_url_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Authorization URL"),
                         set_visible: false,
                     },
                     #[name = "oauth_token_url_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Token URL"),
                         set_visible: false,
                     },
                     #[name = "oauth_scope_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Scopes (space-separated)"),
                         set_visible: false,
                     },
@@ -275,20 +275,20 @@ impl EditorForm {
                     // registration (#329): one an organization has
                     // approved, say. Empty rows keep Buzón's.
                     #[name = "ms_advanced"]
-                    adw::ExpanderRow {
+                    ndl::ExpanderRow {
                         set_title: &i18n("Advanced"),
                         set_subtitle: &i18n("Sign in with another app registration"),
                         set_visible: false,
-                        add_row: ms_client_row = &adw::EntryRow {
+                        add_row: ms_client_row = &ndl::EntryRow {
                             set_title: &i18n("Client ID"),
                         },
-                        add_row: ms_tenant_row = &adw::EntryRow {
+                        add_row: ms_tenant_row = &ndl::EntryRow {
                             set_title: &i18n("Tenant (common, organizations, consumers or an ID)"),
                         },
-                        add_row: ms_scopes_row = &adw::EntryRow {
+                        add_row: ms_scopes_row = &ndl::EntryRow {
                             set_title: &i18n("Scopes (space-separated)"),
                         },
-                        add_row: ms_redirect_row = &adw::EntryRow {
+                        add_row: ms_redirect_row = &ndl::EntryRow {
                             set_title: &i18n("Redirect URI"),
                             // A redirect of its own signs in in
                             // Buzón's window, not the browser.
@@ -343,16 +343,16 @@ impl EditorForm {
                     },
 
                     #[name = "smtp_separate_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Separate SMTP credentials"),
                         set_subtitle: &i18n("Off uses the credentials above."),
                     },
                     #[name = "smtp_user_row"]
-                    adw::EntryRow { set_title: &i18n("SMTP Username") },
+                    ndl::EntryRow { set_title: &i18n("SMTP Username") },
                     #[name = "smtp_pass_row"]
-                    adw::PasswordEntryRow { set_title: &i18n("SMTP Password") },
+                    ndl::PasswordEntryRow { set_title: &i18n("SMTP Password") },
                     #[name = "tls_mismatch_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Accept a certificate for another name"),
                         set_subtitle: &i18n("For shared hosting. Turn on only when the connection test says the names differ."),
                     },
@@ -361,7 +361,7 @@ impl EditorForm {
                     // the merged lists (#267); its own section,
                     // the tray and notifications are unchanged.
                     #[name = "in_unified_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Show in All Inboxes"),
                         set_subtitle: &i18n("Also in the unified Starred, Sent, Drafts, Archive, Filters and Tags."),
                         set_active: true,
@@ -392,7 +392,7 @@ impl EditorForm {
                     },
                 },
 
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Appearance"),
 
                     // The sidebar circle as it will look, as the
@@ -401,7 +401,7 @@ impl EditorForm {
                     // and the picture, emoji or initials it
                     // shows. Not a button — it neither activates
                     // nor selects.
-                    adw::PreferencesRow {
+                    ndl::PreferencesRow {
                         set_activatable: false,
                         set_selectable: false,
                         set_can_focus: false,
@@ -430,7 +430,7 @@ impl EditorForm {
                     // The accent stands on its own: it colors
                     // the circle, and marks the account's
                     // folders and mail elsewhere.
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Account accent color"),
                         #[name = "color_btn"]
                         add_suffix = &gtk::ColorDialogButton {
@@ -447,7 +447,7 @@ impl EditorForm {
                     // one. Off by default: the lookup tells a
                     // third party the address is in use here.
                     #[name = "gravatar_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Use my Gravatar"),
                         set_subtitle: &i18n("Sends gravatar.com a hash of the address."),
                         connect_active_notify[sender] => move |row| {
@@ -458,7 +458,7 @@ impl EditorForm {
                     // What the circle shows (#162): initials or
                     // an emoji, or a picture. The row below
                     // follows the choice.
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Circle shows"),
                         add_suffix = &gtk::Box {
                             add_css_class: "linked",
@@ -480,7 +480,7 @@ impl EditorForm {
                     },
 
                     #[name = "emoji_row"]
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Emoji"),
                         set_subtitle: &i18n("Instead of initials."),
 
@@ -505,7 +505,7 @@ impl EditorForm {
                     },
 
                     #[name = "picture_row"]
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Picture"),
                         set_visible: false,
                         add_suffix = &gtk::Button {
@@ -529,7 +529,7 @@ impl EditorForm {
                 // SMTP, or — for a forwarded mailbox whose provider
                 // would rewrite the sender — through its own.
                 #[name = "aliases_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Send-as aliases"),
                     set_description: Some(
                         i18n("Extra names and addresses this account can send as.").as_str()
@@ -562,7 +562,7 @@ impl EditorForm {
                 },
 
                 #[name = "signatures_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Signatures"),
                     set_description: Some(
                         i18n("With more than one, the composer's signature button allows you to pick between them.")
@@ -596,13 +596,13 @@ impl EditorForm {
                     // Which signature the editor below holds,
                     // and its name: shown once there are two.
                     #[name = "sig_choice_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Signature"),
                         set_visible: false,
                         connect_selected_notify => AccountsInput::SigShow,
                     },
                     #[name = "sig_name_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Name"),
                         set_visible: false,
                         connect_changed => AccountsInput::SigRename,
@@ -615,7 +615,7 @@ impl EditorForm {
                         },
                     },
                     #[name = "sig_sender_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Sender name"),
                         set_tooltip_text: Some(
                             i18n("Replaces the account's name in From. Aliases keep their own.").as_str()
@@ -623,7 +623,7 @@ impl EditorForm {
                         connect_changed => AccountsInput::SigSenderRename,
                     },
                     #[name = "sig_default_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Start messages with this signature"),
                         connect_active_notify => AccountsInput::SigDefault,
                     },
@@ -639,11 +639,11 @@ impl EditorForm {
                 // mishandle IDLE, and one bad account shouldn't
                 // cost the good ones their instant delivery.
                 #[name = "syncing_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Syncing"),
 
                     #[name = "push_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Instant new mail (push)"),
                         set_subtitle: &i18n("Turn off for servers that stall on push connections."),
                     },
@@ -651,34 +651,34 @@ impl EditorForm {
                     // Auto-empty (#140): mail past the chosen age in
                     // Junk / Trash is deleted for good at each sync.
                     #[name = "empty_junk_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Empty Junk automatically"),
                     },
                     #[name = "empty_trash_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Empty Trash automatically"),
                     },
                     // Mailing-list mail past the chosen age goes
                     // to the Trash (#407).
                     #[name = "clean_lists_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Move list mail to Trash"),
                         set_subtitle: &i18n("Inbox mail with an unsubscribe link older than this gets trashed unless it's starred."),
                     },
                     // Mail downloaded ahead of being opened (#536).
                     #[name = "offline_mail_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Keep mail cached"),
                         set_subtitle: &i18n("Leaves out Trash, Junk and Drafts."),
                     },
                     #[name = "offline_attachments_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Include attachments"),
                         set_subtitle: &i18n("Can consume a lot of hard drive space."),
                     },
                     // Every message copied to On This Computer (#552).
                     #[name = "copy_local_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Copy mail to On This Computer"),
                         set_subtitle: &i18n("Downloads copies of every message from every folder of this account to this computer (except Trash, Junk and Drafts) and stores them in On This Computer."),
                     },
@@ -687,12 +687,12 @@ impl EditorForm {
                 // On This Computer only (#552): mail from another
                 // program's folders.
                 #[name = "import_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Import"),
                     set_description: Some(i18n("Mail already here is not imported again.").as_str()),
                     set_visible: false,
 
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Maildir folders"),
                         set_subtitle: &i18n("Evolution's On This Computer, Dovecot and other Maildir trees."),
                         add_suffix = &gtk::Button {
@@ -701,7 +701,7 @@ impl EditorForm {
                             connect_clicked => AccountsInput::ImportLocal(false),
                         },
                     },
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Mbox files"),
                         set_subtitle: &i18n("Thunderbird's folders and other mbox files."),
                         add_suffix = &gtk::Button {
@@ -718,12 +718,12 @@ impl EditorForm {
                 // sensitivity labels (#411). Each asks for its
                 // own access when turned on.
                 #[name = "graph_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_visible: false,
                     set_title: &i18n("Microsoft 365"),
 
                     #[name = "graph_directory_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Search the organization directory"),
                         set_subtitle: &i18n("Suggests people from your organization as you type."),
                         connect_active_notify[sender] => move |row| {
@@ -731,12 +731,12 @@ impl EditorForm {
                         },
                     },
                     #[name = "directory_only_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Suggest only from this account"),
                         set_subtitle: &i18n("Suggestions come from the directory and this account's mail only."),
                     },
                     #[name = "graph_labels_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Show sensitivity label names"),
                         set_subtitle: &i18n("Shows a label's name when a message gives only its ID."),
                         connect_active_notify[sender] => move |row| {
@@ -756,14 +756,14 @@ impl EditorForm {
                 },
 
                 // Its own folder order, or Settings → Sidebar's.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Folder Order"),
                     set_description: Some(
                         i18n("Also in the right-click menu of its Folders heading.").as_str()
                     ),
 
                     #[name = "folder_sort_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Sort by"),
                     },
                 },
@@ -777,16 +777,16 @@ impl EditorForm {
                 // folder *is*, and relabelling the Inbox costs the
                 // account its inbox (#136), which is why the Inbox
                 // is offered in that row and in none of the others.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Special Folders"),
                     set_description: Some(
                         i18n("Follows the server's own markings unless you pick a folder. Nothing already on the server moves.").as_str()
                     ),
 
                     #[name = "folder_sent_row"]
-                    adw::ComboRow { set_title: &i18n("Sent") },
+                    ndl::ComboRow { set_title: &i18n("Sent") },
                     #[name = "folder_sent_copy_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Save a copy of sent mail in"),
                         set_subtitle: &i18n(SENT_COPY_HINT),
                     },
@@ -795,7 +795,7 @@ impl EditorForm {
                     // own copy and POP3 has no folders, so the
                     // row is for IMAP and JMAP only.
                     #[name = "reply_copies_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Save a copy of replies in"),
                         set_subtitle: &i18n(REPLY_COPIES_HINT),
                     },
@@ -805,7 +805,7 @@ impl EditorForm {
                     // do it, paired with a Buzón that has stopped
                     // appending, keeps no sent mail at all.
                     #[name = "server_saves_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Server saves its own copy of sent mail"),
                         set_subtitle: &i18n("For Gmail and others that file sent mail themselves."),
                         connect_active_notify[sender] => move |row| {
@@ -813,28 +813,28 @@ impl EditorForm {
                         },
                     },
                     #[name = "folder_drafts_row"]
-                    adw::ComboRow { set_title: &i18n("Drafts") },
+                    ndl::ComboRow { set_title: &i18n("Drafts") },
                     // Nothing on a server marks a Templates folder
                     // (#360): one called Templates is found, any
                     // other is pointed at here.
                     #[name = "folder_templates_row"]
-                    adw::ComboRow { set_title: &i18n("Templates") },
+                    ndl::ComboRow { set_title: &i18n("Templates") },
                     #[name = "folder_trash_row"]
-                    adw::ComboRow { set_title: &i18n("Trash") },
+                    ndl::ComboRow { set_title: &i18n("Trash") },
                     #[name = "folder_junk_row"]
-                    adw::ComboRow { set_title: &i18n("Junk") },
+                    ndl::ComboRow { set_title: &i18n("Junk") },
                     #[name = "folder_archive_row"]
-                    adw::ComboRow { set_title: &i18n("Archive") },
+                    ndl::ComboRow { set_title: &i18n("Archive") },
                     // Snoozed mail waits here (#527), found by name
                     // like Templates.
                     #[name = "folder_snoozed_row"]
-                    adw::ComboRow { set_title: &i18n("Snoozed") },
+                    ndl::ComboRow { set_title: &i18n("Snoozed") },
                 },
 
                 // Hidden folders (#239): what "Hide Folder" in the
                 // sidebar took out of sight, each with the way back.
                 #[name = "hidden_group"]
-                adw::PreferencesGroup {
+                ndl::PreferencesGroup {
                     set_title: &i18n("Hidden Folders"),
                     set_description: Some(
                         i18n("Hidden folders are not synced. Hide one from its right-click menu in the sidebar.").as_str()
@@ -855,13 +855,13 @@ impl EditorForm {
                 // OpenPGP (#133): which of the user's keys this
                 // account signs and decrypts with.
                 #[name = "openpgp_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("OpenPGP"),
                     set_description: Some(
                         i18n("Keys are managed under OpenPGP in the sidebar.").as_str()
                     ),
                     #[name = "pgp_key_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Key"),
                         set_subtitle: &i18n("Automatic uses the key whose address matches."),
                     },
@@ -869,13 +869,13 @@ impl EditorForm {
                     // (#267): the composer's toggle starts on,
                     // and still turns it off for one message.
                     #[name = "sign_default_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Sign messages by default"),
                     },
                     // Protected headers (#493): on, an encrypted
                     // message says "..." where its subject would be.
                     #[name = "hide_subject_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Hide the subject of encrypted mail"),
                         set_subtitle: &i18n("Only the recipients see the subject. Others see \"...\"."),
                     },
@@ -884,7 +884,7 @@ impl EditorForm {
                 // For a GOA-imported account this removes it from
                 // Buzón only — it stays in GNOME Online Accounts and
                 // returns to the import list.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     // Not for a GNOME Online Account: GNOME holds its
                     // sign-in, and Google and Microsoft have no password.
                     #[name = "keyring_note"]

@@ -10,13 +10,12 @@ use crate::i18n::i18n;
 use crate::i18n::i18n_f;
 use crate::ui::dialog::alert;
 use crate::ui::rich_editor::{js_escape, SourceKind};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Which account to upload to, and how the links are made this time:
 /// the expiry and the password, seeded from the account's settings and
 /// changeable for this upload alone.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 fn cloud_upload_dialog(
     parent: Option<&gtk::Window>,
     accounts: &[crate::services::cloud::CloudAccount],
@@ -27,7 +26,7 @@ fn cloud_upload_dialog(
         return;
     }
     let n = paths.len();
-    let dialog = adw::MessageDialog::new(
+    let dialog = crate::ui::message_dialog::MessageDialog::new(
         parent,
         Some(i18n("Upload to Cloud Storage").as_str()),
         Some(
@@ -44,7 +43,7 @@ fn cloud_upload_dialog(
     dialog.add_response("upload", &i18n("Upload"));
     dialog.set_default_response(Some("upload"));
     dialog.set_close_response("cancel");
-    dialog.set_response_appearance("upload", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("upload", ndl::ResponseAppearance::Suggested);
 
     let names: Vec<String> = accounts
         .iter()
@@ -57,18 +56,18 @@ fn cloud_upload_dialog(
         })
         .collect();
     let name_refs: Vec<&str> = names.iter().map(String::as_str).collect();
-    let combo = adw::ComboRow::new();
+    let combo = ndl::ComboRow::new();
     combo.set_title(&i18n("Account"));
     combo.set_model(Some(&gtk::StringList::new(&name_refs)));
     combo.set_visible(accounts.len() > 1);
 
     // This upload's terms, starting from the account's own.
-    let expire = adw::SpinRow::with_range(0.0, 365.0, 1.0);
+    let expire = ndl::SpinRow::with_range(0.0, 365.0, 1.0);
     expire.set_title(&i18n("Links expire after"));
     expire.set_subtitle(&i18n("Days; 0 keeps the link indefinitely"));
-    let protect = adw::SwitchRow::new();
+    let protect = ndl::SwitchRow::new();
     protect.set_title(&i18n("Protect with a password"));
-    let password = adw::EntryRow::new();
+    let password = ndl::EntryRow::new();
     password.set_title(&i18n("Download password (empty: generated)"));
     let apply_defaults = {
         let (expire, protect, password) = (expire.clone(), protect.clone(), password.clone());
@@ -110,7 +109,7 @@ fn cloud_upload_dialog(
         combo.connect_selected_notify(move |c| apply_defaults(c.selected() as usize));
     }
 
-    let group = adw::PreferencesGroup::new();
+    let group = ndl::PreferencesGroup::new();
     group.add(&combo);
     group.add(&expire);
     group.add(&protect);
@@ -151,7 +150,7 @@ impl Compose {
     pub(super) fn on_cloud_attach(
         &mut self,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         let s = sender.input_sender().clone();
         pick_files(root, &i18n("Upload to Cloud Storage"), move |paths| {
@@ -164,7 +163,7 @@ impl Compose {
         &mut self,
         paths: Vec<std::path::PathBuf>,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         let parent = root.root().and_downcast::<gtk::Window>();
         cloud_upload_dialog(
@@ -244,7 +243,7 @@ impl Compose {
         result: Result<crate::services::cloud::ShareResult, String>,
         widgets: &ComposeWidgets,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         self.cloud_busy = self.cloud_busy.saturating_sub(1);
         match result {
@@ -381,7 +380,7 @@ impl Compose {
 }
 
 /// The cloud account's sign-in is missing from the keyring.
-pub(super) fn not_signed_in(root: &adw::BreakpointBin, name: &str) {
+pub(super) fn not_signed_in(root: &ndl::BreakpointBin, name: &str) {
     let parent = root.root().and_downcast::<gtk::Window>();
     alert(parent.as_ref(), i18n("Not signed in").as_str(), i18n_f("The sign-in for {name} is not in the keyring. Open Settings, Cloud Storage, and enter it again.", &[("name", name)]).as_str());
 }

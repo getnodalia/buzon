@@ -4,8 +4,8 @@
 use super::row::Row;
 use super::shared::RowLook;
 use super::RowData;
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::rc::Rc;
 

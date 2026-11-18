@@ -30,7 +30,7 @@ pub(super) fn document(
     image_policy: &str,
     plain: bool,
 ) -> String {
-    let dark = adw::StyleManager::default().is_dark();
+    let dark = ndl::StyleManager::default().is_dark();
     let scheme = if dark { "dark" } else { "light" };
     let (ground, _, _) = crate::ui::message_view::theme_grounds_for(webview, dark);
     let paste_rich = !crate::config::load_privacy().paste_plain;
@@ -162,7 +162,7 @@ pub(super) fn document(
 /// of a textarea's content, which took the blank line a Markdown reply opens
 /// with and left the caret on the quote's "wrote:" line.
 pub(super) fn source_document(text: &str, webview: &webkit6::WebView) -> String {
-    let dark = adw::StyleManager::default().is_dark();
+    let dark = ndl::StyleManager::default().is_dark();
     let scheme = if dark { "dark" } else { "light" };
     let (ground, _, _) = crate::ui::message_view::theme_grounds_for(webview, dark);
     format!(
@@ -240,7 +240,7 @@ pub(super) fn preview_document(
     webview: &webkit6::WebView,
     image_policy: &str,
 ) -> String {
-    let dark = adw::StyleManager::default().is_dark();
+    let dark = ndl::StyleManager::default().is_dark();
     let scheme = if dark { "dark" } else { "light" };
     let (ground, _, _) = crate::ui::message_view::theme_grounds_for(webview, dark);
     format!(

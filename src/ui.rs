@@ -34,6 +34,7 @@ pub(crate) mod launch;
 pub(crate) mod lightbox;
 pub(crate) mod merge_dialog;
 pub(crate) mod message_actions;
+pub(crate) mod message_dialog;
 pub(crate) mod message_list;
 pub(crate) mod message_row;
 pub(crate) mod message_view;

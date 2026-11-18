@@ -1,7 +1,7 @@
 //! The menu beside Send: send now or later, Mail Merge (#447), a read
 //! receipt (#520) and the message's importance (#563).
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::messages::ComposeInput;

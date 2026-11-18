@@ -1,7 +1,7 @@
 //! Settings → Senders: the allowed and the blocked senders. Their lists are
 //! the factories' own boxes, handed in.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::super::{AccountsInput, AccountsWindow};
@@ -11,7 +11,7 @@ use crate::i18n::i18n;
 /// factories' own.
 #[derive(Debug)]
 pub(in crate::ui::accounts) struct SendersPage {
-    pub(in crate::ui::accounts) page: adw::PreferencesPage,
+    pub(in crate::ui::accounts) page: ndl::PreferencesPage,
 }
 
 impl SendersPage {
@@ -21,10 +21,10 @@ impl SendersPage {
         blacklist_box: &gtk::ListBox,
     ) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
+            page = ndl::PreferencesPage {
                 // A search box over the long lists (#141): rows
                 // that do not match the text are hidden.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     #[name = "senders_search"]
                     gtk::SearchEntry {
                         set_placeholder_text: Some(i18n("Search senders").as_str()),
@@ -34,7 +34,7 @@ impl SendersPage {
                     },
                 },
 
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Allowed Senders"),
                     set_description: Some(
                         i18n("Messages from these senders load remote content \
@@ -42,7 +42,7 @@ impl SendersPage {
                     ),
 
                     #[name = "add_sender_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Email address"),
                         set_input_purpose: gtk::InputPurpose::Email,
                         set_show_apply_button: false,
@@ -73,14 +73,14 @@ impl SendersPage {
                     },
                 },
 
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Blocked Senders"),
                     set_description: Some(
                         i18n("Their mail is moved to Trash on arrival. Enter an address, or a domain like \"example.com\" to apply to all senders from that domain.").as_str()
                     ),
 
                     #[name = "add_blacklist_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Address or domain"),
                         set_show_apply_button: false,
                         connect_entry_activated[sender] => move |row| {

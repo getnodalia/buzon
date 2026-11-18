@@ -1,7 +1,7 @@
 //! Settings → System: tray and launcher, storage, the GNOME Files
 //! extension and links.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use super::super::system::{link_group_description, nautilus_status_text, storage_text};
 use super::super::{PrefInput, PrefOutput, Preferences, ViewSender};
@@ -10,42 +10,43 @@ use crate::i18n::i18n;
 /// The page, and the rows on it that the window reaches later.
 #[derive(Debug)]
 pub(in crate::ui::preferences) struct SystemPage {
-    pub(in crate::ui::preferences) page: adw::PreferencesPage,
-    pub(in crate::ui::preferences) language_row: adw::ComboRow,
-    pub(in crate::ui::preferences) renderer_row: adw::ComboRow,
-    pub(in crate::ui::preferences) background_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) autostart_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) fullscreen_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) tray_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) tray_icon_row: adw::ComboRow,
-    pub(in crate::ui::preferences) tray_mail_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) launcher_badge_row: adw::ComboRow,
-    pub(in crate::ui::preferences) single_key_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) gmail_keys_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) status_bar_row: adw::ComboRow,
-    pub(in crate::ui::preferences) console_mode_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) storage_row: adw::ActionRow,
+    pub(in crate::ui::preferences) page: ndl::PreferencesPage,
+    pub(in crate::ui::preferences) language_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) renderer_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) background_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) autostart_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) fullscreen_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) window_controls_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) tray_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) tray_icon_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) tray_mail_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) launcher_badge_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) single_key_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) gmail_keys_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) status_bar_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) console_mode_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) storage_row: ndl::ActionRow,
     pub(in crate::ui::preferences) storage_remove_btn: gtk::Button,
-    pub(in crate::ui::preferences) keep_downloads_row: adw::ComboRow,
-    pub(in crate::ui::preferences) nautilus_row: adw::ActionRow,
+    pub(in crate::ui::preferences) keep_downloads_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) nautilus_row: ndl::ActionRow,
     pub(in crate::ui::preferences) nautilus_remove_btn: gtk::Button,
     pub(in crate::ui::preferences) nautilus_install_btn: gtk::Button,
-    pub(in crate::ui::preferences) nautilus_cmd_row: adw::EntryRow,
-    pub(in crate::ui::preferences) files_action_row: adw::ComboRow,
-    pub(in crate::ui::preferences) files_large_row: adw::ComboRow,
-    pub(in crate::ui::preferences) files_limit_row: adw::SpinRow,
-    pub(in crate::ui::preferences) link_browser_row: adw::ComboRow,
+    pub(in crate::ui::preferences) nautilus_cmd_row: ndl::EntryRow,
+    pub(in crate::ui::preferences) files_action_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) files_large_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) files_limit_row: ndl::SpinRow,
+    pub(in crate::ui::preferences) link_browser_row: ndl::ComboRow,
 }
 
 impl SystemPage {
     pub(in crate::ui::preferences) fn build(model: &Preferences, sender: &ViewSender) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
-                add = &adw::PreferencesGroup {
+            page = ndl::PreferencesPage {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("System"),
 
                     #[name = "language_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Language"),
                         set_subtitle: &i18n("Applies after a restart."),
                         connect_selected_notify[sender] => move |row| {
@@ -54,7 +55,7 @@ impl SystemPage {
                     },
 
                     #[name = "renderer_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Renderer"),
                         set_subtitle: &i18n("Try OpenGL or Software on older graphics. Applies after a restart."),
                         connect_selected_notify[sender] => move |row| {
@@ -63,7 +64,7 @@ impl SystemPage {
                     },
 
                     #[name = "background_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Keep running in the background"),
                         set_subtitle: &i18n("Closing the window hides it. Quit from Background Apps."),
                         connect_active_notify[sender] => move |row| {
@@ -72,7 +73,7 @@ impl SystemPage {
                     },
 
                     #[name = "autostart_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Start at login"),
                         set_subtitle: &i18n("Starts hidden."),
                         connect_active_notify[sender] => move |row| {
@@ -81,7 +82,7 @@ impl SystemPage {
                     },
 
                     #[name = "fullscreen_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Start fullscreen"),
                         set_subtitle: &i18n("F11 switches fullscreen on and off."),
                         connect_active_notify[sender] => move |row| {
@@ -89,8 +90,19 @@ impl SystemPage {
                         },
                     },
 
+                    // Linux only: elsewhere the system always draws the frame.
+                    #[name = "window_controls_row"]
+                    ndl::SwitchRow {
+                        set_visible: cfg!(target_os = "linux"),
+                        set_title: &i18n("Desktop window controls"),
+                        set_subtitle: &i18n("Use your desktop's buttons instead of Buzón's round ones. Applies after a restart."),
+                        connect_active_notify[sender] => move |row| {
+                            let _ = sender.output(PrefOutput::SetSystemWindowControls(row.is_active()));
+                        },
+                    },
+
                     #[name = "tray_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Show a tray icon"),
                         set_subtitle: &i18n("To use on GNOME, install an AppIndicator extension."),
                         connect_active_notify[sender] => move |row| {
@@ -99,7 +111,7 @@ impl SystemPage {
                     },
 
                     #[name = "tray_icon_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Tray icon"),
                         connect_selected_notify[sender] => move |row| {
                             sender.input(PrefInput::ChangeTrayIcon(row.selected()));
@@ -107,7 +119,7 @@ impl SystemPage {
                     },
 
                     #[name = "tray_mail_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Unread mail in the tray menu"),
                         connect_active_notify[sender] => move |row| {
                             let _ = sender.output(PrefOutput::SetTrayMail(row.is_active()));
@@ -115,7 +127,7 @@ impl SystemPage {
                     },
 
                     #[name = "launcher_badge_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Unread count on the app icon"),
                         set_subtitle: &i18n("To use on GNOME, install a dock extension such as Dash to Dock."),
                         connect_selected_notify[sender] => move |row| {
@@ -124,7 +136,7 @@ impl SystemPage {
                     },
 
                     #[name = "single_key_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Single-key shortcuts"),
                         set_subtitle: &i18n("Press Ctrl+? to list all shortcuts."),
                         connect_active_notify[sender] => move |row| {
@@ -133,7 +145,7 @@ impl SystemPage {
                     },
 
                     #[name = "gmail_keys_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Gmail keys"),
                         set_subtitle: &i18n("Swaps the single-key shortcuts for Gmail equivalents."),
                         connect_active_notify[sender] => move |row| {
@@ -142,7 +154,7 @@ impl SystemPage {
                     },
 
                     #[name = "status_bar_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Status bar"),
                         connect_selected_notify[sender] => move |row| {
                             let _ = sender.output(PrefOutput::SetStatusBarTop(row.selected() == 1));
@@ -150,7 +162,7 @@ impl SystemPage {
                     },
 
                     #[name = "console_mode_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Console mode"),
                         set_subtitle: &i18n("Shows a console in the status bar."),
                         connect_active_notify[sender] => move |row| {
@@ -158,7 +170,7 @@ impl SystemPage {
                         },
                     },
 
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Export log"),
                         set_subtitle: &i18n("For bug reports. Addresses are cut to their domain for privacy."),
                         set_activatable: true,
@@ -171,11 +183,11 @@ impl SystemPage {
 
                 // What downloaded mail takes up, and how long it
                 // stays (#394).
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Storage"),
 
                     #[name = "storage_row"]
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Downloaded mail"),
                         // Kept current by update_view.
                         set_subtitle: &storage_text(model.storage),
@@ -191,7 +203,7 @@ impl SystemPage {
                     },
 
                     #[name = "keep_downloads_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Keep downloaded mail"),
                         set_subtitle: &i18n("Mail inside an account's offline period is kept."),
                         connect_selected_notify[sender] => move |row| {
@@ -201,14 +213,14 @@ impl SystemPage {
                 },
 
                 // The Files right-click extension (#188).
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("GNOME Files Integration"),
                     set_description: Some(
                         i18n("Adds “Send with Buzón” to the right-click menu in Files. Needs the nautilus-python package and a restart of Files.").as_str()
                     ),
 
                     #[name = "nautilus_row"]
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Right-click menu entry"),
                         // Kept current by update_view.
                         set_subtitle: &nautilus_status_text(&model.nautilus),
@@ -235,7 +247,7 @@ impl SystemPage {
                     // The loader's install command, ready to paste, while
                     // there is no sign Files can load the extension.
                     #[name = "nautilus_cmd_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Install nautilus-python first"),
                         set_text: model.nautilus_cmd.unwrap_or_default(),
                         set_editable: false,
@@ -258,7 +270,7 @@ impl SystemPage {
                         },
                     },
 
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("Restart Files"),
                         set_subtitle: &i18n("Closes every Files window, like “nautilus -q”."),
                         add_suffix = &gtk::Button {
@@ -271,7 +283,7 @@ impl SystemPage {
                     // What the handed-in files open into, and
                     // what happens when they are big.
                     #[name = "files_action_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Default Send with Buzón behavior"),
                         connect_selected_notify[sender] => move |row| {
                             sender.input(PrefInput::ChangeFilesAction(row.selected()));
@@ -279,7 +291,7 @@ impl SystemPage {
                     },
 
                     #[name = "files_large_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Default large attachments behavior"),
                         set_subtitle: &i18n("Without a cloud storage account, files are attached."),
                         connect_selected_notify[sender] => move |row| {
@@ -288,7 +300,7 @@ impl SystemPage {
                     },
 
                     #[name = "files_limit_row"]
-                    adw::SpinRow {
+                    ndl::SpinRow {
                         set_title: &i18n("Size limit"),
                         set_subtitle: &i18n("In MB, for all the files together."),
                         set_adjustment: Some(&gtk::Adjustment::new(20.0, 1.0, 5000.0, 1.0, 10.0, 0.0)),
@@ -300,7 +312,7 @@ impl SystemPage {
                 },
 
                 // Where a link in a message goes (#232).
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Links"),
                     set_description: Some(link_group_description(&model.browsers).as_str()),
 
@@ -311,7 +323,7 @@ impl SystemPage {
                     // would read as the user choosing
                     // "System default".
                     #[name = "link_browser_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Open links in"),
                     },
                 },
@@ -324,6 +336,7 @@ impl SystemPage {
             background_row,
             autostart_row,
             fullscreen_row,
+            window_controls_row,
             tray_row,
             tray_icon_row,
             tray_mail_row,

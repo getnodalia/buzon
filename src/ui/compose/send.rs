@@ -12,7 +12,7 @@ use crate::i18n::{i18n, i18n_f};
 use crate::models::DraftOrigin;
 use crate::ui::dialog::alert;
 use crate::worker::OutgoingMessage;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// How often an edited message is saved to Drafts on its own (#340).
@@ -102,7 +102,6 @@ fn pgp_send_check(
 /// somebody else. Most people never check keys, and asking at every send would
 /// teach them to click through it, so Send Anyway is remembered for the key:
 /// the question comes back only when an address gets a different one.
-#[allow(deprecated)] // adw::MessageDialog, as in crate::ui::dialog
 fn ask_unvouched(
     unvouched: Vec<crate::config::AcceptedKey>,
     checked: Vec<String>,
@@ -111,7 +110,7 @@ fn ask_unvouched(
 ) {
     let parent = widgets.to_row.root().and_downcast::<gtk::Window>();
     let addresses: Vec<&str> = unvouched.iter().map(|k| k.addr.as_str()).collect();
-    let dialog = adw::MessageDialog::new(
+    let dialog = crate::ui::message_dialog::MessageDialog::new(
         parent.as_ref(),
         Some(&i18n("Encrypt to keys you have not checked?")),
         Some(&i18n_f(

@@ -4,9 +4,9 @@
 use super::parse::{is_whole_address, on_insert, Insert};
 use super::selection::{acting_on, is_in_pill, is_selected, set_selected};
 use super::RecipientRow;
-use adw::prelude::*;
-use adw::subclass::prelude::*;
+use gtk::subclass::prelude::*;
 use gtk::{gdk, glib};
+use ndl::prelude::*;
 use std::cell::RefCell;
 
 impl RecipientRow {

@@ -2,7 +2,7 @@
 
 use std::collections::HashSet;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -166,9 +166,8 @@ impl AppModel {
     /// While a restart waits for the desktop to take the launcher in: a
     /// modal with a spinner, so the pause reads as progress rather than a
     /// stuck app. It has no way to close — the app quits from under it.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn show_restarting_dialog(&self) {
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             Some(&self.icon_dialog_parent()),
             Some(i18n("Restarting Buzón").as_str()),
             Some(
@@ -193,9 +192,8 @@ impl AppModel {
     /// own window icon, only switches once every window has closed: a
     /// restart. Offered, never forced, over whichever window the change
     /// came from.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     pub(super) fn offer_restart_for_icon(&self, sender: &ComponentSender<Self>) {
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             Some(&self.icon_dialog_parent()),
             Some(i18n("Restart to finish switching icons?").as_str()),
             Some(
@@ -207,7 +205,7 @@ impl AppModel {
             ("later", i18n("Later").as_str()),
             ("restart", i18n("Restart Now").as_str()),
         ]);
-        dialog.set_response_appearance("restart", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("restart", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("later"));
         dialog.set_close_response("later");
         let s = sender.clone();

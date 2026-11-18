@@ -2,7 +2,7 @@
 //! the preset times both menus offer, and the calendar dialog behind
 //! "Pick a date and time…".
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::dialog::alert;
@@ -146,7 +146,6 @@ pub(crate) fn snooze_menu(
 /// A calendar and an hour/minute pair, starting from `current` if there is
 /// one, else the next full hour; `pick` gets the time chosen. A time already
 /// past is refused rather than taken to mean "now" by surprise.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 pub(crate) fn pick_later_time(
     parent: Option<&gtk::Window>,
     current: Option<i64>,
@@ -165,12 +164,12 @@ pub(crate) fn pick_later_time(
             n.with_minute(0).and_then(|n| n.with_second(0)).unwrap_or(n)
         }
     };
-    let dialog = adw::MessageDialog::new(parent, Some(title), None);
+    let dialog = crate::ui::message_dialog::MessageDialog::new(parent, Some(title), None);
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("ok", confirm);
     dialog.set_default_response(Some("ok"));
     dialog.set_close_response("cancel");
-    dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("ok", ndl::ResponseAppearance::Suggested);
     let bx = gtk::Box::new(gtk::Orientation::Vertical, 8);
     let calendar = gtk::Calendar::new();
     calendar.set_year(start.year());

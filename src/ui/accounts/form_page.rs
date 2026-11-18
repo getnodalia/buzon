@@ -9,22 +9,22 @@ impl AccountsWindow {
     /// the form and returns true once it went through, which pops the page.
     pub(super) fn push_form_page(
         &self,
-        nav: &adw::NavigationView,
+        nav: &ndl::NavigationView,
         tag: &str,
         title: &str,
         verb: &str,
         form: &gtk::ListBox,
         save: impl Fn() -> bool + 'static,
     ) {
-        let group = adw::PreferencesGroup::new();
+        let group = ndl::PreferencesGroup::new();
         group.add(form);
-        let page = adw::PreferencesPage::new();
+        let page = ndl::PreferencesPage::new();
         page.add(&group);
         // Enter in an entry saves, like the dialog's default response did.
         let mut entries = Vec::new();
         let mut child = form.first_child();
         while let Some(c) = child {
-            if let Some(entry) = c.downcast_ref::<adw::EntryRow>() {
+            if let Some(entry) = c.downcast_ref::<ndl::EntryRow>() {
                 entries.push(entry.clone());
             }
             child = c.next_sibling();
@@ -41,16 +41,16 @@ impl AccountsWindow {
     #[allow(clippy::too_many_arguments)]
     pub(super) fn push_form_content(
         &self,
-        nav: &adw::NavigationView,
+        nav: &ndl::NavigationView,
         tag: &str,
         title: &str,
         verb: &str,
         content: &gtk::Widget,
-        entries: Vec<adw::EntryRow>,
+        entries: Vec<ndl::EntryRow>,
         save: impl Fn() -> bool + 'static,
     ) -> gtk::Button {
         let save: std::rc::Rc<dyn Fn() -> bool> = std::rc::Rc::new(save);
-        let header = adw::HeaderBar::new();
+        let header = ndl::HeaderBar::new();
         header.set_show_end_title_buttons(true);
         let save_btn = gtk::Button::with_label(verb);
         save_btn.add_css_class("suggested-action");
@@ -65,11 +65,11 @@ impl AccountsWindow {
         }
         header.pack_end(&save_btn);
 
-        let view = adw::ToolbarView::new();
+        let view = ndl::ToolbarView::new();
         view.add_top_bar(&header);
         view.set_content(Some(content));
 
-        let nav_page = adw::NavigationPage::new(&view, title);
+        let nav_page = ndl::NavigationPage::new(&view, title);
         nav_page.set_tag(Some(tag));
         for entry in entries {
             let nav = nav.clone();

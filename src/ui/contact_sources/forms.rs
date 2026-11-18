@@ -3,7 +3,7 @@
 
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::carddav::{self, Account};
@@ -32,9 +32,9 @@ pub(super) fn info_group(
     text: &str,
     button: &str,
     open: fn(),
-) -> adw::PreferencesGroup {
-    let group = adw::PreferencesGroup::new();
-    let row = adw::ActionRow::new();
+) -> ndl::PreferencesGroup {
+    let group = ndl::PreferencesGroup::new();
+    let row = ndl::ActionRow::new();
     row.set_title(&gtk::glib::markup_escape_text(title));
     row.set_subtitle(&gtk::glib::markup_escape_text(text));
     row.set_subtitle_lines(4);
@@ -58,8 +58,8 @@ fn given_name(typed: &str, own: &str) -> Option<String> {
 pub(super) fn name_group(
     source: &Source,
     sender: relm4::Sender<ContactSourcesInput>,
-) -> adw::PreferencesGroup {
-    let group = adw::PreferencesGroup::new();
+) -> ndl::PreferencesGroup {
+    let group = ndl::PreferencesGroup::new();
     let own = [("own", source.own_title.as_str())];
     group.set_description(Some(&match source.kind {
         Kind::Buzon => i18n_f("The name used here and in Contacts. Left blank, it is {own}.", &own),
@@ -68,7 +68,7 @@ pub(super) fn name_group(
             &own,
         ),
     }));
-    let row = adw::EntryRow::new();
+    let row = ndl::EntryRow::new();
     row.set_title(&i18n("Name"));
     row.set_text(&source.title);
     row.set_show_apply_button(true);
@@ -88,14 +88,14 @@ pub(super) fn name_group(
 pub(super) fn books_group(
     source: &Source,
     sender: relm4::Sender<ContactSourcesInput>,
-) -> adw::PreferencesGroup {
-    let group = adw::PreferencesGroup::new();
+) -> ndl::PreferencesGroup {
+    let group = ndl::PreferencesGroup::new();
     group.set_title(&i18n("Address books"));
     group.set_description(Some(&i18n(
         "Rename a book for Buzón, or switch it off to leave it out.",
     )));
     for book in &source.books {
-        let row = adw::EntryRow::new();
+        let row = ndl::EntryRow::new();
         row.set_title(&gtk::glib::markup_escape_text(&book.name));
         row.set_text(book.shown());
         row.set_show_apply_button(true);
@@ -135,8 +135,8 @@ pub(super) fn kind_picker(
     let m = mark(what.mark, 56);
     m.set_halign(gtk::Align::Center);
     b.append(&m);
-    let group = adw::PreferencesGroup::new();
-    let row = adw::ComboRow::new();
+    let group = ndl::PreferencesGroup::new();
+    let row = ndl::ComboRow::new();
     row.set_title(&i18n("Address book"));
     let labels: Vec<String> = ADD_KINDS.iter().map(|k| i18n(k.label)).collect();
     let refs: Vec<&str> = labels.iter().map(String::as_str).collect();
@@ -163,15 +163,15 @@ pub(super) fn carddav_form(
         _ => (None, ""),
     };
     let new = account.uid.is_empty();
-    let server = adw::PreferencesGroup::new();
+    let server = ndl::PreferencesGroup::new();
     server.set_title(&i18n("Server"));
     if !hint.is_empty() && new {
         server.set_description(Some(&i18n(hint)));
     }
-    let name = adw::EntryRow::new();
+    let name = ndl::EntryRow::new();
     name.set_title(&i18n("Name (optional)"));
     name.set_text(&account.name);
-    let url = adw::EntryRow::new();
+    let url = ndl::EntryRow::new();
     url.set_title(&i18n("Server"));
     url.set_text(&account.url);
     url.set_input_purpose(gtk::InputPurpose::Url);
@@ -180,12 +180,12 @@ pub(super) fn carddav_form(
     server.add(&name);
     server.add(&url);
 
-    let signin = adw::PreferencesGroup::new();
+    let signin = ndl::PreferencesGroup::new();
     signin.set_title(&i18n("Sign-in"));
-    let user = adw::EntryRow::new();
+    let user = ndl::EntryRow::new();
     user.set_title(&i18n("User name"));
     user.set_text(&account.user);
-    let pass = adw::PasswordEntryRow::new();
+    let pass = ndl::PasswordEntryRow::new();
     pass.set_title(&i18n("Password"));
     // Asked off the main thread: the keyring may wait on its user (#466).
     if !new {
@@ -234,7 +234,7 @@ pub(super) fn carddav_form(
     form.append(&error);
 
     let save: Rc<dyn Fn() -> bool> = Rc::new(move || {
-        let fail = |text: &str, row: &adw::EntryRow| {
+        let fail = |text: &str, row: &gtk::Widget| {
             error.set_label(text);
             error.set_visible(true);
             row.grab_focus();
@@ -244,10 +244,10 @@ pub(super) fn carddav_form(
             .map(str::to_string)
             .unwrap_or_else(|| url.text().trim().to_string());
         if let Err(e) = carddav::parse_url(&address) {
-            return fail(&e, &url);
+            return fail(&e, url.upcast_ref());
         }
         if user.text().trim().is_empty() {
-            return fail(&i18n("Enter the user name."), &user);
+            return fail(&i18n("Enter the user name."), user.upcast_ref());
         }
         if new && pass.text().is_empty() {
             return fail(&i18n("Enter the password."), pass.upcast_ref());
@@ -272,19 +272,19 @@ pub(super) fn ldap_form(
     dir: Directory,
     sender: relm4::Sender<ContactSourcesInput>,
 ) -> (gtk::Widget, Rc<dyn Fn() -> bool>) {
-    let server = adw::PreferencesGroup::new();
+    let server = ndl::PreferencesGroup::new();
     server.set_title(&i18n("Server"));
     server.set_description(Some(&i18n(
         "Recipients are looked up here as you type, and Contacts searches it too.",
     )));
-    let name = adw::EntryRow::new();
+    let name = ndl::EntryRow::new();
     name.set_title(&i18n("Name (optional)"));
     name.set_text(&dir.name);
-    let host = adw::EntryRow::new();
+    let host = ndl::EntryRow::new();
     host.set_title(&i18n("Server"));
     host.set_text(&dir.host);
     host.set_input_purpose(gtk::InputPurpose::Url);
-    let security = adw::ComboRow::new();
+    let security = ndl::ComboRow::new();
     security.set_title(&i18n("Encryption"));
     security.set_model(Some(&gtk::StringList::new(&[
         &i18n("StartTLS"),
@@ -297,7 +297,7 @@ pub(super) fn ldap_form(
             .position(|s| *s == dir.security)
             .unwrap_or(0) as u32,
     );
-    let port = adw::SpinRow::with_range(1.0, 65535.0, 1.0);
+    let port = ndl::SpinRow::with_range(1.0, 65535.0, 1.0);
     port.set_title(&i18n("Port"));
     port.set_value(f64::from(dir.port));
     // Follow the encryption with the port, unless it was set to something
@@ -317,10 +317,10 @@ pub(super) fn ldap_form(
             }
         });
     }
-    let base = adw::EntryRow::new();
+    let base = ndl::EntryRow::new();
     base.set_title(&i18n("Search base, such as dc=example,dc=com"));
     base.set_text(&dir.base_dn);
-    let scope = adw::ComboRow::new();
+    let scope = ndl::ComboRow::new();
     scope.set_title(&i18n("Search"));
     scope.set_model(Some(&gtk::StringList::new(&[
         &i18n("Whole tree"),
@@ -338,17 +338,17 @@ pub(super) fn ldap_form(
         server.add(w);
     }
 
-    let signin = adw::PreferencesGroup::new();
+    let signin = ndl::PreferencesGroup::new();
     signin.set_title(&i18n("Sign-in"));
     signin.set_description(Some(&i18n(
         "Leave empty for a directory that needs no sign-in.",
     )));
-    let bind = adw::EntryRow::new();
+    let bind = ndl::EntryRow::new();
     bind.set_title(&i18n(
         "Sign in as, such as cn=jane,ou=people,dc=example,dc=com",
     ));
     bind.set_text(&dir.bind_dn);
-    let pass = adw::PasswordEntryRow::new();
+    let pass = ndl::PasswordEntryRow::new();
     pass.set_title(&i18n("Password"));
     if !dir.uid.is_empty() {
         let (dir, pass) = (dir.clone(), pass.clone());

@@ -107,7 +107,7 @@ echo "==> Installing build and runtime dependencies"
 # under share/hunspell inside the bundle.
 pacman -Syu --noconfirm --needed \
     base-devel git rust pkgconf patchelf wget strace file xorg-server-xvfb \
-    gtk4 libadwaita webkitgtk-6.0 poppler-glib poppler-data \
+    gtk4 webkitgtk-6.0 poppler-glib poppler-data \
     enchant hunspell \
     hunspell-de hunspell-el hunspell-en_us hunspell-en_gb hunspell-es_es \
     hunspell-fr-classical hunspell-hu hunspell-it hunspell-nl hunspell-pl \

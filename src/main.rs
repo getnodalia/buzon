@@ -4,6 +4,8 @@
 // really reaches; `pub(crate)` or narrower says it.
 #![warn(unreachable_pub)]
 
+extern crate nodalia_gtk as ndl;
+
 mod app;
 mod backend;
 mod cache;
@@ -223,8 +225,8 @@ fn strip_hidden_flag(mut args: Vec<String>) -> (Vec<String>, bool) {
 }
 
 /// The application, set up to receive opened files and links.
-fn build_application() -> adw::Application {
-    let adw_app = adw::Application::builder()
+fn build_application() -> gtk::Application {
+    let adw_app = gtk::Application::builder()
         .application_id(APP_ID)
         // mailto: links land here (the desktop file registers the scheme) —
         // both on a fresh launch and relayed from a second invocation.
@@ -246,7 +248,7 @@ fn build_application() -> adw::Application {
 
 /// The `open` signal: links, saved messages and files handed to the app,
 /// on a fresh launch or relayed from a second one.
-fn open_files(app: &adw::Application, files: &[gtk::gio::File], _hint: &str) {
+fn open_files(app: &gtk::Application, files: &[gtk::gio::File], _hint: &str) {
     use gtk::gio::prelude::*;
     let mut attach_paths = Vec::new();
     for f in files {
@@ -305,8 +307,15 @@ fn is_first_run() -> bool {
 }
 
 /// Handlers that must run in GTK's `startup`, before relm4's builds a window.
-fn install_startup_handlers(adw_app: &adw::Application) {
+fn install_startup_handlers(adw_app: &gtk::Application) {
     use gtk::gio::prelude::ApplicationExt;
+    // NDL's style sheet and theme follow the desktop from the first window on.
+    adw_app.connect_startup(|_| {
+        if config::load_privacy().system_window_controls {
+            ndl::set_window_controls(ndl::WindowControls::System);
+        }
+        ndl::init();
+    });
     // Every window's text fields open their emoji chooser at the cursor.
     adw_app.connect_startup(|_| crate::ui::emoji::follow_all());
     // GTK takes its direction from its own gtk40 catalogue ("default:LTR"

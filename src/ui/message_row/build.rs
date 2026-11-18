@@ -4,7 +4,7 @@ use super::row::RowWidgets;
 use super::{SwipeSurface, ACCOUNT_COLUMN_PX, PEOPLE_COLUMN_PX, SENDER_COLUMN_PX, TAGS_COLUMN_PX};
 use crate::i18n::i18n;
 use crate::ui::column_bin::ColumnBin;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// The row's widget tree. The host is what the view wraps in its item
@@ -58,7 +58,7 @@ pub(super) fn build_widgets() -> RowWidgets {
     avatar_revealer.set_transition_duration(crate::ui::FOCUS_ANIM_MS);
     avatar_revealer.add_css_class("focus-fade");
     avatar_revealer.set_reveal_child(true);
-    let avatar = adw::Avatar::new(38, None, true);
+    let avatar = ndl::Avatar::new(38, None, true);
     avatar.set_valign(gtk::Align::Center);
     avatar_revealer.set_child(Some(&avatar));
     content.append(&avatar_revealer);

@@ -184,6 +184,7 @@ pub(crate) struct PrefInit {
     pub(crate) run_in_background: bool,
     pub(crate) autostart: bool,
     pub(crate) start_fullscreen: bool,
+    pub(crate) system_window_controls: bool,
     pub(crate) tray: bool,
     pub(crate) tray_icon: TrayIcon,
     pub(crate) tray_mail: bool,
@@ -547,6 +548,8 @@ pub(crate) enum PrefOutput {
     ResetColumnWidths,
     SetSingleKey(bool),
     SetStartFullscreen(bool),
+    /// Takes effect on the next start: NDL draws the controls once.
+    SetSystemWindowControls(bool),
     SetGmailKeys(bool),
     /// How many days downloaded mail is kept; 0 keeps it (#394).
     SetKeepDownloads(u32),

@@ -1,8 +1,8 @@
 //! One grid cell, and the "Deleting…" treatment a file gets while it is
 //! removed from the server (shared with the composer's attachment drawer).
 
-use adw::prelude::*;
 use gtk::gdk;
+use ndl::prelude::*;
 use relm4::ComponentSender;
 
 use crate::i18n::i18n;
@@ -284,12 +284,12 @@ pub(crate) fn deleting_veil(labelled: bool) -> gtk::Widget {
 /// on screen, and `done` comes at once.
 pub(crate) fn fade_out(widget: &impl IsA<gtk::Widget>, done: impl Fn() + 'static) {
     let w = widget.clone().upcast::<gtk::Widget>();
-    let target = adw::CallbackAnimationTarget::new({
+    let target = ndl::CallbackAnimationTarget::new({
         let w = w.clone();
         move |v| w.set_opacity(v)
     });
-    let anim = adw::TimedAnimation::new(&w, 1.0, 0.0, DELETE_FADE_MS, target);
-    anim.set_easing(adw::Easing::EaseOutCubic);
-    anim.connect_done(move |_| done());
+    let anim = ndl::TimedAnimation::new(&w, 1.0, 0.0, DELETE_FADE_MS, target);
+    anim.set_easing(ndl::Easing::EaseOutCubic);
+    anim.connect_done(done);
     anim.play();
 }

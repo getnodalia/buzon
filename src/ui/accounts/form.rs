@@ -9,8 +9,8 @@ use super::*;
 
 /// Stop a row's subtitle from squeezing out the row's value.
 ///
-/// An [`adw::ActionRow`] gives its title block whatever width the text asks
-/// for, and an [`adw::ComboRow`]'s value label takes what is left — which for
+/// An [`ndl::ActionRow`] gives its title block whatever width the text asks
+/// for, and an [`ndl::ComboRow`]'s value label takes what is left — which for
 /// a subtitle of any length is an ellipsis where "Disabled" should be. Capping
 /// the label's width in characters bounds what it can ask for, so it wraps to
 /// a second line instead of taking the room from its neighbour. `subtitle-lines`
@@ -57,13 +57,12 @@ pub(super) fn row_matches(row: &gtk::ListBoxRow, query: &str) -> bool {
     if query.is_empty() {
         return true;
     }
-    let title = row
-        .downcast_ref::<adw::PreferencesRow>()
-        .map(|r| r.title().to_lowercase())
+    let title = ndl::row_title(row.upcast_ref())
+        .map(|t| t.to_lowercase())
         .unwrap_or_default();
     let subtitle = row
-        .downcast_ref::<adw::ActionRow>()
-        .and_then(|r| r.subtitle())
+        .downcast_ref::<ndl::ActionRow>()
+        .map(|r| r.subtitle())
         .map(|s| s.to_lowercase())
         .unwrap_or_default();
     title.contains(query) || subtitle.contains(query)

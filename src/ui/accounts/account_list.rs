@@ -126,7 +126,7 @@ impl AccountsWindow {
             list.remove(&child);
         }
         for (pos, g) in self.goa.iter().enumerate() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&g.email);
             row.add_prefix(&crate::desktop::brand::mark(
                 brand_for_goa(&g.provider),

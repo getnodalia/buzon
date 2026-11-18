@@ -1,7 +1,7 @@
 //! Messages about selection, groups and moves: drag and drop, the sidebar
 //! tree's actions, and the bulk actions on several contacts.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::{ContactDetails, GroupEdit, Member};

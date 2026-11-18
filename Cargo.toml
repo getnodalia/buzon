@@ -23,8 +23,8 @@ gtk = { package = "gtk4", version = "0.11", features = ["v4_20"] }
 # when the composer is narrow (#358). It also carries v1_6's
 # AdwStyleManager:accent-color, which the System theme swatch reads.
 # libadwaita 1.7 is a 2025 release; the GNOME 50 runtime has 1.9.
-adw = { package = "libadwaita", version = "0.9", features = ["v1_7"] }
-relm4 = { version = "0.11", features = ["macros", "libadwaita"] }
+nodalia-gtk = { git = "https://github.com/danielmigueltejedor/nodalia-design", rev = "5cda41eb011afa8eb93c02d8aa7d62c9642ad977", features = ["relm4"] }
+relm4 = { version = "0.11", default-features = false, features = ["macros"] }
 # v2_44 for WebKitEditorState::changed: the composer's undo (#200) has to know
 # when the body's own text history gains or loses a step, and that signal is
 # the only thing that says so. WebKitGTK 6.0 starts at 2.40, so the floor this
@@ -37,7 +37,7 @@ poppler-rs = { version = "0.26", features = ["v20_9"] }
 # "png": only to enable cairo-rs's `ImageSurface::write_to_png`, used to hand a
 # rendered PDF page to gdk::Texture the same way every other thumbnail loads.
 # "pdf": printing writes the page footer onto WebKit's PDF (#359).
-cairo-rs = { version = "0.22", features = ["png", "pdf"] }
+cairo-rs = { version = "0.22", features = ["png", "pdf", "v1_16"] }
 # The printed page footer's text, laid out by Pango so any script prints (#359).
 pangocairo = "0.22"
 # The zbus-based Secret Service backend, not the dbus one: dbus-secret-service

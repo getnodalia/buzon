@@ -183,7 +183,7 @@ impl AccountsWindow {
         has_client && signed_in
     }
 
-    pub(super) fn on_remove_current(&mut self, sender: ComponentSender<Self>, root: &adw::Bin) {
+    pub(super) fn on_remove_current(&mut self, sender: ComponentSender<Self>, root: &ndl::Bin) {
         // Confirm before this destructive, keyring-clearing action.
         let Some(i) = self.editing else { return };
         let Some(account) = self.accounts.get(i) else {

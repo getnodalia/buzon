@@ -1,6 +1,6 @@
 //! The folder context menu's dialogs: new, rename, delete, empty.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f};
@@ -17,7 +17,6 @@ use crate::ui::dialog::confirm_destructive;
 impl AppModel {
     /// Prompt for a new custom folder name and create it under `account_id`,
     /// inside `parent` when there is one (#554).
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn prompt_new_folder(&self, account_id: u32, parent: String, sender: &ComponentSender<Self>) {
         let body = match self.folder_by_path(account_id, &parent) {
             Some(f) if !parent.is_empty() => {
@@ -25,7 +24,7 @@ impl AppModel {
             }
             _ => i18n("Create a new folder for this account."),
         };
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             Some(&self.window),
             Some(i18n("New Folder").as_str()),
             Some(body.as_str()),
@@ -33,7 +32,7 @@ impl AppModel {
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("ok", &i18n("Create"));
         dialog.set_default_response(Some("ok"));
-        dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("ok", ndl::ResponseAppearance::Suggested);
         let entry = gtk::Entry::new();
         entry.set_placeholder_text(Some(i18n("Folder name").as_str()));
         entry.set_activates_default(true);
@@ -55,7 +54,6 @@ impl AppModel {
     }
 
     /// Prompt for a folder's new name and rename it in place.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn prompt_rename_folder(
         &self,
         account_id: u32,
@@ -63,7 +61,7 @@ impl AppModel {
         path: String,
         sender: &ComponentSender<Self>,
     ) {
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             Some(&self.window),
             Some(&format!("Rename {name:?}")),
             Some(i18n("Sub-folders keep their place under the new name.").as_str()),
@@ -71,7 +69,7 @@ impl AppModel {
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("ok", &i18n("Rename"));
         dialog.set_default_response(Some("ok"));
-        dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("ok", ndl::ResponseAppearance::Suggested);
         let entry = gtk::Entry::new();
         entry.set_text(&name);
         entry.select_region(0, -1);
@@ -126,7 +124,6 @@ impl AppModel {
     /// Confirm deleting a custom folder (contents moved to Trash). Deliberately
     /// outside the undo history (#200): the mailbox itself is gone from the
     /// server, so the dialog says as much instead of promising a way back.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn confirm_delete_folder(
         &self,
         account_id: u32,
@@ -134,7 +131,7 @@ impl AppModel {
         path: String,
         sender: &ComponentSender<Self>,
     ) {
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             Some(&self.window),
             Some(&format!("Delete “{name}”?")),
             Some(
@@ -147,7 +144,7 @@ impl AppModel {
         );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("delete", &i18n("Delete"));
-        dialog.set_response_appearance("delete", adw::ResponseAppearance::Destructive);
+        dialog.set_response_appearance("delete", ndl::ResponseAppearance::Destructive);
         let s = sender.clone();
         dialog.connect_response(None, move |_, resp| {
             if resp == "delete" {

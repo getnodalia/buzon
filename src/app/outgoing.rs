@@ -28,7 +28,7 @@ pub(super) struct Outgoing {
     /// Still waiting out the delay, so Undo can take it back. False once the
     /// worker has it.
     pub(super) held: bool,
-    pub(super) toast: adw::Toast,
+    pub(super) toast: ndl::Toast,
 }
 
 /// The composer a message was sent from.

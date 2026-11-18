@@ -3,7 +3,7 @@
 
 use std::collections::HashSet;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::i18n;
@@ -98,8 +98,8 @@ impl AppModel {
         let ticket = self.send_ticket;
         self.mark_answered_ahead(ticket, &out);
         let delay = self.undo_send_secs;
-        let toast = adw::Toast::builder()
-            .priority(adw::ToastPriority::High)
+        let toast = ndl::Toast::builder()
+            .priority(ndl::ToastPriority::High)
             .timeout(0)
             .build();
         let o = super::outgoing::Outgoing {
@@ -336,7 +336,7 @@ impl AppModel {
     /// keep the key.
     pub(super) fn install_undo_send_key(
         &self,
-        root: &adw::ApplicationWindow,
+        root: &ndl::ApplicationWindow,
         sender: &ComponentSender<Self>,
     ) {
         use gtk::gdk::ModifierType as M;

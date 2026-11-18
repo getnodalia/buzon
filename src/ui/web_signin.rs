@@ -7,7 +7,7 @@
 //! The usual sign-in, with a loopback redirect, stays in the browser
 //! (`oauth::run_flow`).
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use webkit6::prelude::*;
 
 use crate::config::OAuthSettings;
@@ -35,15 +35,15 @@ pub(crate) fn run(
         Ok(r) => r,
         Err(e) => return done(Err(e)),
     };
-    let window = adw::Window::builder()
+    let window = ndl::Window::builder()
         .title(i18n("Sign In"))
         .default_width(520)
         .default_height(680)
         .modal(true)
         .build();
     window.set_transient_for(parent);
-    let header = adw::HeaderBar::new();
-    let toolbar = adw::ToolbarView::new();
+    let header = ndl::HeaderBar::new();
+    let toolbar = ndl::ToolbarView::new();
     toolbar.add_top_bar(&header);
 
     let session = webkit6::NetworkSession::new_ephemeral();

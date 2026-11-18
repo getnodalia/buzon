@@ -1,7 +1,7 @@
 //! The page's menus and small dialogs: sort and filter, bulk choices,
 //! confirmations, the "+" menu, the book picker's labels and file import.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::ContactDetails;
@@ -163,7 +163,6 @@ impl BulkChoices {
 }
 
 /// Ask before doing something to contacts that cannot be taken back.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 pub(super) fn confirm(
     widgets: &ContactsPageWidgets,
     heading: &str,
@@ -173,15 +172,16 @@ pub(super) fn confirm(
     on_yes: impl Fn() + 'static,
 ) {
     let win = widgets.page_stack.root().and_downcast::<gtk::Window>();
-    let dialog = adw::MessageDialog::new(win.as_ref(), Some(heading), Some(body));
+    let dialog =
+        crate::ui::message_dialog::MessageDialog::new(win.as_ref(), Some(heading), Some(body));
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("yes", action);
     dialog.set_response_appearance(
         "yes",
         if destructive {
-            adw::ResponseAppearance::Destructive
+            ndl::ResponseAppearance::Destructive
         } else {
-            adw::ResponseAppearance::Suggested
+            ndl::ResponseAppearance::Suggested
         },
     );
     dialog.set_default_response(Some("cancel"));

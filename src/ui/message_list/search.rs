@@ -7,7 +7,7 @@ use super::types::{MessageListInput, MessageListOutput};
 use super::MessageList;
 use crate::i18n::i18n;
 use crate::models::Message;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;

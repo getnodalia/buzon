@@ -11,7 +11,7 @@ use super::fonts::{
 };
 use super::{exec, js_escape, show_emoji_chooser};
 use crate::i18n::{i18n, i18n_noop};
-use adw::prelude::*;
+use ndl::prelude::*;
 
 /// What the format bar shows of where the caret is: the block toggles,
 /// keyed the way `fmtState` in PASTE_SCRIPT reports them (`q` quote, `u`
@@ -344,8 +344,8 @@ pub(super) fn build_toolbar(
 
 /// A group of tools that wraps on its own, so a composer narrower than a
 /// group takes its buttons one by one rather than growing past its pane.
-fn cluster() -> adw::WrapBox {
-    let c = adw::WrapBox::new();
+fn cluster() -> ndl::WrapBox {
+    let c = ndl::WrapBox::new();
     c.set_child_spacing(2);
     c.set_line_spacing(2);
     c
@@ -356,7 +356,7 @@ fn cluster() -> adw::WrapBox {
 fn style_menus(
     webview: &webkit6::WebView,
 ) -> (
-    adw::WrapBox,
+    ndl::WrapBox,
     gtk::MenuButton,
     gtk::MenuButton,
     gtk::MenuButton,
@@ -485,7 +485,7 @@ fn style_menus(
 /// snippet).
 fn simple_buttons(
     webview: &webkit6::WebView,
-    cluster: &adw::WrapBox,
+    cluster: &ndl::WrapBox,
     commands: &[(&str, &str, &str)],
 ) {
     for (icon, tip, cmd) in commands {
@@ -505,7 +505,7 @@ fn simple_buttons(
 }
 
 /// The text color and highlight menus.
-fn color_menus(webview: &webkit6::WebView) -> adw::WrapBox {
+fn color_menus(webview: &webkit6::WebView) -> ndl::WrapBox {
     let colors = cluster();
     let text_chosen = std::rc::Rc::new(std::cell::RefCell::new(None));
     colors.append(&color_menu(
@@ -560,8 +560,8 @@ fn block_toggle(
 /// to begin with when `expanded`. Returns the chevron.
 fn chevron_tools(
     group: &ToolFlow,
-    tail: &adw::WrapBox,
-    tools: [&adw::WrapBox; 4],
+    tail: &ndl::WrapBox,
+    tools: [&ndl::WrapBox; 4],
     expanded: bool,
 ) -> gtk::ToggleButton {
     // The rest (#358) behind a chevron, after everything above so showing
@@ -573,7 +573,7 @@ fn chevron_tools(
     // A wrapping box, so in a narrow composer the groups take further rows
     // one by one rather than holding the toolbar, and the window, wider
     // than the pane.
-    let extras = adw::WrapBox::new();
+    let extras = ndl::WrapBox::new();
     extras.set_child_spacing(10);
     extras.set_line_spacing(2);
     for e in tools {
@@ -653,7 +653,7 @@ fn chevron_tools(
     // when the row truly has no room. A wrapping box of its own keeps the
     // toolbar's narrowest width that of the tools alone: a plain box would
     // add the chevron to it and push a narrow composer past its pane.
-    let ride = adw::WrapBox::new();
+    let ride = ndl::WrapBox::new();
     ride.set_child_spacing(10);
     ride.set_line_spacing(2);
     ride.append(&reveal);
@@ -733,14 +733,17 @@ fn pick_pictures(webview: &webkit6::WebView, anchor: &gtk::Button, attach_cb: &A
 }
 
 /// Prompt for a URL and turn the current selection into a link.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 fn prompt_link(webview: &webkit6::WebView, anchor: &gtk::Button) {
     let parent = anchor.root().and_downcast::<gtk::Window>();
-    let dialog = adw::MessageDialog::new(parent.as_ref(), Some(i18n("Insert Link").as_str()), None);
+    let dialog = crate::ui::message_dialog::MessageDialog::new(
+        parent.as_ref(),
+        Some(i18n("Insert Link").as_str()),
+        None,
+    );
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("ok", &i18n("Insert"));
     dialog.set_default_response(Some("ok"));
-    dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("ok", ndl::ResponseAppearance::Suggested);
     let entry = gtk::Entry::new();
     entry.set_input_purpose(gtk::InputPurpose::Url);
     entry.set_placeholder_text(Some("https://example.com"));

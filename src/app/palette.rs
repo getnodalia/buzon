@@ -1,7 +1,7 @@
 //! The keyboard help: the command palette's key, menu entries that show their
 //! keys, and the shortcut tables the shortcuts window lists.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_noop};
@@ -27,10 +27,10 @@ pub(super) fn palette_key(sender: &ComponentSender<AppModel>) -> gtk::EventContr
         if ctrl && matches!(keyval, gtk::gdk::Key::k | gtk::gdk::Key::K) {
             // Not over a dialog already up, the palette itself among them.
             let dialog = keys.widget().is_some_and(|w| {
-                w.downcast_ref::<adw::ApplicationWindow>()
+                w.downcast_ref::<ndl::ApplicationWindow>()
                     .map(|w| w.visible_dialog().is_some())
                     .or_else(|| {
-                        w.downcast_ref::<adw::Window>()
+                        w.downcast_ref::<ndl::Window>()
                             .map(|w| w.visible_dialog().is_some())
                     })
                     .unwrap_or(false)
@@ -457,10 +457,10 @@ impl AppModel {
     }
 
     /// A plain window listing every keyboard shortcut.
-    pub(super) fn build_shortcuts_window(&self) -> adw::Window {
+    pub(super) fn build_shortcuts_window(&self) -> ndl::Window {
         // Wide enough that the longest keys ("Ctrl+B  /  Ctrl+I  /  Ctrl+U")
         // leave the description room for a line or two (#392).
-        let win = adw::Window::builder()
+        let win = ndl::Window::builder()
             .transient_for(&self.window)
             .modal(true)
             .title(i18n("Keyboard Shortcuts"))
@@ -508,7 +508,7 @@ impl AppModel {
             list.add_css_class("boxed-list");
             list.set_selection_mode(gtk::SelectionMode::None);
             for (key, what) in *keys {
-                let row = adw::ActionRow::builder().title(i18n(what)).build();
+                let row = ndl::ActionRow::builder().title(i18n(what)).build();
                 let label = gtk::Label::new(Some(key));
                 label.add_css_class("shortcut-key");
                 label.set_valign(gtk::Align::Center);
@@ -531,7 +531,7 @@ impl AppModel {
             list.add_css_class("boxed-list");
             list.set_selection_mode(gtk::SelectionMode::None);
             for (i, tag) in self.tags.iter().take(9).enumerate() {
-                let row = adw::ActionRow::builder()
+                let row = ndl::ActionRow::builder()
                     .title(gtk::glib::markup_escape_text(&tag.name))
                     .build();
                 row.add_prefix(&crate::ui::context_menu::swatch_widget(&tag.color, true));
@@ -549,8 +549,8 @@ impl AppModel {
             .vexpand(true)
             .child(&page)
             .build();
-        let tv = adw::ToolbarView::new();
-        tv.add_top_bar(&adw::HeaderBar::new());
+        let tv = ndl::ToolbarView::new();
+        tv.add_top_bar(&ndl::HeaderBar::new());
         tv.set_content(Some(&scroller));
         win.set_content(Some(&tv));
 

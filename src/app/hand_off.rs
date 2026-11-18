@@ -3,7 +3,7 @@
 
 use std::collections::HashSet;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -204,12 +204,11 @@ impl AppModel {
     }
 
     /// The "what should these files go into" dialog.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn ask_hand_off_action(&self, hand_off: FileHandOff, sender: &ComponentSender<Self>) {
         let n = hand_off.files.len() as u32;
         let names = hand_off_names(&hand_off.files);
         let size = crate::models::human_size(hand_off_size(&hand_off.files));
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             Some(&self.window),
             Some(
                 ni18n_f(
@@ -232,7 +231,7 @@ impl AppModel {
         dialog.add_response("reply", &i18n("Reply to a Message…"));
         dialog.add_response("draft", &i18n("Continue a Draft…"));
         dialog.add_response("new", &i18n("New Message"));
-        dialog.set_response_appearance("new", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("new", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("new"));
         dialog.set_close_response("cancel");
         let remember = remember_check();
@@ -320,7 +319,6 @@ impl AppModel {
 
     /// Over the size limit, with cloud storage set up: attach anyway, or
     /// upload and link, per the preference or a dialog.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn hand_off_size_check(
         &mut self,
         hand_off: FileHandOff,
@@ -343,7 +341,7 @@ impl AppModel {
             config::FilesLarge::Ask => {
                 let n = hand_off.files.len() as u32;
                 let names = hand_off_names(&hand_off.files);
-                let dialog = adw::MessageDialog::new(
+                let dialog = crate::ui::message_dialog::MessageDialog::new(
                     Some(&self.window),
                     Some(i18n("Large files").as_str()),
                     Some(
@@ -363,7 +361,7 @@ impl AppModel {
                 dialog.add_response("cancel", &i18n("Cancel"));
                 dialog.add_response("attach", &i18n("Attach Anyway"));
                 dialog.add_response("cloud", &i18n("Upload to Cloud Storage"));
-                dialog.set_response_appearance("cloud", adw::ResponseAppearance::Suggested);
+                dialog.set_response_appearance("cloud", ndl::ResponseAppearance::Suggested);
                 dialog.set_default_response(Some("cloud"));
                 dialog.set_close_response("cancel");
                 let remember = remember_check();
@@ -636,7 +634,7 @@ impl AppModel {
     /// up the cards for starting a new message with them (#293).
     pub(super) fn install_drop_targets(
         &mut self,
-        root: &adw::ApplicationWindow,
+        root: &ndl::ApplicationWindow,
         widgets: &AppModelWidgets,
         sender: &ComponentSender<Self>,
     ) {

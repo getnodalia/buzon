@@ -1,7 +1,7 @@
 //! One row of Settings → Accounts → Senders: an allowed or blocked address
 //! with a button that removes it.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::i18n;
@@ -26,7 +26,7 @@ impl FactoryComponent for SenderRow {
     type ParentWidget = gtk::ListBox;
 
     view! {
-        adw::ActionRow {
+        ndl::ActionRow {
             set_title: &self.addr,
             add_suffix = &gtk::Button {
                 set_icon_name: "user-trash-symbolic",

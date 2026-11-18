@@ -4,7 +4,7 @@
 
 use std::collections::HashMap;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::{ContactDetails, GroupEdit, GroupFormat, Member};
@@ -163,7 +163,7 @@ impl ContactsPage {
         let entry = gtk::Entry::new();
         entry.set_text(&own);
         entry.set_activates_default(true);
-        let dialog = adw::AlertDialog::new(
+        let dialog = ndl::AlertDialog::new(
             Some(&i18n("Rename Address Book")),
             Some(&i18n(
                 "The name is used in Buzón only; GNOME Contacts and Evolution keep the book's own.",
@@ -175,7 +175,7 @@ impl ContactsPage {
             dialog.add_response("reset", &i18n("Use Its Own Name"));
         }
         dialog.add_response("rename", &i18n("Rename"));
-        dialog.set_response_appearance("rename", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("rename", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("rename"));
         dialog.set_close_response("cancel");
         let s = sender.output_sender().clone();

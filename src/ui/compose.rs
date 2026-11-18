@@ -1,6 +1,6 @@
 //! Compose window: write a new message, reply, or forward.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::{ComposeFormat, SignaturePosition};
@@ -61,7 +61,7 @@ impl Component for Compose {
         // Host-agnostic root: the same pane is shown inline (in a reader Revealer)
         // or set as the content of an app-owned window. Hosting/close is the app's
         // job (see ComposeOutput::ToggleWindow / Close).
-        adw::BreakpointBin {
+        ndl::BreakpointBin {
             // The floor the pane can shrink to (inline in a narrow reader,
             // or a small window): below the measured full-toolbar width the
             // breakpoint set in `init` folds the actions into the ⋯ menu.
@@ -74,9 +74,9 @@ impl Component for Compose {
             set_child = &gtk::Overlay {
                 #[wrap(Some)]
                 #[name = "toolbar_root"]
-                set_child = &adw::ToolbarView {
+                set_child = &ndl::ToolbarView {
                     #[name = "header"]
-                    add_top_bar = &adw::HeaderBar {
+                    add_top_bar = &ndl::HeaderBar {
                         add_css_class: "compose-toolbar",
                         set_show_start_title_buttons: false,
                         set_show_end_title_buttons: false,
@@ -323,14 +323,14 @@ impl Component for Compose {
                             set_selection_mode: gtk::SelectionMode::None,
 
                             #[name = "from_row"]
-                            adw::ComboRow {
+                            ndl::ComboRow {
                                 set_title: &i18n("From"),
                                 connect_selected_notify => ComposeInput::AccountChanged,
                             },
                             // The From as text (#347): any name and address,
                             // sent through the account chosen above.
                             #[name = "custom_from_row"]
-                            adw::EntryRow {
+                            ndl::EntryRow {
                                 set_title: &i18n("From"),
                                 set_input_purpose: gtk::InputPurpose::Email,
                                 set_visible: false,
@@ -351,12 +351,12 @@ impl Component for Compose {
                                 set_input_purpose: gtk::InputPurpose::Email,
                             },
                             #[name = "reply_to_row"]
-                            adw::EntryRow {
+                            ndl::EntryRow {
                                 set_title: &i18n("Reply-To"),
                                 set_input_purpose: gtk::InputPurpose::Email,
                             },
                             #[name = "subject_row"]
-                            adw::EntryRow {
+                            ndl::EntryRow {
                                 set_title: &i18n("Subject"),
                             },
                         },

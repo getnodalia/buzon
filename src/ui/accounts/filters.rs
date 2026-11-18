@@ -61,7 +61,7 @@ impl AccountsWindow {
         }
         list.set_visible(!self.filter_rules.is_empty());
         for (i, r) in self.filter_rules.iter().enumerate() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             // Roomier than a stock row: the stacked switches and the two-line
             // title were pressed against the row edges.
             row.add_css_class("filter-rule-row");
@@ -157,7 +157,7 @@ impl AccountsWindow {
     /// rule (prefilled, "Save") and replaces it in place; otherwise it adds.
     fn open_filter_page(
         &self,
-        nav: &adw::NavigationView,
+        nav: &ndl::NavigationView,
         sender: &ComponentSender<Self>,
         edit: Option<(usize, crate::config::FilterRule)>,
         prefill: Option<crate::config::FilterRule>,
@@ -175,13 +175,13 @@ impl AccountsWindow {
 
         let (page_box, scrolled) = form_scaffold();
 
-        let account_group = adw::PreferencesGroup::new();
+        let account_group = ndl::PreferencesGroup::new();
         // A name of your own for the rule (#197): what the filters list
         // calls it, in place of spelling its conditions out. Optional.
-        let name_row = adw::EntryRow::new();
+        let name_row = ndl::EntryRow::new();
         name_row.set_title(&i18n("Name (optional)"));
         account_group.add(&name_row);
-        let account_row = adw::ComboRow::new();
+        let account_row = ndl::ComboRow::new();
         account_row.set_title(&i18n("Account"));
         let email_refs: Vec<&str> = emails.iter().map(|s| s.as_str()).collect();
         account_row.set_model(Some(&gtk::StringList::new(&email_refs)));
@@ -231,7 +231,7 @@ impl AccountsWindow {
                 let explain = {
                     let matcher = matcher.clone();
                     let value = value.clone();
-                    move |field: &adw::ComboRow| {
+                    move |field: &ndl::ComboRow| {
                         let chosen = FilterField::ALL.get(field.selected() as usize).copied();
                         let body = chosen == Some(FilterField::Body);
                         let contacts = chosen.is_some_and(|f| f.is_contact_check());
@@ -320,10 +320,10 @@ impl AccountsWindow {
             account_row.connect_selected_notify(move |row| fill_dest(row.selected() as usize));
         }
 
-        let action_group = adw::PreferencesGroup::new();
+        let action_group = ndl::PreferencesGroup::new();
 
         // Tag with (#71): none, or one of the tags.
-        let tag_row = adw::ComboRow::new();
+        let tag_row = ndl::ComboRow::new();
         tag_row.set_title(&i18n("Tag with"));
         let tags = self.tags.clone();
         {
@@ -340,7 +340,7 @@ impl AccountsWindow {
         // Filed mail is still new mail: counted by default, so the unread
         // total stays true to what sits unread; a rule filing newsletters
         // can opt its folder out (#116).
-        let count_row = adw::SwitchRow::new();
+        let count_row = ndl::SwitchRow::new();
         count_row.set_title(&i18n("Count unread mail"));
         count_row.set_subtitle(&i18n(
             "Include the folder's unread mail in the tray icon's unread count",
@@ -592,12 +592,12 @@ impl AccountsWindow {
 /// popover opened and how many choices it holds, the way a click would
 /// (the "Move to" list was found empty this way, 2026-09-14).
 fn showcase_open_row(
-    tag_row: &adw::ComboRow,
+    tag_row: &ndl::ComboRow,
     conds: &std::rc::Rc<std::cell::RefCell<Vec<CondRows>>>,
-    account_row: &adw::ComboRow,
+    account_row: &ndl::ComboRow,
 ) {
     if let Ok(which) = std::env::var("BUZON_SHOWCASE_OPEN_ROW") {
-        let row: adw::ComboRow = match which.as_str() {
+        let row: ndl::ComboRow = match which.as_str() {
             "tag" => tag_row.clone(),
             "where" => conds.borrow()[0].field.clone(),
             "match" => conds.borrow()[0].matcher.clone(),

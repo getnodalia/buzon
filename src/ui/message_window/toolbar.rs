@@ -7,22 +7,22 @@ use crate::config::ToolbarItem;
 use crate::i18n::i18n;
 use crate::ui::context_menu::{show_context_menu, MenuEntry};
 use crate::ui::message_actions::{KeysOf, MessageAction};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// The header's buttons, one per toolbar item, packed in the saved order.
 pub(super) struct Toolbar {
-    pub(super) header: adw::HeaderBar,
+    pub(super) header: ndl::HeaderBar,
     pub(super) buttons: Vec<(ToolbarItem, gtk::Button)>,
     pub(super) overflow: gtk::Button,
     pub(super) spinner: gtk::Spinner,
-    pub(super) breakpoint: adw::Breakpoint,
+    pub(super) breakpoint: ndl::Breakpoint,
 }
 
 /// One flat icon button for each toolbar item, with the main window's icons
 /// and tooltips, and the ⋯ and spinner the row also needs.
 pub(super) fn build_toolbar(
-    header: &adw::HeaderBar,
+    header: &ndl::HeaderBar,
     sender: &ComponentSender<MessageWindow>,
 ) -> Toolbar {
     let button = |icon: &str, tooltip: String, msg: fn() -> MessageWindowInput| {
@@ -82,10 +82,10 @@ pub(super) fn build_toolbar(
         buttons,
         overflow,
         spinner,
-        breakpoint: adw::Breakpoint::new(adw::BreakpointCondition::new_length(
-            adw::BreakpointConditionLengthType::MaxWidth,
+        breakpoint: ndl::Breakpoint::new(ndl::BreakpointCondition::new_length(
+            ndl::BreakpointConditionLengthType::MaxWidth,
             0.0,
-            adw::LengthUnit::Px,
+            ndl::LengthUnit::Px,
         )),
     }
 }
@@ -161,10 +161,10 @@ impl MessageWindow {
         self.bar.overflow.set_visible(overflow);
         self.bar
             .breakpoint
-            .set_condition(Some(&adw::BreakpointCondition::new_length(
-                adw::BreakpointConditionLengthType::MaxWidth,
+            .set_condition(Some(&ndl::BreakpointCondition::new_length(
+                ndl::BreakpointConditionLengthType::MaxWidth,
                 f64::from(need + 24),
-                adw::LengthUnit::Px,
+                ndl::LengthUnit::Px,
             )));
     }
 

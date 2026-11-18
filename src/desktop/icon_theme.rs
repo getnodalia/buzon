@@ -62,7 +62,13 @@ pub(crate) fn apply_icon_theme(desktop: bool) {
         return;
     };
     let theme = gtk::IconTheme::for_display(&display);
-    let mut paths: Vec<std::path::PathBuf> = Vec::new();
+    // NDL's own theme, which nodalia-gtk wrote to the cache and put on the
+    // path: the window controls and the `ndl-` icons come from it.
+    let mut paths: Vec<std::path::PathBuf> = theme
+        .search_path()
+        .into_iter()
+        .filter(|p| p.join(ndl::ICON_THEME).is_dir())
+        .collect();
     if desktop {
         paths.extend(DESKTOP_ICON_PATH.get().cloned().unwrap_or_default());
         // The user's icon directory: inside Flatpak XDG_DATA_HOME is the
@@ -189,7 +195,9 @@ mod tests {
             for (at, _) in text.match_indices("-symbolic\"") {
                 let start = text[..at].rfind('"').map_or(at, |q| q + 1);
                 let name = &text[start..at + "-symbolic".len()];
+                // NDL draws its own, from the theme nodalia-gtk installs.
                 if !name.starts_with('-')
+                    && !ndl::has_icon(name)
                     && name
                         .chars()
                         .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-')

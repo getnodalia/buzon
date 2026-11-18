@@ -8,7 +8,7 @@ use crate::i18n::{i18n, i18n_f};
 use crate::ui::context_menu::show_context_menu;
 use crate::ui::context_menu::MenuEntry;
 use crate::ui::rich_editor::SourceKind;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// A body as Markdown, keeping the empty line a reply opens with above its
@@ -210,15 +210,15 @@ impl Compose {
     pub(super) fn on_ask_plain(
         &mut self,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
-        let dialog = adw::AlertDialog::new(
+        let dialog = ndl::AlertDialog::new(
             Some(&i18n("Switch to plain text?")),
             Some(&i18n("Formatting, images and links are removed.")),
         );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("switch", &i18n("Switch"));
-        dialog.set_response_appearance("switch", adw::ResponseAppearance::Destructive);
+        dialog.set_response_appearance("switch", ndl::ResponseAppearance::Destructive);
         dialog.set_default_response(Some("cancel"));
         dialog.set_close_response("cancel");
         let s = sender.input_sender().clone();
@@ -237,7 +237,7 @@ impl Compose {
             tracing::info!("showcase plain: asked before switching");
             let (d, s) = (dialog.clone(), sender.input_sender().clone());
             gtk::glib::timeout_add_seconds_local_once(2, move || {
-                d.force_close();
+                d.dialog().force_close();
                 if answer == "switch" {
                     let _ = s.send(ComposeInput::ApplyFormat(ComposeFormat::Plain));
                 }

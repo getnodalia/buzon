@@ -9,7 +9,7 @@ use crate::config::ComposeFormat;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::context_menu::MenuEntry;
 use crate::ui::dialog::alert;
-use adw::prelude::*;
+use ndl::prelude::*;
 
 /// Which editor a translation (#327) was taken from, and so how it goes
 /// back: as HTML into the rich document, or as text into the source field.
@@ -202,7 +202,7 @@ impl Compose {
         &mut self,
         target: String,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         if self.translating {
             return;
@@ -255,7 +255,7 @@ impl Compose {
         target: String,
         widgets: &ComposeWidgets,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         let v: serde_json::Value = serde_json::from_str(&found).unwrap_or_default();
         let how = match self.format {
@@ -343,7 +343,7 @@ impl Compose {
         how: TranslateHow,
         subject: Option<String>,
         widgets: &ComposeWidgets,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         self.translating = false;
         self.translate_btn.set_sensitive(true);

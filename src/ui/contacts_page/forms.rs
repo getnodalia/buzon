@@ -4,7 +4,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::ContactDetails;
@@ -16,7 +16,7 @@ use super::rows::{avatar_for, group};
 /// when the kind has labels: `labels[i]` is what item `i` stands for, the
 /// first being none.
 pub(super) struct ValueRowsInner {
-    pub(super) rows: Vec<(adw::EntryRow, Option<gtk::DropDown>)>,
+    pub(super) rows: Vec<(ndl::EntryRow, Option<gtk::DropDown>)>,
     pub(super) labels: &'static [&'static str],
 }
 pub(super) type ValueRows = Rc<RefCell<ValueRowsInner>>;
@@ -84,7 +84,7 @@ pub(super) fn editable_values(
         let rows = rows.clone();
         let add_row = add_row.clone();
         move |value: &str, label: String, grab: bool| {
-            let entry = adw::EntryRow::new();
+            let entry = ndl::EntryRow::new();
             entry.set_title(&field);
             entry.set_text(value);
             let menu = (!labels.is_empty()).then(|| label_menu(labels, &label));
@@ -135,17 +135,17 @@ pub(super) fn editable_values(
 /// are kept as they were.
 pub(super) struct AddressForm {
     base: crate::contacts::Postal,
-    street: adw::EntryRow,
-    locality: adw::EntryRow,
-    region: adw::EntryRow,
-    code: adw::EntryRow,
-    country: adw::EntryRow,
+    street: ndl::EntryRow,
+    locality: ndl::EntryRow,
+    region: ndl::EntryRow,
+    code: ndl::EntryRow,
+    country: ndl::EntryRow,
     label: gtk::DropDown,
 }
 
 impl AddressForm {
     pub(super) fn read(&self) -> crate::contacts::Postal {
-        let text = |e: &adw::EntryRow| e.text().trim().to_string();
+        let text = |e: &ndl::EntryRow| e.text().trim().to_string();
         crate::contacts::Postal {
             label: ADDRESS_LABELS
                 .get(self.label.selected() as usize)
@@ -204,7 +204,7 @@ pub(super) fn address_editor(
             let list = gtk::ListBox::new();
             list.add_css_class("boxed-list");
             list.set_selection_mode(gtk::SelectionMode::None);
-            let head = adw::ActionRow::new();
+            let head = ndl::ActionRow::new();
             head.set_title(&i18n("Label"));
             let label = label_menu(ADDRESS_LABELS, &p.label);
             head.add_suffix(&label);
@@ -265,8 +265,8 @@ pub(super) struct BirthdayForm {
 }
 
 impl BirthdayForm {
-    pub(super) fn new(raw: &str) -> (adw::ActionRow, BirthdayForm) {
-        let row = adw::ActionRow::new();
+    pub(super) fn new(raw: &str) -> (ndl::ActionRow, BirthdayForm) {
+        let row = ndl::ActionRow::new();
         row.set_title(&i18n("Birthday"));
         let parts = crate::contacts::birthday_parts(raw);
         let day = gtk::SpinButton::with_range(1.0, 31.0, 1.0);
@@ -395,8 +395,8 @@ fn small_photo(path: &std::path::Path) -> Option<Vec<u8>> {
     pixbuf.save_to_bufferv(kind, options).ok()
 }
 
-pub(super) fn entry_row(title: &str, value: &str) -> adw::EntryRow {
-    let row = adw::EntryRow::new();
+pub(super) fn entry_row(title: &str, value: &str) -> ndl::EntryRow {
+    let row = ndl::EntryRow::new();
     row.set_title(title);
     row.set_text(value);
     row

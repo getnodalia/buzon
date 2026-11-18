@@ -10,16 +10,16 @@ use super::*;
 /// does; `syncing` tells the two apart.
 #[derive(Clone)]
 pub(super) struct SpellLangRows {
-    pub(super) expander: adw::ExpanderRow,
+    pub(super) expander: ndl::ExpanderRow,
     /// The setting the switches show: "" or "en_US, de_DE".
     pub(super) setting: Rc<std::cell::RefCell<String>>,
-    pub(super) system: Rc<std::cell::RefCell<Option<adw::SwitchRow>>>,
-    pub(super) dicts: Rc<std::cell::RefCell<Vec<(String, adw::SwitchRow)>>>,
+    pub(super) system: Rc<std::cell::RefCell<Option<ndl::SwitchRow>>>,
+    pub(super) dicts: Rc<std::cell::RefCell<Vec<(String, ndl::SwitchRow)>>>,
     syncing: Rc<std::cell::Cell<bool>>,
 }
 
 impl SpellLangRows {
-    pub(super) fn new(expander: adw::ExpanderRow, setting: String) -> Self {
+    pub(super) fn new(expander: ndl::ExpanderRow, setting: String) -> Self {
         SpellLangRows {
             expander,
             setting: Rc::new(std::cell::RefCell::new(setting)),
@@ -80,7 +80,7 @@ impl SpellLangRows {
 /// list. The permanent "Add a word" entry row is left alone; word rows are
 /// tagged with a widget name so only they are cleared. Each row's trash
 /// button forgets its word and rebuilds.
-pub(super) fn rebuild_personal_words(exp: &adw::ExpanderRow) {
+pub(super) fn rebuild_personal_words(exp: &ndl::ExpanderRow) {
     // Collect the old word rows first: ExpanderRow has no child iterator, so
     // rows remember themselves via the widget name.
     let mut stale: Vec<gtk::Widget> = Vec::new();
@@ -97,7 +97,7 @@ pub(super) fn rebuild_personal_words(exp: &adw::ExpanderRow) {
     let words = crate::desktop::spell::personal_words();
     exp.set_enable_expansion(true);
     for w in words {
-        let row = adw::ActionRow::builder().title(&w).build();
+        let row = ndl::ActionRow::builder().title(&w).build();
         row.set_widget_name("buzon-spell-word");
         let del = gtk::Button::from_icon_name("user-trash-symbolic");
         del.add_css_class("flat");

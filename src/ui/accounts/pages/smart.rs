@@ -1,6 +1,6 @@
 //! Settings → Smart Folders: the list of saved searches.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::super::{AccountsInput, AccountsWindow};
@@ -9,16 +9,16 @@ use crate::i18n::i18n;
 /// The page, and the widgets on it that the panel reaches later.
 #[derive(Debug)]
 pub(in crate::ui::accounts) struct SmartPage {
-    pub(in crate::ui::accounts) page: adw::PreferencesPage,
+    pub(in crate::ui::accounts) page: ndl::PreferencesPage,
     pub(in crate::ui::accounts) smart_list: gtk::ListBox,
 }
 
 impl SmartPage {
     pub(in crate::ui::accounts) fn build(sender: &ComponentSender<AccountsWindow>) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
+            page = ndl::PreferencesPage {
                 // Smart folders (#417): saved searches.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Smart Folders"),
                     set_description: Some(
                         i18n("Lists the messages that match its conditions. Shown in the sidebar under the unified rows.").as_str()

@@ -191,10 +191,10 @@ pub(crate) enum ContactSort {
 
 /// Live handles into the open contact form.
 pub(super) struct ContactForm {
-    pub(super) name: adw::EntryRow,
-    pub(super) nickname: adw::EntryRow,
-    pub(super) org: adw::EntryRow,
-    pub(super) title: adw::EntryRow,
+    pub(super) name: ndl::EntryRow,
+    pub(super) nickname: ndl::EntryRow,
+    pub(super) org: ndl::EntryRow,
+    pub(super) title: ndl::EntryRow,
     pub(super) note: gtk::TextView,
     pub(super) emails: ValueRows,
     pub(super) phones: ValueRows,
@@ -205,18 +205,18 @@ pub(super) struct ContactForm {
     pub(super) photo: Rc<RefCell<crate::contacts::PhotoEdit>>,
     /// The book a new contact goes to; `None` when editing one (it stays in
     /// its book) or before the books are known.
-    pub(super) book: Option<adw::ComboRow>,
+    pub(super) book: Option<ndl::ComboRow>,
 }
 
 /// Live handles into the open group form.
 pub(super) struct GroupForm {
-    pub(super) name: adw::EntryRow,
-    pub(super) hide: adw::SwitchRow,
+    pub(super) name: ndl::EntryRow,
+    pub(super) hide: ndl::SwitchRow,
     /// The members as the form has them, in order.
     pub(super) members: Rc<RefCell<Vec<Member>>>,
     /// A new group's address book, picked from `books`, those that keep
     /// groups.
-    pub(super) book: Option<adw::ComboRow>,
+    pub(super) book: Option<ndl::ComboRow>,
     pub(super) books: Vec<crate::contacts::Book>,
 }
 

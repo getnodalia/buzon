@@ -1,7 +1,7 @@
 //! The message list's header: its Focus Mode fold, the sort and filter
 //! popover, and the wide/narrow switch.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;

@@ -7,7 +7,7 @@ use super::threading::{thread_slot, SourceThreads};
 use super::RowAction;
 use crate::models::{Message, ThreadSummary};
 use crate::ui::message_row::Slot;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// A bulk action applied to every selected message at once.

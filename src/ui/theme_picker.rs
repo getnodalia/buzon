@@ -195,20 +195,6 @@ fn thumbnail(m: Mini) -> gtk::DrawingArea {
     area.set_draw_func(move |_, cr, w, h| {
         paint_thumbnail(cr, w, h, &m);
     });
-    // The System card outlives an accent change — the Settings window is
-    // kept warm between openings — so its thumbnails follow it. The handler
-    // goes with the thumbnail rather than hanging off the style manager for
-    // ever.
-    let handler = {
-        let area = area.clone();
-        adw::StyleManager::default().connect_accent_color_notify(move |_| area.queue_draw())
-    };
-    let handler = std::cell::RefCell::new(Some(handler));
-    area.connect_destroy(move |_| {
-        if let Some(handler) = handler.borrow_mut().take() {
-            adw::StyleManager::default().disconnect(handler);
-        }
-    });
     area
 }
 
@@ -220,11 +206,8 @@ fn paint_thumbnail(cr: &gtk::cairo::Context, w: i32, h: i32, m: &Mini) {
     );
     let accent = match m.accent {
         Some(hex) => rgb(hex),
-        // The desktop's own accent, as libadwaita paints its buttons.
-        None => {
-            let c = adw::StyleManager::default().accent_color().to_rgba();
-            (c.red() as f64, c.green() as f64, c.blue() as f64)
-        }
+        // Buzón's own accent, which the System theme keeps.
+        None => rgb(crate::desktop::theme::ACCENT),
     };
 
     for (dy, blur, spread, alpha) in CARD_SHADOW {

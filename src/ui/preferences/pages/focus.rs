@@ -2,7 +2,7 @@
 //! on these decide the layout of the sidebar, the list and the reader, in place
 //! of the settings on the other pages.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use super::super::choices::list_layout_index;
 use super::super::rows::no_truncate;
@@ -13,22 +13,22 @@ use crate::i18n::i18n;
 /// The page, and the rows on it that the window reaches later.
 #[derive(Debug)]
 pub(in crate::ui::preferences) struct FocusPage {
-    pub(in crate::ui::preferences) page: adw::PreferencesPage,
+    pub(in crate::ui::preferences) page: ndl::PreferencesPage,
     /// Every switch, with the part it sets: the mode can change from the main
     /// menu or a shortcut while the page is open.
-    switches: Vec<(adw::SwitchRow, FocusPart)>,
+    switches: Vec<(ndl::SwitchRow, FocusPart)>,
 }
 
 /// One switch of the mode, added to `group` and noted in `switches`.
 fn switch(
-    group: &adw::PreferencesGroup,
-    switches: &mut Vec<(adw::SwitchRow, FocusPart)>,
+    group: &ndl::PreferencesGroup,
+    switches: &mut Vec<(ndl::SwitchRow, FocusPart)>,
     sender: &ViewSender,
     part: FocusPart,
     title: &str,
     subtitle: Option<&str>,
 ) {
-    let row = adw::SwitchRow::new();
+    let row = ndl::SwitchRow::new();
     row.set_title(title);
     if let Some(subtitle) = subtitle {
         row.set_subtitle(subtitle);
@@ -44,10 +44,10 @@ fn switch(
 impl FocusPage {
     pub(in crate::ui::preferences) fn build(model: &Preferences, sender: &ViewSender) -> Self {
         use FocusPart as F;
-        let page = adw::PreferencesPage::new();
+        let page = ndl::PreferencesPage::new();
         let mut switches = Vec::new();
         let new_group = |title: String, description: Option<String>| {
-            let group = adw::PreferencesGroup::new();
+            let group = ndl::PreferencesGroup::new();
             group.set_title(&title);
             group.set_description(description.as_deref());
             page.add(&group);
@@ -61,7 +61,7 @@ impl FocusPage {
             )),
         );
         let mut add =
-            |group: &adw::PreferencesGroup, part, title: String, subtitle: Option<String>| {
+            |group: &ndl::PreferencesGroup, part, title: String, subtitle: Option<String>| {
                 switch(
                     group,
                     &mut switches,
@@ -139,7 +139,7 @@ impl FocusPage {
         let list_group = new_group(i18n("Message List"), None);
         // Set once, here: a combo's selection is never set from the view
         // again, or the two would chase each other.
-        let layout = adw::ComboRow::new();
+        let layout = ndl::ComboRow::new();
         layout.set_title(&i18n("Layout"));
         layout.set_model(Some(&gtk::StringList::new(&[
             &i18n("Cards"),
@@ -163,7 +163,7 @@ impl FocusPage {
             None,
         );
 
-        let preview = adw::ComboRow::new();
+        let preview = ndl::ComboRow::new();
         preview.set_title(&i18n("Preview lines"));
         preview.set_model(Some(&gtk::StringList::new(&[
             &i18n("Off"),

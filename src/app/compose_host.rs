@@ -1,6 +1,6 @@
 //! Where composers live: their own windows, or the reader's split pane.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -23,7 +23,7 @@ pub(super) struct ComposeHost {
     /// window's lifetime; dropped when the host is removed.
     #[allow(dead_code)]
     pub(super) controller: Controller<Compose>,
-    pub(super) window: adw::Window,
+    pub(super) window: ndl::Window,
     /// An AI assistant prepared it (`assistant.rs`, which limits how many
     /// of those are open).
     pub(super) assistant: bool,
@@ -35,7 +35,7 @@ pub(super) struct ComposeHost {
 pub(super) struct ReaderCompose {
     pub(super) id: u32,
     pub(super) controller: Controller<Compose>,
-    pub(super) window: Option<adw::Window>,
+    pub(super) window: Option<ndl::Window>,
     /// The message a split reply answers, by (account, id): its card in the
     /// reader is the one the reply was opened from.
     pub(super) answering: Option<(u32, u32)>,
@@ -220,14 +220,14 @@ impl AppModel {
         // Out the way it came in: to nothing above the reader, to the
         // pane's full height beneath it.
         let to = if bottom { split.height() as f64 } else { 0.0 };
-        let target = adw::CallbackAnimationTarget::new({
+        let target = ndl::CallbackAnimationTarget::new({
             let split = split.clone();
             move |v| split.set_position(v as i32)
         });
-        let anim = adw::TimedAnimation::new(&split, from, to, 300, target);
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        let anim = ndl::TimedAnimation::new(&split, from, to, 300, target);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         let cell = self.split_close_anim.clone();
-        anim.connect_done(move |_| {
+        anim.connect_done(move || {
             cell.borrow_mut().take();
             if slot.child().as_ref() == Some(&wrap) {
                 if let Some(w) = wrap.downcast_ref::<gtk::Overlay>() {

@@ -1,7 +1,7 @@
 //! Showcase hooks for the windows over the main one: shortcuts, Settings
 //! and the account editor, Add to Contacts, message dialogs and Contacts.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::app::model::AppModel;
@@ -26,7 +26,7 @@ pub(super) fn stage_shortcuts(sender: &ComponentSender<AppModel>) {
             let tops = gtk::Window::toplevels();
             if let Some(w) = (0..tops.n_items())
                 .filter_map(|i| tops.item(i))
-                .filter_map(|o| o.downcast::<adw::Window>().ok())
+                .filter_map(|o| o.downcast::<ndl::Window>().ok())
                 .find(|w| {
                     w.is_visible() && w.title().is_some_and(|t| t == i18n("Keyboard Shortcuts"))
                 })
@@ -86,19 +86,14 @@ pub(super) fn stage_settings_go(sender: &ComponentSender<AppModel>) {
 /// BUZON_SHOWCASE_ADD_CONTACT=<address> opens Add to Contacts
 /// for it at 6s and captures the dialog at 10s, beside the
 /// BUZON_SHOWCASE file, so the books it offers can be checked.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 pub(super) fn stage_add_contact(sender: &ComponentSender<AppModel>) {
     if let Ok(addr) = std::env::var("BUZON_SHOWCASE_ADD_CONTACT") {
         input_after(sender, 6, AppMsg::AddContactAddr(addr));
         gtk::glib::timeout_add_seconds_local_once(10, move || {
-            let tops = gtk::Window::toplevels();
-            let dialog = (0..tops.n_items())
-                .filter_map(|i| tops.item(i))
-                .filter_map(|o| o.downcast::<adw::MessageDialog>().ok())
-                .find(|d| d.is_visible());
+            let dialog = crate::ui::message_dialog::MessageDialog::showing();
             match (dialog, std::env::var("BUZON_SHOWCASE")) {
                 (Some(d), Ok(path)) => {
-                    showcase_capture(d.upcast_ref(), &format!("{path}.contact.png"))
+                    showcase_capture(&d.widget(), &format!("{path}.contact.png"))
                 }
                 _ => tracing::warn!("showcase: no Add to Contacts dialog"),
             }
@@ -109,25 +104,17 @@ pub(super) fn stage_add_contact(sender: &ComponentSender<AppModel>) {
 /// BUZON_SHOWCASE_DIALOG=save|discard|cancel answers whatever
 /// message dialog is on screen at 10s, captured first beside
 /// the BUZON_SHOWCASE file.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 pub(super) fn stage_dialog() {
     if let Ok(answer) = std::env::var("BUZON_SHOWCASE_DIALOG") {
         gtk::glib::timeout_add_seconds_local_once(10, move || {
-            let tops = gtk::Window::toplevels();
-            let dialog = (0..tops.n_items())
-                .filter_map(|i| tops.item(i))
-                .filter_map(|o| o.downcast::<adw::MessageDialog>().ok())
-                .find(|d| d.is_visible());
+            let dialog = crate::ui::message_dialog::MessageDialog::showing();
             match dialog {
                 Some(d) => {
                     if let Ok(path) = std::env::var("BUZON_SHOWCASE") {
-                        showcase_capture(d.upcast_ref(), &format!("{path}.dialog.png"));
+                        showcase_capture(&d.widget(), &format!("{path}.dialog.png"));
                     }
-                    // Answering is what a button click emits; the
-                    // click also takes the dialog off screen, so
-                    // hide it (closing would answer a second time).
+                    // Answering is what a button click does, closing included.
                     d.response(&answer);
-                    d.set_visible(false);
                 }
                 None => tracing::warn!("showcase: no dialog to answer"),
             }

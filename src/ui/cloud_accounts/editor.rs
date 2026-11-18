@@ -7,26 +7,26 @@ use super::*;
 /// [`build_editor`] for what each kind shows).
 struct EditorRows {
     /// The service picker: insensitive once the account exists.
-    kind: adw::ComboRow,
+    kind: ndl::ComboRow,
     /// The service's mark over the form.
     header_mark: gtk::Image,
-    name: adw::EntryRow,
-    url: adw::EntryRow,
-    user: adw::EntryRow,
-    pass: adw::PasswordEntryRow,
-    code: adw::EntryRow,
+    name: ndl::EntryRow,
+    url: ndl::EntryRow,
+    user: ndl::EntryRow,
+    pass: ndl::PasswordEntryRow,
+    code: ndl::EntryRow,
     seafile_hint: gtk::Label,
     /// GNOME Online Accounts' file accounts (OneDrive).
     goa_accounts: Vec<crate::services::goa::GoaFilesAccount>,
-    goa_row: adw::ComboRow,
+    goa_row: ndl::ComboRow,
     goa_hint: gtk::Label,
-    app_key: adw::EntryRow,
+    app_key: ndl::EntryRow,
     app_key_hint: gtk::Label,
-    library: adw::EntryRow,
-    folder: adw::EntryRow,
-    cloudflare: adw::SwitchRow,
-    expire: adw::SpinRow,
-    protect: adw::SwitchRow,
+    library: ndl::EntryRow,
+    folder: ndl::EntryRow,
+    cloudflare: ndl::SwitchRow,
+    expire: ndl::SpinRow,
+    protect: ndl::SwitchRow,
     /// Check Connection, and what it found.
     check: gtk::Button,
     status: gtk::Label,
@@ -36,10 +36,10 @@ struct EditorRows {
 
 impl EditorRows {
     fn new(account: &CloudAccount, index: Option<usize>) -> Self {
-        let group = adw::PreferencesGroup::new();
+        let group = ndl::PreferencesGroup::new();
         group.set_title(&i18n("Account"));
         let names: Vec<&str> = cloud::SERVICES.iter().map(|s| s.name).collect();
-        let kind = adw::ComboRow::new();
+        let kind = ndl::ComboRow::new();
         kind.set_title(&i18n("Service"));
         kind.set_model(Some(&gtk::StringList::new(&names)));
         // Each entry with the service's mark before its name, in the row and
@@ -93,16 +93,16 @@ impl EditorRows {
         kind.set_sensitive(index.is_none());
         // What the account is called in the list; optional, the server or
         // service stands in when empty.
-        let name = adw::EntryRow::new();
+        let name = ndl::EntryRow::new();
         name.set_title(&i18n("Nickname (optional)"));
         name.set_text(&account.name);
-        let url = adw::EntryRow::new();
+        let url = ndl::EntryRow::new();
         url.set_title(&i18n("Server URL"));
         url.set_text(&account.url);
-        let user = adw::EntryRow::new();
+        let user = ndl::EntryRow::new();
         user.set_text(&account.user);
-        let pass = adw::PasswordEntryRow::new();
-        let code = adw::EntryRow::new();
+        let pass = ndl::PasswordEntryRow::new();
+        let code = ndl::EntryRow::new();
         code.set_title(&i18n("Two-step verification code (if used)"));
         code.set_input_purpose(gtk::InputPurpose::Digits);
         let seafile_hint = gtk::Label::new(Some(&i18n(
@@ -117,7 +117,7 @@ impl EditorRows {
         seafile_hint.set_margin_end(12);
         // OneDrive: which GNOME Online Accounts account.
         let goa_accounts = crate::services::goa::list_files_accounts();
-        let goa_row = adw::ComboRow::new();
+        let goa_row = ndl::ComboRow::new();
         goa_row.set_title(&i18n("Online account"));
         let goa_hint = gtk::Label::new(None);
         goa_hint.set_wrap(true);
@@ -127,7 +127,7 @@ impl EditorRows {
         goa_hint.set_margin_top(6);
         goa_hint.set_margin_start(12);
         goa_hint.set_margin_end(12);
-        let app_key = adw::EntryRow::new();
+        let app_key = ndl::EntryRow::new();
         app_key.set_title(&i18n("Dropbox app key"));
         app_key.set_text(&account.client_id);
         let app_key_hint = gtk::Label::new(None);
@@ -138,23 +138,23 @@ impl EditorRows {
         app_key_hint.set_margin_top(6);
         app_key_hint.set_margin_start(12);
         app_key_hint.set_margin_end(12);
-        let library = adw::EntryRow::new();
+        let library = ndl::EntryRow::new();
         library.set_title(&i18n("Library"));
         library.set_text(&account.library);
-        let folder = adw::EntryRow::new();
+        let folder = ndl::EntryRow::new();
         folder.set_title(&i18n("Upload folder"));
         folder.set_text(&account.folder);
-        let cloudflare = adw::SwitchRow::new();
+        let cloudflare = ndl::SwitchRow::new();
         cloudflare.set_title(&i18n("Server is behind Cloudflare"));
         cloudflare.set_subtitle(&i18n(
             "For a self-hosted server behind Cloudflare: files over 100 MB go up in 90 MB pieces.",
         ));
         cloudflare.set_active(account.cloudflare);
-        let expire = adw::SpinRow::with_range(0.0, 365.0, 1.0);
+        let expire = ndl::SpinRow::with_range(0.0, 365.0, 1.0);
         expire.set_title(&i18n("Links expire after"));
         expire.set_subtitle(&i18n("Days. 0 keeps links forever."));
         expire.set_value(account.expire_days as f64);
-        let protect = adw::SwitchRow::new();
+        let protect = ndl::SwitchRow::new();
         protect.set_title(&i18n("Protect links with a password"));
         protect.set_subtitle(&i18n(
             "Each file gets its own password, shown to you to pass on.",
@@ -173,7 +173,7 @@ impl EditorRows {
         group.add(&cloudflare);
         // The link terms: the defaults for this account, changeable for each
         // upload in the composer's upload dialog.
-        let defaults = adw::PreferencesGroup::new();
+        let defaults = ndl::PreferencesGroup::new();
         defaults.set_title(&i18n("Link defaults"));
         defaults.set_description(Some(&i18n(
             "Used unless you change them in the upload dialog for one email.",
@@ -662,12 +662,12 @@ pub(super) fn build_editor(
 fn connect_check(
     check: &gtk::Button,
     read: impl Fn() -> CloudAccount + Clone + 'static,
-    pass: &adw::PasswordEntryRow,
+    pass: &ndl::PasswordEntryRow,
     status: &gtk::Label,
     existing: CloudAccount,
     dropbox_login: Rc<RefCell<Option<(String, String, String)>>>,
-    name: &adw::EntryRow,
-    code: &adw::EntryRow,
+    name: &ndl::EntryRow,
+    code: &ndl::EntryRow,
     selected_kind: impl Fn() -> CloudKind + Clone + 'static,
     link_terms: Rc<RefCell<Option<Option<cloud::LinkTerms>>>>,
     apply_terms: impl Fn(&CloudAccount) + Clone + 'static,

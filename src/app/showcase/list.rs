@@ -1,7 +1,7 @@
 //! Showcase hooks for the list, the reader and the sidebar: opening rows,
 //! menus and palettes, swipes, the gallery, the rail and the peek panel.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::app::model::AppModel;
@@ -77,7 +77,7 @@ impl AppModel {
     /// releases it at 7s, with BUZON_SHOWCASE_BURST=<path> writing
     /// stills through the commit exit — the only way to see the
     /// gesture's animation here (no input injection).
-    pub(super) fn stage_swipe(&self, root: &adw::ApplicationWindow) {
+    pub(super) fn stage_swipe(&self, root: &ndl::ApplicationWindow) {
         if let Ok(spec) = std::env::var("BUZON_SHOWCASE_SWIPE") {
             let (idx, side) = spec.split_once(':').unwrap_or((spec.as_str(), "left"));
             let index: usize = idx.trim().parse().unwrap_or(0);
@@ -395,7 +395,7 @@ impl AppModel {
 /// under the 1094px breakpoint) that is the floating peek; at
 /// full width, or under Focus Mode's rail, it is the rail
 /// expanding and folding again.
-pub(super) fn stage_peek(root: &adw::ApplicationWindow, sender: &ComponentSender<AppModel>) {
+pub(super) fn stage_peek(root: &ndl::ApplicationWindow, sender: &ComponentSender<AppModel>) {
     if let Ok(spec) = std::env::var("BUZON_SHOWCASE_PEEK") {
         let mut at: Vec<f64> = spec
             .split(',')

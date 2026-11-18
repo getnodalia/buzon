@@ -1,6 +1,6 @@
 //! Contacts: the address books, syncing them, and importing vCards.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f, ni18n_f};
@@ -138,7 +138,6 @@ impl AppModel {
         });
     }
 
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn add_contact_dialog(
         &self,
         name: &str,
@@ -151,27 +150,27 @@ impl AppModel {
             return;
         }
 
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             Some(&self.window),
             Some(i18n("Add to Contacts").as_str()),
             None,
         );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("add", &i18n("Add"));
-        dialog.set_response_appearance("add", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("add", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("add"));
         dialog.set_close_response("cancel");
 
         let form = gtk::ListBox::new();
         form.add_css_class("boxed-list");
         form.set_selection_mode(gtk::SelectionMode::None);
-        let name_row = adw::EntryRow::new();
+        let name_row = ndl::EntryRow::new();
         name_row.set_title(&i18n("Name"));
         name_row.set_text(name);
-        let email_row = adw::EntryRow::new();
+        let email_row = ndl::EntryRow::new();
         email_row.set_title(&i18n("Email"));
         email_row.set_text(email);
-        let book_row = adw::ComboRow::new();
+        let book_row = ndl::ComboRow::new();
         book_row.set_title(&i18n("Address book"));
         let labels: Vec<&str> = books.iter().map(|b| b.name.as_str()).collect();
         book_row.set_model(Some(&gtk::StringList::new(&labels)));

@@ -10554,3 +10554,12 @@ msgstr "Hyprlab"
 #~ msgstr ""
 #~ "Las cuentas de Google y Microsoft inician sesión mediante Ajustes de "
 #~ "GNOME → Cuentas en línea y después aparecen arriba."
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Desktop window controls"
+msgstr "Controles de ventana del escritorio"
+
+msgid "Use your desktop's buttons instead of Buzón's round ones. Applies after a restart."
+msgstr "Usa los botones de tu escritorio en vez de los redondos de Buzón. Se aplica al reiniciar."

@@ -127,7 +127,7 @@ pub(super) fn stage_copy(sender: &ComponentSender<AppModel>) {
 /// BUZON_SHOWCASE_REPLY opens the inline reply composer on the
 /// selected message, to check the composer's grounds (#148).
 /// Two seconds on, it logs where focus landed (#266).
-pub(super) fn stage_reply(root: &adw::ApplicationWindow, sender: &ComponentSender<AppModel>) {
+pub(super) fn stage_reply(root: &ndl::ApplicationWindow, sender: &ComponentSender<AppModel>) {
     if let Ok(v) = std::env::var("BUZON_SHOWCASE_REPLY") {
         // A number is the moment, in seconds (4 otherwise).
         let at = v.parse::<u32>().unwrap_or(4);
@@ -146,7 +146,7 @@ pub(super) fn stage_reply(root: &adw::ApplicationWindow, sender: &ComponentSende
 /// address follows, and, a second later, logs
 /// where keyboard focus landed: the field row's title, or the
 /// focused widget's type (#266).
-pub(super) fn stage_new(root: &adw::ApplicationWindow, sender: &ComponentSender<AppModel>) {
+pub(super) fn stage_new(root: &ndl::ApplicationWindow, sender: &ComponentSender<AppModel>) {
     if let Ok(v) = std::env::var("BUZON_SHOWCASE_NEW") {
         let (at, to) = v.split_once(':').unwrap_or((v.as_str(), ""));
         let at = at.parse::<u32>().unwrap_or(4);

@@ -5,8 +5,8 @@
 //! row beside the end widget, all the way down, left a wrapped row short
 //! of room it visibly had.
 
-use adw::prelude::*;
 use gtk::{glib, subclass::prelude::*};
+use ndl::prelude::*;
 
 /// Between two tools on a row.
 const SPACING: i32 = 10;

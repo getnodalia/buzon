@@ -7,9 +7,9 @@ use super::{RowAction, RowData, RowItem, SwipeSurface};
 use crate::config::ListColumn;
 use crate::ui::column_bin::ColumnBin;
 use crate::ui::message_list::MessageListInput;
-use adw::prelude::*;
 use gtk::glib;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::cell::RefCell;
 use std::rc::{Rc, Weak};
@@ -28,7 +28,7 @@ pub(super) struct RowWidgets {
     pub(super) node: gtk::Box,
     pub(super) content: gtk::Box,
     pub(super) avatar_revealer: gtk::Revealer,
-    pub(super) avatar: adw::Avatar,
+    pub(super) avatar: ndl::Avatar,
     pub(super) dot: gtk::Box,
     pub(super) text: gtk::Box,
     /// The three-line card's first line, which the single-line layout
@@ -117,7 +117,7 @@ pub(super) struct RowState {
     /// From the first drag until the snap-back lands: the `.swiping` class
     /// squares the pill off for that whole span.
     pub(super) swipe_active: bool,
-    pub(super) swipe_anim: Option<adw::TimedAnimation>,
+    pub(super) swipe_anim: Option<ndl::TimedAnimation>,
 }
 
 pub(crate) struct Row {
@@ -128,7 +128,7 @@ pub(crate) struct Row {
     pub(super) list_item: RefCell<glib::WeakRef<gtk::ListItem>>,
     /// Kept alive for as long as the row: the tracker stops firing once
     /// dropped.
-    pub(super) tracker: RefCell<Option<adw::SwipeTracker>>,
+    pub(super) tracker: RefCell<Option<super::swipe::SwipeTracker>>,
 }
 
 impl Row {

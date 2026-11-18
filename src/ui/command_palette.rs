@@ -6,7 +6,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::i18n::i18n;
 
@@ -53,7 +53,7 @@ impl Query {
 
 /// Open the palette over `parent` with `entries`, in the order given.
 pub(crate) fn show(parent: &impl IsA<gtk::Widget>, entries: Vec<Entry>, typed: &str) {
-    let dialog = adw::Dialog::builder()
+    let dialog = ndl::Dialog::builder()
         .title(i18n("Command Palette"))
         .content_width(560)
         .content_height(480)
@@ -73,7 +73,7 @@ pub(crate) fn show(parent: &impl IsA<gtk::Widget>, entries: Vec<Entry>, typed: &
         .map(|e| (format!("{} {}", e.title, e.detail).to_lowercase(), e.action))
         .collect();
     for e in &entries {
-        let row = adw::ActionRow::builder()
+        let row = ndl::ActionRow::builder()
             .title(gtk::glib::markup_escape_text(&e.title))
             .subtitle(gtk::glib::markup_escape_text(&e.detail))
             .activatable(true)
@@ -109,8 +109,8 @@ pub(crate) fn show(parent: &impl IsA<gtk::Widget>, entries: Vec<Entry>, typed: &
     column.set_margin_end(12);
     column.append(&search);
     column.append(&scroller);
-    let toolbar = adw::ToolbarView::new();
-    toolbar.add_top_bar(&adw::HeaderBar::new());
+    let toolbar = ndl::ToolbarView::new();
+    toolbar.add_top_bar(&ndl::HeaderBar::new());
     toolbar.set_content(Some(&column));
     dialog.set_child(Some(&toolbar));
 

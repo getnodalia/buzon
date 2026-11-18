@@ -7,7 +7,7 @@ use super::Compose;
 use crate::config::ComposeFormat;
 use crate::i18n::{i18n, i18n_f};
 use crate::ui::rich_editor::RichEditor;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// The buttons at the far end of the format bar: merge fields, template,
@@ -21,7 +21,7 @@ pub(super) fn add_toolbar_end_buttons(
 ) -> (
     gtk::Button,
     gtk::ToggleButton,
-    adw::ButtonContent,
+    ndl::ButtonContent,
     gtk::Button,
     gtk::Button,
 ) {
@@ -40,7 +40,7 @@ pub(super) fn add_toolbar_end_buttons(
     format_btn.set_can_focus(false);
     // The preview keeps its word. It is a state rather than an action,
     // and an eye on its own leaves which state to guesswork.
-    let preview_content = adw::ButtonContent::builder()
+    let preview_content = ndl::ButtonContent::builder()
         .icon_name("eye-open-negative-filled-symbolic")
         .label(i18n("Preview"))
         .build();

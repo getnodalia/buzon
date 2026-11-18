@@ -11,7 +11,7 @@ pub(super) fn rebuild_goa_rows(
         list.remove(&row);
     }
     for (i, g) in goa.iter().enumerate() {
-        let row = adw::ActionRow::new();
+        let row = ndl::ActionRow::new();
         row.set_title(&g.email);
         row.set_subtitle(&g.provider);
         row.add_prefix(&crate::desktop::brand::mark(

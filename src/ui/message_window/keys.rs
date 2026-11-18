@@ -5,7 +5,7 @@ use super::types::{MessageWindowInput, MessageWindowOutput};
 use super::MessageWindow;
 use crate::ui::keymap::Shortcut;
 use crate::ui::message_view::MessageViewInput;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::cell::Cell;
 use std::rc::Rc;
@@ -17,7 +17,7 @@ impl MessageWindow {
         &mut self,
         action: Shortcut,
         sender: &ComponentSender<Self>,
-        root: &adw::Window,
+        root: &ndl::Window,
     ) {
         let conversation = self.thread.len() > 1;
         let input = |msg| sender.input_sender().emit(msg);
@@ -94,7 +94,7 @@ impl MessageWindow {
 /// (#392), read through the same maps, so the two cannot drift.
 pub(super) fn key_controller(
     sender: &ComponentSender<MessageWindow>,
-    window: &adw::Window,
+    window: &ndl::Window,
     single_key: Rc<Cell<bool>>,
     gmail: Rc<Cell<bool>>,
 ) -> gtk::EventControllerKey {

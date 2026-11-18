@@ -1,6 +1,6 @@
 //! Applying sidebar settings.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::ui::contacts_page::ContactsPageInput;

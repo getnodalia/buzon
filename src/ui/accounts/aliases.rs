@@ -5,15 +5,15 @@ use super::*;
 /// The alias editor dialog (#34): a small modal for one send-as alias — its
 /// identity, and optionally its own SMTP transport.
 pub(super) struct AliasDialog {
-    window: adw::Window,
-    name_row: adw::EntryRow,
-    addr_row: adw::EntryRow,
-    smtp_switch: adw::SwitchRow,
-    host_row: adw::EntryRow,
-    port_row: adw::EntryRow,
-    user_row: adw::EntryRow,
-    pass_row: adw::PasswordEntryRow,
-    saves_row: adw::SwitchRow,
+    window: ndl::Window,
+    name_row: ndl::EntryRow,
+    addr_row: ndl::EntryRow,
+    smtp_switch: ndl::SwitchRow,
+    host_row: ndl::EntryRow,
+    port_row: ndl::EntryRow,
+    user_row: ndl::EntryRow,
+    pass_row: ndl::PasswordEntryRow,
+    saves_row: ndl::SwitchRow,
     test_btn: gtk::Button,
     test_result: gtk::Label,
 }
@@ -37,7 +37,7 @@ impl AccountsWindow {
             .hidden_empty
             .set_visible(self.hidden_edits.is_empty());
         for (i, path) in self.hidden_edits.iter().enumerate() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&gtk::glib::markup_escape_text(&crate::mail::mutf7::decode(
                 path,
             )));
@@ -85,7 +85,7 @@ impl AccountsWindow {
         list.set_visible(!self.alias_edits.is_empty() || !server.is_empty());
 
         for (i, alias) in self.alias_edits.iter().enumerate() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_activatable(true);
             row.set_title(&gtk::glib::markup_escape_text(&alias.identity));
             row.set_subtitle(&gtk::glib::markup_escape_text(&if alias.has_own_smtp() {
@@ -113,7 +113,7 @@ impl AccountsWindow {
         }
 
         for (name, addr) in server {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             let title = if name.is_empty() || name.eq_ignore_ascii_case(addr) {
                 addr.clone()
             } else {
@@ -139,14 +139,14 @@ impl AccountsWindow {
     /// have no SMTP server of their own to set.
     fn open_alias_dialog(
         &mut self,
-        root: &adw::Bin,
+        root: &ndl::Bin,
         alias: &AliasConfig,
         jmap: bool,
         sender: &ComponentSender<Self>,
     ) {
         self.close_alias_dialog();
 
-        let window = adw::Window::builder()
+        let window = ndl::Window::builder()
             .modal(true)
             .default_width(440)
             .title(if self.alias_editing.is_some() {
@@ -161,7 +161,7 @@ impl AccountsWindow {
         let cancel = gtk::Button::with_label(&i18n("Cancel"));
         let save = gtk::Button::with_label(&i18n("Save"));
         save.add_css_class("suggested-action");
-        let header = adw::HeaderBar::builder()
+        let header = ndl::HeaderBar::builder()
             .show_start_title_buttons(false)
             .show_end_title_buttons(false)
             .build();
@@ -169,7 +169,7 @@ impl AccountsWindow {
         header.pack_end(&save);
 
         let (name, addr) = split_identity(&alias.identity);
-        let identity_group = adw::PreferencesGroup::new();
+        let identity_group = ndl::PreferencesGroup::new();
         identity_group.set_description(Some(
             i18n(
                 "Will appear in the composer's From menu. Replies to mail sent here will come \
@@ -177,41 +177,41 @@ impl AccountsWindow {
             )
             .as_str(),
         ));
-        let name_row = adw::EntryRow::builder()
+        let name_row = ndl::EntryRow::builder()
             .title(i18n("Display name (optional)"))
             .build();
         name_row.set_text(&name);
-        let addr_row = adw::EntryRow::builder()
+        let addr_row = ndl::EntryRow::builder()
             .title(i18n("Email address"))
             .build();
         addr_row.set_text(&addr);
         identity_group.add(&name_row);
         identity_group.add(&addr_row);
 
-        let smtp_group = adw::PreferencesGroup::new();
+        let smtp_group = ndl::PreferencesGroup::new();
         smtp_group.set_title(&i18n("Sending"));
-        let smtp_switch = adw::SwitchRow::builder()
+        let smtp_switch = ndl::SwitchRow::builder()
             .title(i18n("Own SMTP server"))
             .subtitle(i18n(
                 "Needed when this account's provider, such as Gmail, rewrites the sender.",
             ))
             .build();
         smtp_switch.set_active(alias.has_own_smtp());
-        let host_row = adw::EntryRow::builder().title(i18n("SMTP server")).build();
+        let host_row = ndl::EntryRow::builder().title(i18n("SMTP server")).build();
         host_row.set_text(&alias.smtp_host);
-        let port_row = adw::EntryRow::builder().title(i18n("SMTP port")).build();
+        let port_row = ndl::EntryRow::builder().title(i18n("SMTP port")).build();
         port_row.set_text(&alias.smtp_port.to_string());
-        let user_row = adw::EntryRow::builder()
+        let user_row = ndl::EntryRow::builder()
             .title(i18n("SMTP username"))
             .build();
         user_row.set_text(&alias.smtp_username);
-        let pass_row = adw::PasswordEntryRow::builder()
+        let pass_row = ndl::PasswordEntryRow::builder()
             .title(i18n("SMTP password"))
             .build();
         pass_row.set_text(&alias.smtp_password);
         // The account's switch of the same name covers only its own SMTP
         // (#647): this one is for a server that files in this account too.
-        let saves_row = adw::SwitchRow::builder()
+        let saves_row = ndl::SwitchRow::builder()
             .title(i18n("Server saves its own copy of sent mail"))
             .subtitle(i18n(
                 "Only when this server files sent mail in this account.",
@@ -269,7 +269,7 @@ impl AccountsWindow {
             .max_content_height(760)
             .child(&content)
             .build();
-        let toolbar = adw::ToolbarView::new();
+        let toolbar = ndl::ToolbarView::new();
         toolbar.add_top_bar(&header);
         toolbar.set_content(Some(&scroller));
         window.set_content(Some(&toolbar));
@@ -320,7 +320,7 @@ impl AccountsWindow {
         &mut self,
         widgets: &AccountsWindowWidgets,
         sender: ComponentSender<Self>,
-        root: &adw::Bin,
+        root: &ndl::Bin,
     ) {
         self.alias_editing = None;
         let jmap = form_protocol(widgets) == Protocol::Jmap;
@@ -332,7 +332,7 @@ impl AccountsWindow {
         i: usize,
         widgets: &AccountsWindowWidgets,
         sender: ComponentSender<Self>,
-        root: &adw::Bin,
+        root: &ndl::Bin,
     ) {
         let Some(alias) = self.alias_edits.get(i).cloned() else {
             return;

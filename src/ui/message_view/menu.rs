@@ -4,7 +4,7 @@
 use super::links::{decode_data_uri, default_image_name, link_to_open, remote_image_name};
 use super::types::MessageViewInput;
 use crate::i18n::i18n;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// What a right-click in the reader landed on besides the message: a link,

@@ -11,9 +11,9 @@
 use super::types::MessageViewInput;
 use super::MessageView;
 use crate::ui::drag_card;
-use adw::prelude::*;
 use gtk::gdk;
 use gtk::glib::Propagation;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;

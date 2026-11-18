@@ -50,7 +50,7 @@ impl Preferences {
         &mut self,
         widgets: &PreferencesWidgets,
         sender: &ComponentSender<Self>,
-        root: &adw::Window,
+        root: &ndl::Window,
     ) {
         for (section, pages) in SIDE_PAGES {
             let heading = gtk::ListBoxRow::new();
@@ -76,10 +76,10 @@ impl Preferences {
             }
         }
         // One pane under 640sp: the sidebar first, a category on top of it.
-        let narrow = adw::Breakpoint::new(adw::BreakpointCondition::new_length(
-            adw::BreakpointConditionLengthType::MaxWidth,
+        let narrow = ndl::Breakpoint::new(ndl::BreakpointCondition::new_length(
+            ndl::BreakpointConditionLengthType::MaxWidth,
             640.0,
-            adw::LengthUnit::Sp,
+            ndl::LengthUnit::Sp,
         ));
         narrow.add_setter(&widgets.split, "collapsed", Some(&true.to_value()));
         root.add_breakpoint(narrow);
@@ -110,7 +110,7 @@ impl Preferences {
         widgets: &PreferencesWidgets,
         init: &PrefInit,
         sender: &ComponentSender<Self>,
-        root: &adw::Window,
+        root: &ndl::Window,
     ) {
         self.side_list = Some(widgets.side_list.clone());
         self.search = Some(SettingsSearch::build(

@@ -1,7 +1,7 @@
 //! The showcase's own messages, which stage what a timer cannot reach from
 //! outside the model.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::app::model::AppModel;

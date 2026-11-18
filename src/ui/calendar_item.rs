@@ -1,14 +1,14 @@
 //! The dialog that makes an event or a task from a message (#564): a title,
 //! where it goes, when, and notes, all filled in from the message first.
 //!
-//! An `adw::MessageDialog`, as Add to Contacts is (see `ui::dialog`).
+//! A `MessageDialog` (`ui::message_dialog`), as Add to Contacts is (see `ui::dialog`).
 
 use std::cell::Cell;
 use std::rc::Rc;
 
-use adw::prelude::*;
 use chrono::{DateTime, Datelike, Duration, Local, NaiveDate, TimeZone, Timelike};
 use gtk::glib;
+use ndl::prelude::*;
 
 use crate::calendar::{Item, ItemKind, Source, When};
 use crate::i18n::{i18n, ni18n_f};
@@ -29,7 +29,6 @@ pub(crate) struct Start {
 
 /// Show the dialog over `parent`. `done` gets the item and the UID of the
 /// calendar or task list picked, or `None` with no `sources` to pick from.
-#[allow(deprecated)] // adw::MessageDialog, see ui::dialog
 pub(crate) fn show(
     parent: &gtk::Window,
     start: Start,
@@ -41,7 +40,7 @@ pub(crate) fn show(
         ItemKind::Event => i18n("New Event"),
         ItemKind::Task => i18n("New Task"),
     };
-    let dialog = adw::MessageDialog::new(Some(parent), Some(&heading), None);
+    let dialog = crate::ui::message_dialog::MessageDialog::new(Some(parent), Some(&heading), None);
     dialog.add_response("cancel", &i18n("Cancel"));
     // With nothing in EDS the item goes to the calendar application, which
     // asks again; the button says where it is going.
@@ -51,7 +50,7 @@ pub(crate) fn show(
         i18n("Add")
     };
     dialog.add_response("add", &confirm);
-    dialog.set_response_appearance("add", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("add", ndl::ResponseAppearance::Suggested);
     dialog.set_default_response(Some("add"));
     dialog.set_close_response("cancel");
 
@@ -59,13 +58,13 @@ pub(crate) fn show(
     form.add_css_class("boxed-list");
     form.set_selection_mode(gtk::SelectionMode::None);
 
-    let title = adw::EntryRow::new();
+    let title = ndl::EntryRow::new();
     title.set_title(&i18n("Title"));
     title.set_text(start.summary.trim());
     form.append(&title);
     {
         let dialog = dialog.clone();
-        let check = move |row: &adw::EntryRow| {
+        let check = move |row: &ndl::EntryRow| {
             dialog.set_response_enabled("add", !row.text().trim().is_empty());
         };
         check(&title);
@@ -73,7 +72,7 @@ pub(crate) fn show(
     }
 
     let source_row = (!sources.is_empty()).then(|| {
-        let row = adw::ComboRow::new();
+        let row = ndl::ComboRow::new();
         row.set_title(&match kind {
             ItemKind::Event => i18n("Calendar"),
             ItemKind::Task => i18n("Task list"),
@@ -151,7 +150,7 @@ fn event_rows(form: &gtk::ListBox, last_alarms: &[u32]) -> Box<dyn Fn() -> (When
     let begin = next_hour();
     let start = Moment::new(begin);
     let end = Moment::new(begin + Duration::hours(1));
-    let all_day = adw::SwitchRow::new();
+    let all_day = ndl::SwitchRow::new();
     all_day.set_title(&i18n("All day"));
     form.append(&all_day);
     form.append(&start.row(&i18n("Starts")));
@@ -223,10 +222,10 @@ const ALARMS: [Option<u32>; 10] = [
 ];
 
 /// When one of the event's alarms goes off, `last` picked first.
-fn alarm_row(title: &str, last: Option<u32>) -> adw::ComboRow {
+fn alarm_row(title: &str, last: Option<u32>) -> ndl::ComboRow {
     let labels: Vec<String> = ALARMS.iter().map(|a| alarm_label(*a)).collect();
     let labels: Vec<&str> = labels.iter().map(String::as_str).collect();
-    let row = adw::ComboRow::new();
+    let row = ndl::ComboRow::new();
     row.set_title(title);
     row.set_model(Some(&gtk::StringList::new(&labels)));
     if let Some(i) = ALARMS.iter().position(|a| *a == last) {
@@ -372,8 +371,8 @@ impl Moment {
         m
     }
 
-    fn row(&self, title: &str) -> adw::ActionRow {
-        let row = adw::ActionRow::new();
+    fn row(&self, title: &str) -> ndl::ActionRow {
+        let row = ndl::ActionRow::new();
         row.set_title(title);
         // A title too long even so ends in an ellipsis rather than breaking
         // letter by letter.

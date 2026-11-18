@@ -1,8 +1,8 @@
 //! The gallery's message handlers: the arms of `update_with_view` that do
 //! more than call one method.
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::ComponentSender;
 
 use crate::models::{GalleryItem, GallerySort};

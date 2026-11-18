@@ -3,7 +3,7 @@
 //! contacts view, `ui/contacts_page.rs`, shown in the main content area,
 //! which the modal's header button opens.)
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::contacts::Contact;
 use crate::i18n::i18n;
@@ -20,7 +20,7 @@ pub(super) fn present(
     let mut contacts = crate::contacts::read_contacts();
     contacts.sort_by_key(|c| c.name.to_lowercase());
 
-    let win = adw::Window::builder()
+    let win = ndl::Window::builder()
         .transient_for(parent)
         .modal(true)
         .title(i18n("Contacts"))
@@ -28,8 +28,8 @@ pub(super) fn present(
         .default_height(560)
         .build();
 
-    let toolbar = adw::ToolbarView::new();
-    let header = adw::HeaderBar::new();
+    let toolbar = ndl::ToolbarView::new();
+    let header = ndl::HeaderBar::new();
     let open_btn = gtk::Button::from_icon_name("x-office-address-book-symbolic");
     open_btn.set_tooltip_text(Some(i18n("Open Contacts").as_str()));
     {
@@ -57,7 +57,7 @@ pub(super) fn present(
     scroller.set_hscrollbar_policy(gtk::PolicyType::Never);
 
     if contacts.is_empty() {
-        let empty = adw::StatusPage::builder()
+        let empty = ndl::StatusPage::builder()
             .icon_name("x-office-address-book-symbolic")
             .title(i18n("No Contacts"))
             .description(i18n("Add contacts in the Contacts view to see them here."))
@@ -68,13 +68,13 @@ pub(super) fn present(
         list.add_css_class("boxed-list");
         list.set_selection_mode(gtk::SelectionMode::None);
         for c in &contacts {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&gtk::glib::markup_escape_text(&c.name));
             if c.name != c.email {
                 row.set_subtitle(&gtk::glib::markup_escape_text(&c.email));
             }
             row.set_activatable(true);
-            let avatar = adw::Avatar::new(32, Some(&c.name), true);
+            let avatar = ndl::Avatar::new(32, Some(&c.name), true);
             let initials = crate::ui::initials::InitialsPaintable::for_name(&c.name);
             avatar.set_custom_image(initials.as_ref());
             row.add_prefix(&avatar);

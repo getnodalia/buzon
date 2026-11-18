@@ -5,7 +5,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use super::FormSave;
 use crate::i18n::{i18n, i18n_f};
@@ -19,7 +19,7 @@ pub(super) fn form_scaffold() -> (gtk::Box, gtk::ScrolledWindow) {
     page_box.set_margin_bottom(24);
     page_box.set_margin_start(12);
     page_box.set_margin_end(12);
-    let clamp = adw::Clamp::new();
+    let clamp = ndl::Clamp::new();
     clamp.set_maximum_size(600);
     clamp.set_tightening_threshold(400);
     clamp.set_child(Some(&page_box));
@@ -33,33 +33,33 @@ pub(super) fn form_scaffold() -> (gtk::Box, gtk::ScrolledWindow) {
 /// One condition's group: Where, Match and the text to match, with a
 /// remove button in its header (hidden while it is the only one).
 pub(super) struct CondRows {
-    pub(super) group: adw::PreferencesGroup,
+    pub(super) group: ndl::PreferencesGroup,
     remove: gtk::Button,
-    pub(super) field: adw::ComboRow,
-    pub(super) matcher: adw::ComboRow,
-    pub(super) value: adw::EntryRow,
+    pub(super) field: ndl::ComboRow,
+    pub(super) matcher: ndl::ComboRow,
+    pub(super) value: ndl::EntryRow,
 }
 
 impl CondRows {
     /// The group and its rows, not yet added to the group: the page sets
     /// them from the condition first.
     pub(super) fn new(field_names: &[String], match_names: &[String]) -> Self {
-        let group = adw::PreferencesGroup::new();
+        let group = ndl::PreferencesGroup::new();
         let remove = gtk::Button::from_icon_name("user-trash-symbolic");
         remove.add_css_class("flat");
         remove.set_valign(gtk::Align::Center);
         remove.set_tooltip_text(Some(i18n("Remove condition").as_str()));
         group.set_header_suffix(Some(&remove));
-        let field = adw::ComboRow::new();
+        let field = ndl::ComboRow::new();
         field.set_title(&i18n("Where"));
         let refs: Vec<&str> = field_names.iter().map(|s| s.as_str()).collect();
         field.set_model(Some(&gtk::StringList::new(&refs)));
-        let matcher = adw::ComboRow::new();
+        let matcher = ndl::ComboRow::new();
         matcher.set_title(&i18n("Match"));
         matcher.set_subtitle(&i18n("Separate alternatives with commas."));
         let refs: Vec<&str> = match_names.iter().map(|s| s.as_str()).collect();
         matcher.set_model(Some(&gtk::StringList::new(&refs)));
-        let value = adw::EntryRow::new();
+        let value = ndl::EntryRow::new();
         value.set_title(&i18n("Text to match"));
         CondRows {
             group,
@@ -88,27 +88,27 @@ impl AsRef<CondRows> for CondRows {
 /// chooser in a group of its own, hidden until there is a second
 /// condition.
 pub(super) struct CondControls {
-    pub(super) add_group: adw::PreferencesGroup,
-    pub(super) add_row: adw::ActionRow,
-    pub(super) combine_row: adw::ComboRow,
-    pub(super) combine_group: adw::PreferencesGroup,
+    pub(super) add_group: ndl::PreferencesGroup,
+    pub(super) add_row: ndl::ActionRow,
+    pub(super) combine_row: ndl::ComboRow,
+    pub(super) combine_group: ndl::PreferencesGroup,
 }
 
 impl CondControls {
     pub(super) fn new() -> Self {
-        let add_group = adw::PreferencesGroup::new();
-        let add_row = adw::ActionRow::new();
+        let add_group = ndl::PreferencesGroup::new();
+        let add_row = ndl::ActionRow::new();
         add_row.set_title(&i18n("Add Condition"));
         add_row.set_activatable(true);
         add_row.add_prefix(&gtk::Image::from_icon_name("list-add-symbolic"));
         add_group.add(&add_row);
-        let combine_row = adw::ComboRow::new();
+        let combine_row = ndl::ComboRow::new();
         combine_row.set_title(&i18n("Condition matching"));
         combine_row.set_model(Some(&gtk::StringList::new(&[
             i18n("All must match").as_str(),
             i18n("Any one may match").as_str(),
         ])));
-        let combine_group = adw::PreferencesGroup::new();
+        let combine_group = ndl::PreferencesGroup::new();
         combine_group.add(&combine_row);
         combine_group.set_visible(false);
         CondControls {
@@ -169,7 +169,7 @@ pub(super) struct CondAdder<T, M, R, C> {
     pub(super) make: M,
     pub(super) relabel: R,
     pub(super) form_save: FormSave,
-    pub(super) nav: adw::NavigationView,
+    pub(super) nav: ndl::NavigationView,
     /// Called when a condition's field or text changes, after one is
     /// removed and after one is added (the filter page's Save check).
     pub(super) changed: Option<C>,

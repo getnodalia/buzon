@@ -3,7 +3,7 @@
 
 use super::toolbar::{js_str, run_restored};
 use crate::i18n::{i18n, i18n_noop};
-use adw::prelude::*;
+use ndl::prelude::*;
 
 /// The font menu's label for the family `fmtState` reports: the name the
 /// menu gives it, or a family set some other way (a custom pick, a quoted

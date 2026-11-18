@@ -2,7 +2,7 @@
 
 use super::toolbar::{bar_menu, js_str, run_restored};
 use crate::i18n::i18n;
-use adw::prelude::*;
+use ndl::prelude::*;
 
 /// The color palette (#358): the GNOME palette, a column per hue from light
 /// to dark, then the greys from white to black.

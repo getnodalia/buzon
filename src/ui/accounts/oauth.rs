@@ -11,7 +11,7 @@ use super::*;
 /// typed, which picks the identity broker's account and, with `hint`, the
 /// account Microsoft signs in (#410). The answer comes back through `wrap`.
 fn sign_in(
-    root: &adw::Bin,
+    root: &ndl::Bin,
     sender: &ComponentSender<AccountsWindow>,
     settings: OAuthSettings,
     user: Option<String>,
@@ -200,7 +200,7 @@ impl AccountsWindow {
         &mut self,
         widgets: &AccountsWindowWidgets,
         sender: ComponentSender<Self>,
-        root: &adw::Bin,
+        root: &ndl::Bin,
     ) {
         let settings = self.oauth_settings_from_form(widgets);
         if settings.client_id.trim().is_empty()
@@ -234,7 +234,7 @@ impl AccountsWindow {
         on: bool,
         widgets: &AccountsWindowWidgets,
         sender: ComponentSender<Self>,
-        root: &adw::Bin,
+        root: &ndl::Bin,
     ) {
         if on == self.directory_on {
             return;
@@ -281,7 +281,7 @@ impl AccountsWindow {
         on: bool,
         widgets: &AccountsWindowWidgets,
         sender: ComponentSender<Self>,
-        root: &adw::Bin,
+        root: &ndl::Bin,
     ) {
         if on == self.labels_on {
             return;

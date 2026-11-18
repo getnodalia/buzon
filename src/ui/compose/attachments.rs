@@ -11,7 +11,7 @@ use crate::models::is_image_name;
 use crate::ui::context_menu::{show_context_menu, MenuEntry};
 use crate::ui::drop_zones::{DropChoice, DropContext, DropZones};
 use crate::ui::fade_label::FadeLabel;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Thumbnails of the composer's attachments by path (#299).
@@ -283,7 +283,7 @@ impl Compose {
     pub(super) fn on_attach_files(
         &mut self,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         let s = sender.input_sender().clone();
         pick_files(root, &i18n("Attach Files"), move |paths| {
@@ -341,7 +341,7 @@ impl Compose {
 
     pub(super) fn install_drop_zones(
         &mut self,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
         widgets: &ComposeWidgets,
         sender: &ComponentSender<Self>,
     ) {
@@ -398,7 +398,7 @@ impl Compose {
 /// Ask for files with the file chooser over the composer's window; `chosen`
 /// gets the local paths picked, and is not called when there are none.
 pub(super) fn pick_files(
-    root: &adw::BreakpointBin,
+    root: &ndl::BreakpointBin,
     title: &str,
     chosen: impl FnOnce(Vec<std::path::PathBuf>) + 'static,
 ) {

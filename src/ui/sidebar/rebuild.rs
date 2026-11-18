@@ -153,16 +153,16 @@ impl Sidebar {
                 freeze.set_opacity(1.0);
                 freeze.set_visible(true);
                 if rail_toggle {
-                    let target = adw::CallbackAnimationTarget::new({
+                    let target = ndl::CallbackAnimationTarget::new({
                         let freeze = freeze.clone();
                         move |v| freeze.set_opacity(v)
                     });
-                    let anim = adw::TimedAnimation::new(&freeze, 1.0, 0.0, 200, target);
-                    anim.set_easing(adw::Easing::EaseOutCubic);
+                    let anim = ndl::TimedAnimation::new(&freeze, 1.0, 0.0, 200, target);
+                    anim.set_easing(ndl::Easing::EaseOutCubic);
                     anim.connect_done({
                         let freeze = freeze.clone();
                         let slot = self.freeze_fade.clone();
-                        move |_| {
+                        move || {
                             slot.borrow_mut().take();
                             freeze.set_visible(false);
                             freeze.set_opacity(1.0);
@@ -540,7 +540,7 @@ impl Sidebar {
                                 let _ = s2.output(SidebarOutput::OpenGnomeContacts);
                             },
                         )
-                        .icon("adw-external-link-symbolic")]],
+                        .icon("ndl-external-link-symbolic")]],
                     );
                 });
                 row.add_controller(right_click);

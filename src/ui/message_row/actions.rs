@@ -7,7 +7,7 @@ use super::{RowAction, RowData};
 use crate::models::Message;
 use crate::ui::drag_card::{self, DRAG_STACK};
 use crate::ui::message_list::MessageListInput;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl Row {

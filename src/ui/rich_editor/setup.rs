@@ -5,7 +5,7 @@
 //! is a reference cycle GObject never breaks, which kept a closed
 //! composer's 300 MB web process alive (#221).
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use webkit6::prelude::WebViewExt;
 
 use super::context_menu::connect_context_menu;
@@ -262,7 +262,7 @@ fn follow_theme(webview: &webkit6::WebView) -> gtk::glib::SignalHandlerId {
     // re-resolved after the signal fires.
     let handler = {
         let weak = webview.downgrade();
-        adw::StyleManager::default().connect_dark_notify(move |sm| {
+        ndl::StyleManager::default().connect_dark_notify(move |sm| {
             reground(&weak, sm.is_dark());
         })
     };
@@ -272,7 +272,7 @@ fn follow_theme(webview: &webkit6::WebView) -> gtk::glib::SignalHandlerId {
     {
         let weak = webview.downgrade();
         crate::desktop::theme::connect_changed(move || {
-            reground(&weak, adw::StyleManager::default().is_dark())
+            reground(&weak, ndl::StyleManager::default().is_dark())
         });
     }
     handler

@@ -76,15 +76,15 @@ fn entrance(widgets: &[gtk::Widget]) {
         gtk::glib::timeout_add_local_once(
             std::time::Duration::from_millis(120 + 140 * i as u64),
             move || {
-                let target = adw::CallbackAnimationTarget::new({
+                let target = ndl::CallbackAnimationTarget::new({
                     let w = w.clone();
                     move |v| {
                         w.set_opacity(v);
                         w.set_margin_top(base + ((1.0 - v) * 24.0) as i32);
                     }
                 });
-                let anim = adw::TimedAnimation::new(&w, 0.0, 1.0, 600, target);
-                anim.set_easing(adw::Easing::EaseOutCubic);
+                let anim = ndl::TimedAnimation::new(&w, 0.0, 1.0, 600, target);
+                anim.set_easing(ndl::Easing::EaseOutCubic);
                 anim.play();
             },
         );
@@ -137,7 +137,7 @@ pub(super) fn build_wordmark() -> WordmarkParts {
 
 /// Page 1: hero (tagline + start; the wordmark floats above).
 pub(super) fn build_hero_page(
-    carousel: &adw::Carousel,
+    carousel: &ndl::Carousel,
     sender: &ComponentSender<Welcome>,
     wordmark_overlay: &gtk::Overlay,
 ) {
@@ -227,7 +227,7 @@ pub(super) struct GoaPage {
 /// sign-in on the next page (#329). Nothing here is required: the
 /// footer reads Skip until something is added.
 pub(super) fn build_goa_page(
-    carousel: &adw::Carousel,
+    carousel: &ndl::Carousel,
     model: &Welcome,
     sender: &ComponentSender<Welcome>,
 ) -> GoaPage {
@@ -289,33 +289,33 @@ pub(super) fn build_goa_page(
 
 /// The privacy page's switches.
 pub(super) struct PrivacyPage {
-    pub(super) remote: adw::SwitchRow,
-    pub(super) gravatar: adw::SwitchRow,
-    pub(super) logos: adw::SwitchRow,
-    pub(super) notif: adw::SwitchRow,
+    pub(super) remote: ndl::SwitchRow,
+    pub(super) gravatar: ndl::SwitchRow,
+    pub(super) logos: ndl::SwitchRow,
+    pub(super) notif: ndl::SwitchRow,
 }
 
 /// Page 4: privacy.
-pub(super) fn build_privacy_page(carousel: &adw::Carousel) -> PrivacyPage {
+pub(super) fn build_privacy_page(carousel: &ndl::Carousel) -> PrivacyPage {
     let priv_pg = gtk::Box::new(gtk::Orientation::Vertical, 14);
     priv_pg.append(&title(&i18n("Privacy, your way")));
     priv_pg.append(&tagline(&i18n(
         "Buzón sends no telemetry, ever. These control what leaves your machine while you read.",
     )));
     let priv_card = card();
-    let sw_remote = adw::SwitchRow::new();
+    let sw_remote = ndl::SwitchRow::new();
     sw_remote.set_title(&i18n("Block remote images"));
     sw_remote.set_subtitle(&i18n("Stops senders tracking when and where you open mail"));
     sw_remote.set_active(!crate::config::load_privacy().auto_remote_content);
-    let sw_gravatar = adw::SwitchRow::new();
+    let sw_gravatar = ndl::SwitchRow::new();
     sw_gravatar.set_title(&i18n("Fetch Gravatar portraits"));
     sw_gravatar.set_subtitle(&i18n("Asks gravatar.com about each sender's address"));
     sw_gravatar.set_active(crate::config::load_privacy().gravatar);
-    let sw_logos = adw::SwitchRow::new();
+    let sw_logos = ndl::SwitchRow::new();
     sw_logos.set_title(&i18n("Fetch sender logos"));
     sw_logos.set_subtitle(&i18n("Looks up company icons for the message list"));
     sw_logos.set_active(crate::config::load_privacy().sender_logos);
-    let sw_notif = adw::SwitchRow::new();
+    let sw_notif = ndl::SwitchRow::new();
     sw_notif.set_title(&i18n("Show message content in notifications"));
     sw_notif.set_subtitle(&i18n("Off keeps senders and subjects off the lock screen"));
     sw_notif.set_active(crate::config::load_privacy().notification_content);
@@ -335,21 +335,21 @@ pub(super) fn build_privacy_page(carousel: &adw::Carousel) -> PrivacyPage {
 
 /// The personalize page's rows, and the app icon picked in its strip.
 pub(super) struct PersonalizePage {
-    pub(super) preview_row: adw::ComboRow,
-    pub(super) avatars: adw::SwitchRow,
-    pub(super) threading: adw::SwitchRow,
+    pub(super) preview_row: ndl::ComboRow,
+    pub(super) avatars: ndl::SwitchRow,
+    pub(super) threading: ndl::SwitchRow,
     pub(super) icon_choice: std::rc::Rc<std::cell::RefCell<String>>,
 }
 
 /// Page 5: personalize.
-pub(super) fn build_personalize_page(carousel: &adw::Carousel) -> PersonalizePage {
+pub(super) fn build_personalize_page(carousel: &ndl::Carousel) -> PersonalizePage {
     let pers = gtk::Box::new(gtk::Orientation::Vertical, 14);
     pers.append(&title(&i18n("Make it yours")));
     pers.append(&tagline(&i18n(
         "A few popular choices — everything can be changed later in Settings.",
     )));
     let pers_card = card();
-    let preview_row = adw::ComboRow::new();
+    let preview_row = ndl::ComboRow::new();
     preview_row.set_title(&i18n("Preview lines"));
     preview_row.set_subtitle(&i18n("Message text shown under each subject"));
     preview_row.set_model(Some(&gtk::StringList::new(&[
@@ -358,11 +358,11 @@ pub(super) fn build_personalize_page(carousel: &adw::Carousel) -> PersonalizePag
         i18n("2 lines").as_str(),
     ])));
     preview_row.set_selected(crate::config::load_preview_lines().min(2));
-    let sw_avatars = adw::SwitchRow::new();
+    let sw_avatars = ndl::SwitchRow::new();
     sw_avatars.set_title(&i18n("Sender avatars"));
     sw_avatars.set_subtitle(&i18n("Colorful initials beside each message"));
     sw_avatars.set_active(crate::config::load_privacy().avatars);
-    let sw_threading = adw::SwitchRow::new();
+    let sw_threading = ndl::SwitchRow::new();
     sw_threading.set_title(&i18n("Conversation view"));
     sw_threading.set_subtitle(&i18n("Group messages into threads"));
     sw_threading.set_active(crate::config::load_privacy().threading);
@@ -416,7 +416,7 @@ pub(super) fn build_personalize_page(carousel: &adw::Carousel) -> PersonalizePag
 }
 
 /// Page 6: done.
-pub(super) fn build_done_page(carousel: &adw::Carousel) {
+pub(super) fn build_done_page(carousel: &ndl::Carousel) {
     let done = gtk::Box::new(gtk::Orientation::Vertical, 16);
     let check = gtk::Image::from_icon_name("verified-checkmark-symbolic");
     check.set_pixel_size(72);

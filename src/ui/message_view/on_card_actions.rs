@@ -5,7 +5,7 @@ use super::menu::{MenuHit, TranslateEntry};
 use super::types::{MessageViewInput, MessageViewOutput, TrState};
 use super::MessageView;
 use crate::i18n::i18n;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageView {

@@ -93,7 +93,7 @@ jobs:
         run: |
           dnf install -y --setopt=install_weak_deps=False \
             git gcc gcc-c++ rust cargo rpm-build \
-            gtk4-devel libadwaita-devel webkitgtk6.0-devel poppler-glib-devel \
+            gtk4-devel webkitgtk6.0-devel poppler-glib-devel \
             openssl-devel gettext gettext-devel wayland-devel
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -107,11 +107,10 @@ jobs:
           if-no-files-found: error
 
   deb:
-    # Debian 13, the oldest release with the libadwaita Buzón needs; what builds there runs on
-    # the Ubuntu releases that have it too.
+    # Ubuntu 26.04, the oldest LTS with the GTK 4.20 Buzón needs (Debian 13 has 4.18).
     needs: version
     runs-on: ubuntu-26.04
-    container: rust:1-trixie
+    container: ubuntu:26.04
     timeout-minutes: 60
     env:
       BUZON_DEB_CONTAINER: "1"

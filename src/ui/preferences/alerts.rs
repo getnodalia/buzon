@@ -34,7 +34,7 @@ impl Preferences {
         ));
     }
 
-    pub(super) fn on_choose_sound(&mut self, sender: ComponentSender<Self>, root: &adw::Window) {
+    pub(super) fn on_choose_sound(&mut self, sender: ComponentSender<Self>, root: &ndl::Window) {
         let dialog = gtk::FileDialog::builder()
             .title(i18n("Choose a Sound"))
             .build();

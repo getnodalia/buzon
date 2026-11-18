@@ -2,7 +2,7 @@
 //! the single-key and Gmail-style maps, and the focus checks that decide
 //! whether a key is the window's or the focused editor's.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::models::FolderKind;
 use crate::ui::message_list::CheckFilter;
@@ -321,7 +321,7 @@ pub(crate) fn focus_is_text(window: &impl IsA<gtk::Window>) -> bool {
 
 /// Whether keyboard focus sits inside a composer — whose editor must keep
 /// Ctrl+Z for its own text undo.
-pub(crate) fn focus_in_compose(window: &adw::ApplicationWindow) -> bool {
+pub(crate) fn focus_in_compose(window: &ndl::ApplicationWindow) -> bool {
     let mut w = gtk::prelude::GtkWindowExt::focus(window);
     while let Some(cur) = w {
         if cur.has_css_class("compose-pane") || cur.has_css_class("inline-compose-surface") {

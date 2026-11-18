@@ -7,7 +7,7 @@ use super::{
 };
 use crate::i18n::i18n;
 use crate::ui::message_row::RowShared;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageList {

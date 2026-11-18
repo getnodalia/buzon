@@ -107,7 +107,7 @@ impl AccountsWindow {
         }
     }
 
-    pub(super) fn on_pick_avatar(&mut self, sender: ComponentSender<Self>, root: &adw::Bin) {
+    pub(super) fn on_pick_avatar(&mut self, sender: ComponentSender<Self>, root: &ndl::Bin) {
         let dialog = gtk::FileDialog::builder()
             .title(i18n("Choose a Picture"))
             .build();

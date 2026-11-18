@@ -2,7 +2,7 @@
 
 use super::types::MessageViewInput;
 use super::MessageView;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageView {

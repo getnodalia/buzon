@@ -18,10 +18,10 @@
 use std::cell::{Cell, RefCell};
 use std::sync::OnceLock;
 
-use adw::prelude::*;
-use adw::subclass::prelude::*;
 use gtk::glib;
 use gtk::glib::subclass::Signal;
+use gtk::subclass::prelude::*;
+use ndl::prelude::*;
 
 mod flow;
 mod parse;
@@ -49,6 +49,8 @@ mod imp {
         pub(super) text: gtk::Text,
         pub(super) edit_icon: gtk::Image,
         pub(super) suffixes: gtk::Box,
+        /// What the field is called ("To", "Cc"), drawn by `title` and `empty_title`.
+        pub(super) title_text: RefCell<String>,
         /// The pills in order, each with the recipient it stands for as it
         /// goes into the field ("Name <address>").
         pub(super) pills: RefCell<Vec<(gtk::Widget, String)>>,
@@ -67,10 +69,37 @@ mod imp {
     impl ObjectSubclass for RecipientRow {
         const NAME: &'static str = "BuzonRecipientRow";
         type Type = super::RecipientRow;
-        type ParentType = adw::PreferencesRow;
+        type ParentType = gtk::ListBoxRow;
     }
 
     impl ObjectImpl for RecipientRow {
+        fn properties() -> &'static [glib::ParamSpec] {
+            static PROPS: OnceLock<Vec<glib::ParamSpec>> = OnceLock::new();
+            PROPS.get_or_init(|| vec![glib::ParamSpecString::builder("title").build()])
+        }
+
+        fn set_property(&self, _id: usize, value: &glib::Value, pspec: &glib::ParamSpec) {
+            if pspec.name() == "title" {
+                let title: String = value
+                    .get::<Option<String>>()
+                    .ok()
+                    .flatten()
+                    .unwrap_or_default();
+                self.empty_title.set_label(&title);
+                self.title.set_label(&title);
+                self.obj()
+                    .update_property(&[gtk::accessible::Property::Label(&title)]);
+                self.title_text.replace(title);
+            }
+        }
+
+        fn property(&self, _id: usize, pspec: &glib::ParamSpec) -> glib::Value {
+            match pspec.name() {
+                "title" => self.title_text.borrow().to_value(),
+                _ => None::<String>.to_value(),
+            }
+        }
+
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
             SIGNALS.get_or_init(|| {
@@ -106,9 +135,6 @@ mod imp {
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_can_target(false);
                 label.set_use_markup(false);
-                obj.bind_property("title", label, "label")
-                    .sync_create()
-                    .build();
             }
             self.empty_title.add_css_class("title");
             self.empty_title.add_css_class("dimmed");
@@ -141,8 +167,7 @@ mod imp {
             overlay.add_overlay(&self.empty_title);
             area.append(&overlay);
 
-            self.edit_icon
-                .set_icon_name(Some("adw-entry-edit-symbolic"));
+            self.edit_icon.set_icon_name(Some("ndl-pencil-symbolic"));
             self.edit_icon.add_css_class("edit-icon");
             self.edit_icon.set_valign(gtk::Align::Center);
             self.edit_icon.set_can_target(false);
@@ -174,12 +199,11 @@ mod imp {
     }
 
     impl ListBoxRowImpl for RecipientRow {}
-    impl PreferencesRowImpl for RecipientRow {}
 }
 
 glib::wrapper! {
     pub(crate) struct RecipientRow(ObjectSubclass<imp::RecipientRow>)
-        @extends adw::PreferencesRow, gtk::ListBoxRow, gtk::Widget,
+        @extends gtk::ListBoxRow, gtk::Widget,
         @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
 }
 
@@ -190,6 +214,14 @@ impl Default for RecipientRow {
 }
 
 impl RecipientRow {
+    pub(crate) fn set_title(&self, title: &str) {
+        self.set_property("title", title);
+    }
+
+    pub(crate) fn title(&self) -> String {
+        self.imp().title_text.borrow().clone()
+    }
+
     /// The whole field as one recipient list: the pills, then whatever is
     /// still being typed, comma separated.
     pub(crate) fn text(&self) -> String {

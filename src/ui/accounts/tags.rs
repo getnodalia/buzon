@@ -64,7 +64,6 @@ impl AccountsWindow {
     /// The tag finder's report: every keyword found that is not a tag here
     /// yet, each with a proposed name and color, ticked to be imported.
     /// "Import All" takes the lot; "Import Selected" only the ticked ones.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn show_tag_findings(
         &self,
         parent: Option<&gtk::Window>,
@@ -72,7 +71,7 @@ impl AccountsWindow {
         sender: &ComponentSender<Self>,
     ) {
         if found.is_empty() {
-            let dialog = adw::MessageDialog::new(
+            let dialog = crate::ui::message_dialog::MessageDialog::new(
                 parent,
                 Some(i18n("No New Tags").as_str()),
                 Some(i18n("Every tag in your mailboxes is already set up here.").as_str()),
@@ -85,7 +84,7 @@ impl AccountsWindow {
         }
 
         let n = found.len();
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             parent,
             Some(i18n("Tags Found").as_str()),
             Some(
@@ -99,7 +98,7 @@ impl AccountsWindow {
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("selected", &i18n("Import Selected"));
         dialog.add_response("all", &i18n("Import All"));
-        dialog.set_response_appearance("all", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("all", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("all"));
         dialog.set_close_response("cancel");
 
@@ -108,7 +107,7 @@ impl AccountsWindow {
         list.set_selection_mode(gtk::SelectionMode::None);
         let mut checks: Vec<(gtk::CheckButton, crate::config::Tag)> = Vec::new();
         for p in &found {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&gtk::glib::markup_escape_text(&p.tag.name));
             let mut parts = vec![p.tag.keyword.clone()];
             if p.count > 0 {
@@ -140,7 +139,7 @@ impl AccountsWindow {
             if let Ok(path) = std::env::var("BUZON_SHOWCASE") {
                 let d = dialog.clone();
                 gtk::glib::timeout_add_seconds_local_once(2, move || {
-                    crate::ui::showcase::showcase_capture(d.upcast_ref(), &path);
+                    crate::ui::showcase::showcase_capture(&d.widget(), &path);
                 });
             }
         }
@@ -172,7 +171,7 @@ impl AccountsWindow {
         }
         list.set_visible(!self.tags.is_empty());
         for (i, t) in self.tags.iter().enumerate() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_activatable(true);
             let s = sender.clone();
             row.connect_activated(move |_| s.input_sender().emit(AccountsInput::EditTag(i)));
@@ -238,7 +237,7 @@ impl AccountsWindow {
     /// the name.
     pub(super) fn open_tag_page(
         &self,
-        nav: &adw::NavigationView,
+        nav: &ndl::NavigationView,
         sender: &ComponentSender<Self>,
         edit: Option<(usize, crate::config::Tag)>,
     ) {
@@ -254,10 +253,10 @@ impl AccountsWindow {
         form.add_css_class("boxed-list");
         form.set_selection_mode(gtk::SelectionMode::None);
 
-        let name_row = adw::EntryRow::new();
+        let name_row = ndl::EntryRow::new();
         name_row.set_title(&i18n("Name"));
 
-        let keyword_row = adw::EntryRow::new();
+        let keyword_row = ndl::EntryRow::new();
         keyword_row.set_title(&i18n("Keyword"));
         keyword_row.set_tooltip_text(Some(
             i18n("How the server stores the tag, without spaces. Thunderbird's built-in tags are $label1 to $label5.")
@@ -527,7 +526,7 @@ impl AccountsWindow {
         &mut self,
         found: Vec<TagProposal>,
         sender: ComponentSender<Self>,
-        root: &adw::Bin,
+        root: &ndl::Bin,
     ) {
         self.set_tag_scanning(false);
         let parent = root.root().and_downcast::<gtk::Window>();

@@ -5,7 +5,7 @@
 //! a recipient nobody asked for shows before Send is pressed. An edit an
 //! assistant asks for later is in `assistant_edit.rs`.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use super::types::{ComposeAccount, ComposePrefill};
 use crate::i18n::i18n;

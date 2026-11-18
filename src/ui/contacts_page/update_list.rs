@@ -1,7 +1,7 @@
 //! Messages about what the list shows: loading, searching, filtering,
 //! sorting, the scope picked in the sidebar and the LDAP directories.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::{ContactDetails, ContactEdit};

@@ -3,7 +3,7 @@
 //! dragged from either looks the same and lands on the same folders.
 
 use crate::i18n::i18n;
-use adw::prelude::*;
+use ndl::prelude::*;
 
 /// How many cards a dragged selection draws at most; the count says the rest.
 pub(crate) const DRAG_STACK: usize = 5;
@@ -24,7 +24,7 @@ pub(crate) fn card(
 ) -> gtk::Box {
     let card = gtk::Box::new(gtk::Orientation::Horizontal, 12);
     card.add_css_class("message-drag-card");
-    let avatar = adw::Avatar::new(34, Some(name), true);
+    let avatar = ndl::Avatar::new(34, Some(name), true);
     let initials = crate::ui::initials::InitialsPaintable::for_name(name);
     avatar.set_custom_image(image.or(initials.as_ref().map(|p| p.upcast_ref())));
     avatar.set_valign(gtk::Align::Center);

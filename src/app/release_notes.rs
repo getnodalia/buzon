@@ -1,7 +1,7 @@
 //! The release notes in the About window: this release's section of
 //! docs/RELEASE_NOTES.md, rendered from its Markdown into GTK labels.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::i18n::i18n;
 
@@ -37,7 +37,7 @@ const RELEASE_NOTES_URL: &str =
 
 /// The About window's "Release Notes" page: this release's notes, with the
 /// full history a button away on GitHub.
-pub(super) fn release_notes_page() -> adw::NavigationPage {
+pub(super) fn release_notes_page() -> ndl::NavigationPage {
     notes_page(
         "Release Notes",
         "notes",
@@ -54,12 +54,12 @@ fn notes_page(
     tag: &str,
     md: &str,
     link: Option<(String, &'static str)>,
-) -> adw::NavigationPage {
+) -> ndl::NavigationPage {
     let scroller = gtk::ScrolledWindow::builder()
         .hscrollbar_policy(gtk::PolicyType::Never)
         .vexpand(true)
         .build();
-    let clamp = adw::Clamp::builder().maximum_size(460).build();
+    let clamp = ndl::Clamp::builder().maximum_size(460).build();
 
     let column = md_column(md);
     column.set_margin_top(18);
@@ -83,11 +83,11 @@ fn notes_page(
     clamp.set_child(Some(&column));
     scroller.set_child(Some(&clamp));
 
-    let tv = adw::ToolbarView::new();
-    tv.add_top_bar(&adw::HeaderBar::new());
+    let tv = ndl::ToolbarView::new();
+    tv.add_top_bar(&ndl::HeaderBar::new());
     tv.set_content(Some(&scroller));
 
-    adw::NavigationPage::builder()
+    ndl::NavigationPage::builder()
         .title(title)
         .tag(tag)
         .child(&tv)

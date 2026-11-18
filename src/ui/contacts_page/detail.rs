@@ -3,7 +3,7 @@
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::{ContactDetails, GroupFormat, Labeled, Member};
@@ -147,10 +147,10 @@ fn field_groups(
     if !c.urls.is_empty() {
         let list = group(detail, &i18n("Website"));
         for url in &c.urls {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&gtk::glib::markup_escape_text(url));
             row.set_activatable(true);
-            let icon = gtk::Image::from_icon_name("adw-external-link-symbolic");
+            let icon = gtk::Image::from_icon_name("ndl-external-link-symbolic");
             icon.add_css_class("dim-label");
             row.add_suffix(&icon);
             let s = sender.input_sender().clone();
@@ -191,7 +191,7 @@ fn field_groups(
     if !extras.is_empty() {
         let list = group(detail, &i18n("Details"));
         for x in &extras {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&gtk::glib::markup_escape_text(&x.label));
             row.set_subtitle(&gtk::glib::markup_escape_text(&x.value));
             row.add_css_class("property");
@@ -240,7 +240,7 @@ fn render_group_card(
 
     let list = group(detail, &i18n("Members"));
     for m in &c.members {
-        let row = adw::ActionRow::new();
+        let row = ndl::ActionRow::new();
         // Someone known by their phone number only: in the group, but
         // not written to.
         if m.email.is_empty() {
@@ -275,7 +275,7 @@ fn render_group_card(
         list.append(&row);
     }
     if c.members.is_empty() {
-        let row = adw::ActionRow::new();
+        let row = ndl::ActionRow::new();
         row.set_title(&i18n("No one is in this group yet."));
         row.add_css_class("dim-label");
         list.append(&row);
@@ -283,14 +283,14 @@ fn render_group_card(
 
     let details = group(detail, &i18n("Details"));
     if !c.book_name.is_empty() {
-        let row = adw::ActionRow::new();
+        let row = ndl::ActionRow::new();
         row.set_title(&i18n("Address Book"));
         row.set_subtitle(&gtk::glib::markup_escape_text(&c.book_name));
         row.add_css_class("property");
         details.append(&row);
     }
     if !c.group_editable() {
-        let row = adw::ActionRow::new();
+        let row = ndl::ActionRow::new();
         row.set_title(&i18n("Changed in the app it came from"));
         row.set_subtitle(&i18n(
             "This group names its members by contact, which Buzón does not edit.",
@@ -358,7 +358,7 @@ pub(super) fn group_byline(c: &ContactDetails) -> String {
 /// saving in another book than the group's own (`own`, named `old_name`)
 /// does.
 fn follow_book_choice(
-    row: &adw::ComboRow,
+    row: &ndl::ComboRow,
     books: &[crate::contacts::Book],
     note: &gtk::Label,
     move_note: &gtk::Label,
@@ -476,7 +476,7 @@ impl ContactsPage {
         let identity = group(detail, &i18n("Group"));
         let editing = self.editing_target.is_some();
         let books = self.group_books(c, editing);
-        let row = adw::ComboRow::new();
+        let row = ndl::ComboRow::new();
         row.set_title(&i18n("Address book"));
         let labels: Vec<&str> = books.iter().map(|b| b.name.as_str()).collect();
         row.set_model(Some(&gtk::StringList::new(&labels)));
@@ -504,7 +504,7 @@ impl ContactsPage {
         let name = entry_row(&i18n("Name"), &c.name);
         name.connect_changed(|row| row.remove_css_class("error"));
         identity.append(&name);
-        let hide = adw::SwitchRow::new();
+        let hide = ndl::SwitchRow::new();
         hide.set_title(&i18n("Send as Bcc"));
         hide.set_subtitle(&i18n("Members do not see each other's addresses."));
         hide.set_active(c.hide_addresses);
@@ -682,7 +682,7 @@ impl ContactsPage {
             .position(|b| b.uid == c.book_uid)
             .filter(|_| !c.eds_uid.is_empty());
         if (!editing || own.is_some()) && !self.books.is_empty() {
-            let row = adw::ComboRow::new();
+            let row = ndl::ComboRow::new();
             row.set_title(&i18n("Address book"));
             let labels: Vec<&str> = self.books.iter().map(|b| b.name.as_str()).collect();
             row.set_model(Some(&gtk::StringList::new(&labels)));
@@ -699,7 +699,7 @@ impl ContactsPage {
             identity.prepend(&row);
             book = Some(row);
         } else if !c.book_name.is_empty() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&i18n("Address book"));
             row.set_subtitle(&gtk::glib::markup_escape_text(&c.book_name));
             row.add_css_class("property");

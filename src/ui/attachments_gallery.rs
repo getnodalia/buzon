@@ -6,9 +6,9 @@
 //! (rendered from their first page) show as thumbnails; other files show a type
 //! icon. Clicking a cell opens a large overlay preview.
 
-use adw::prelude::*;
 use gtk::gdk;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use std::collections::HashMap;
@@ -176,13 +176,13 @@ impl Component for AttachmentsGallery {
                         gtk::Label { set_label: &i18n("Loading attachments…"), add_css_class: "dim-label" },
                     },
 
-                    add_named[Some("empty")] = &adw::StatusPage {
+                    add_named[Some("empty")] = &ndl::StatusPage {
                         set_icon_name: Some("mail-attachment-symbolic"),
                         set_title: &i18n("No attachments"),
                         set_description: Some(i18n("Attachments from your inboxes will appear here.").as_str()),
                     },
 
-                    add_named[Some("noresults")] = &adw::StatusPage {
+                    add_named[Some("noresults")] = &ndl::StatusPage {
                         set_icon_name: Some("system-search-symbolic"),
                         set_title: &i18n("No matching attachments"),
                         set_description: Some(i18n("Try a different search, or check which accounts and folders the footer is pulling from.").as_str()),
@@ -390,7 +390,7 @@ impl Component for AttachmentsGallery {
                                     set_selection_mode: gtk::SelectionMode::None,
 
                                     #[name = "archive_row"]
-                                    adw::SwitchRow {
+                                    ndl::SwitchRow {
                                         set_title: &i18n("Include Archive"),
                                         #[watch]
                                         #[block_signal(archive_toggle)]
@@ -400,7 +400,7 @@ impl Component for AttachmentsGallery {
                                         } @archive_toggle,
                                     },
                                     #[name = "other_row"]
-                                    adw::SwitchRow {
+                                    ndl::SwitchRow {
                                         set_title: &i18n("Include other folders"),
                                         set_subtitle: &i18n("Everything that is not an inbox or an archive"),
                                         #[watch]

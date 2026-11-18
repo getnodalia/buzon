@@ -481,7 +481,7 @@ const TOUCHPAD_BASE: f64 = 400.0;
 
 #[test]
 fn mouse_drag_tracks_the_pointer_at_every_sensitivity() {
-    // `AdwSwipeTracker` divides a drag by `SwipeSurface::distance`, which
+    // The swipe tracker divides a drag by `SwipeSurface::distance`, which
     // is SWIPE_MAX * sensitivity, so the row must come back out at the
     // pointer's own px however the preference is set.
     for sensitivity in [1.0, 3.5, 10.0] {

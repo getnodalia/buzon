@@ -10,8 +10,8 @@ use super::views::{later_drop, Built};
 use super::MessageList;
 use crate::models::Message;
 use crate::ui::message_row::{DaySection, RowData, RowMeta, RowShared};
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::rc::Rc;
 

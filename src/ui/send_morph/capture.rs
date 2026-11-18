@@ -3,9 +3,9 @@
 
 use super::flow::capture_next_frame;
 use super::SendMorph;
-use adw::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gdk, glib, graphene, gsk};
+use ndl::prelude::*;
 
 /// BUZON_MORPH_SLOW=<factor> plays the morph that many times slower, to
 /// look at it (development only).

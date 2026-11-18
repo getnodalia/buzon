@@ -66,7 +66,7 @@ pub(crate) fn wordmark_picture_of(art: Wordmark, width: i32) -> gtk::Picture {
     pic.set_content_fit(gtk::ContentFit::Contain);
     // Black lettering on a light ground, white on a dark one; follows the
     // style manager while the window is open.
-    let style = adw::StyleManager::default();
+    let style = ndl::StyleManager::default();
     let apply = move |pic: &gtk::Picture, dark: bool| {
         if let Some(tex) = wordmark_texture(art, width, dark) {
             pic.set_paintable(Some(&tex));
@@ -122,7 +122,7 @@ pub(crate) fn wordmark_height_of(art: Wordmark, width: f64) -> i32 {
 /// lockstep (a shared-element move — no second timeline to fall out of sync),
 /// and it parks small for every later page.
 pub(super) fn bind_wordmark_to_position(
-    carousel: &adw::Carousel,
+    carousel: &ndl::Carousel,
     frame: &gtk::Box,
     holder: &gtk::Box,
 ) {

@@ -3,13 +3,13 @@
 use super::messages::ComposeInput;
 use super::Compose;
 use crate::ui::rich_editor::RichEditor;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Development hooks for the capture scripts (`BUZON_SHOWCASE_*`, most of
 /// them only with `BUZON_DEMO`).
 pub(super) fn showcase_hooks(
-    root: &adw::BreakpointBin,
+    root: &ndl::BreakpointBin,
     editor: &RichEditor,
     sender: &ComponentSender<Compose>,
 ) {

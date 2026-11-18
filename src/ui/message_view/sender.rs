@@ -4,12 +4,11 @@
 use super::types::MessageViewInput;
 use super::MessageView;
 use crate::i18n::{i18n, i18n_f};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Ask before vouching for a signing key: the fingerprint to compare, and
 /// Trust or Cancel.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 pub(super) fn confirm_trust(
     parent: Option<&gtk::Window>,
     signer: &str,
@@ -18,7 +17,7 @@ pub(super) fn confirm_trust(
     account_id: u32,
     id: u32,
 ) {
-    let dialog = adw::MessageDialog::new(
+    let dialog = crate::ui::message_dialog::MessageDialog::new(
         parent,
         Some(&i18n("Trust this key?")),
         Some(&i18n_f(
@@ -35,7 +34,7 @@ pub(super) fn confirm_trust(
     dialog.set_extra_child(Some(&fpr_label));
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("trust", &i18n("Trust"));
-    dialog.set_response_appearance("trust", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("trust", ndl::ResponseAppearance::Suggested);
     dialog.set_default_response(Some("cancel"));
     let fingerprint = key.fingerprint.clone();
     dialog.connect_response(None, move |_, resp| {

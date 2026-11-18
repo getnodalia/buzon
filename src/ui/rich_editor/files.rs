@@ -5,7 +5,7 @@
 use super::AttachCallback;
 
 use super::{exec, js_escape};
-use adw::prelude::*;
+use ndl::prelude::*;
 use webkit6::prelude::WebViewExt;
 
 /// "Send as Attachment Instead": pull the right-clicked image out of the

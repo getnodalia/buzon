@@ -1,6 +1,6 @@
 //! The mail workers: one per account, and their events turned into AppMsg.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use tokio::sync::mpsc::UnboundedSender;
 

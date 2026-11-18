@@ -3,7 +3,7 @@
 //! editing commands. Used for the compose body and the account signature.
 
 use super::tool_flow::ToolFlow;
-use adw::prelude::*;
+use ndl::prelude::*;
 use webkit6::prelude::WebViewExt;
 
 mod colors;
@@ -133,7 +133,7 @@ struct ThemeHandlerGuard(Option<gtk::glib::SignalHandlerId>);
 impl Drop for ThemeHandlerGuard {
     fn drop(&mut self) {
         if let Some(id) = self.0.take() {
-            adw::StyleManager::default().disconnect(id);
+            ndl::StyleManager::default().disconnect(id);
         }
     }
 }
@@ -584,17 +584,17 @@ fn exec(webview: &webkit6::WebView, js: &str) {
 /// the view itself so it stays alive for its 200ms (a dropped animation
 /// stops); a repeat call replaces the parked one harmlessly.
 fn fade_in(webview: &webkit6::WebView) {
-    let anim = adw::TimedAnimation::new(
+    let anim = ndl::TimedAnimation::new(
         webview,
         webview.opacity(),
         1.0,
         200,
-        adw::CallbackAnimationTarget::new({
+        ndl::CallbackAnimationTarget::new({
             let v = webview.clone();
             move |o| v.set_opacity(o)
         }),
     );
-    anim.set_easing(adw::Easing::EaseOutCubic);
+    anim.set_easing(ndl::Easing::EaseOutCubic);
     anim.play();
     unsafe {
         webview.set_data("buzon-fade-anim", anim);

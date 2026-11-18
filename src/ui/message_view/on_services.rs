@@ -7,7 +7,7 @@ use super::types::{InviteAction, MessageViewInput, MessageViewOutput, TrState, U
 use super::MessageView;
 use crate::i18n::i18n;
 use crate::models::Message;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageView {

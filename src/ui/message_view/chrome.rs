@@ -3,7 +3,7 @@
 use super::MessageView;
 use crate::i18n::{i18n, ni18n_f};
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Style rules for a [`DisplayCss`](crate::ui::DisplayCss), each named by a

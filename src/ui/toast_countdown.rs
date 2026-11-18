@@ -12,8 +12,8 @@
 use std::cell::Cell;
 use std::time::{Duration, Instant};
 
-use adw::prelude::*;
 use gtk::{glib, graphene, gsk, subclass::prelude::*};
+use ndl::prelude::*;
 
 /// Thickness of the line.
 const LINE: f32 = 3.0;

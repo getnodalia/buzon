@@ -5,7 +5,7 @@ use super::remote::has_remote_resources;
 use super::types::{MessageViewInput, MessageViewOutput};
 use super::MessageView;
 use crate::models::Message;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use webkit6::prelude::WebViewExt;
 

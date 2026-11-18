@@ -10,7 +10,7 @@ use std::cell::{Cell, RefCell};
 use std::path::PathBuf;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::i18n::{i18n, i18n_f, ni18n, ni18n_f};
 
@@ -61,7 +61,7 @@ pub(crate) struct DropZones {
     /// Up, or on its way up; the layer stays visible a moment longer while
     /// it fades out.
     shown: Cell<bool>,
-    fade: RefCell<Option<adw::TimedAnimation>>,
+    fade: RefCell<Option<ndl::TimedAnimation>>,
     /// Whether a drag may bring the cards up at all (the main window's
     /// stand down while a composer is open in it).
     gate: RefCell<Option<Box<dyn Fn() -> bool>>>,
@@ -479,11 +479,11 @@ impl DropZones {
         }
         let from = self.layer.opacity();
         let layer = self.layer.clone();
-        let target = adw::CallbackAnimationTarget::new(move |v| layer.set_opacity(v));
-        let anim = adw::TimedAnimation::new(&self.layer, from, to, FADE_MS, target);
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        let target = ndl::CallbackAnimationTarget::new(move |v| layer.set_opacity(v));
+        let anim = ndl::TimedAnimation::new(&self.layer, from, to, FADE_MS, target);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         let layer = self.layer.clone();
-        anim.connect_done(move |_| {
+        anim.connect_done(move || {
             if to == 0.0 {
                 layer.set_visible(false);
             }

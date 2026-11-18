@@ -8,8 +8,8 @@
 //! natural width is the column's, the minimum is the label's own (an
 //! ellipsis), and every row shares out a shortage the same way.
 
-use adw::prelude::*;
 use gtk::{glib, subclass::prelude::*};
+use ndl::prelude::*;
 
 mod imp {
     use super::*;

@@ -2,7 +2,7 @@
 //! the light/dark flip, and reduced motion. The icon theme is in
 //! [`crate::desktop::icon_theme`].
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::config;
 
@@ -11,15 +11,15 @@ use crate::config;
 /// setting.
 pub(super) fn apply_app_theme(theme: config::AppTheme) {
     let scheme = if WIZARD_HOLDS_LIGHT.load(std::sync::atomic::Ordering::Relaxed) {
-        adw::ColorScheme::ForceLight
+        ndl::ColorScheme::ForceLight
     } else {
         match theme {
-            config::AppTheme::System => adw::ColorScheme::Default,
-            config::AppTheme::Light => adw::ColorScheme::ForceLight,
-            config::AppTheme::Dark => adw::ColorScheme::ForceDark,
+            config::AppTheme::System => ndl::ColorScheme::Default,
+            config::AppTheme::Light => ndl::ColorScheme::ForceLight,
+            config::AppTheme::Dark => ndl::ColorScheme::ForceDark,
         }
     };
-    adw::StyleManager::default().set_color_scheme(scheme);
+    ndl::StyleManager::default().set_color_scheme(scheme);
 }
 
 /// Set while the welcome wizard is open. Its blue ground is designed for the
@@ -93,7 +93,7 @@ pub(super) fn install_scheme_css(window: &impl IsA<gtk::Widget>) {
              .reader-split > separator {{ background-color: {page}; }}"
         ));
     };
-    let style = adw::StyleManager::default();
+    let style = ndl::StyleManager::default();
     apply(&provider, style.is_dark());
     // A theme change moves the same colors without any scheme flip, so the
     // provider has to be reloadable on demand as well (AppMsg::Pref(PrefOutput::SetTheme)).
@@ -101,7 +101,7 @@ pub(super) fn install_scheme_css(window: &impl IsA<gtk::Widget>) {
         let provider = provider.clone();
         let apply = apply.clone();
         *slot.borrow_mut() = Some(Box::new(move || {
-            apply(&provider, adw::StyleManager::default().is_dark());
+            apply(&provider, ndl::StyleManager::default().is_dark());
         }));
     });
     style.connect_dark_notify(move |sm| {

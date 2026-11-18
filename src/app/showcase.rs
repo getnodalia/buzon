@@ -45,7 +45,7 @@ impl AppModel {
     /// Timers leave room for the WebViews to load and settle between steps.
     pub(super) fn stage_showcase(
         &self,
-        root: &adw::ApplicationWindow,
+        root: &ndl::ApplicationWindow,
         widgets: &AppModelWidgets,
         sender: &ComponentSender<Self>,
     ) {

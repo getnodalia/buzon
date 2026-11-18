@@ -5,7 +5,7 @@ use super::links::{decode_data_uri, default_image_name, is_launchable_uri, link_
 use super::menu::strip_navigation_items;
 use super::MessageView;
 use crate::i18n::i18n;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use webkit6::prelude::{PolicyDecisionExt, WebViewExt};
 

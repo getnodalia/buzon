@@ -8,8 +8,8 @@ use crate::ui::thumbnails::{
     icon_color_class, icon_for, is_pdf_name, spawn_thumbnail_render, texture_from,
     thumbnail_texture, Thumbnail,
 };
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Whether an attachment can be shown in the drawer's lightbox: a decodable

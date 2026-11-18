@@ -2,7 +2,7 @@
 //! and the store's screenshots (BUZON_SHOWCASE_*). The app's showcase hooks
 //! and the widgets that open their own dialogs both call it.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 /// Render the window's widget tree to a PNG at 2x (crisp text for marketing
 /// shots). Content only — the compositor's shadow/frame is not part of the

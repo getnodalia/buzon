@@ -1,6 +1,6 @@
 //! Settings → Tags: the tag list, Add Tag and the tag finder.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::super::{AccountsInput, AccountsWindow};
@@ -9,7 +9,7 @@ use crate::i18n::i18n;
 /// The page, and the widgets on it that the panel reaches later.
 #[derive(Debug)]
 pub(in crate::ui::accounts) struct TagsPage {
-    pub(in crate::ui::accounts) page: adw::PreferencesPage,
+    pub(in crate::ui::accounts) page: ndl::PreferencesPage,
     pub(in crate::ui::accounts) find_tags_spinner: gtk::Spinner,
     pub(in crate::ui::accounts) find_tags_label: gtk::Label,
     pub(in crate::ui::accounts) tags_list: gtk::ListBox,
@@ -18,9 +18,9 @@ pub(in crate::ui::accounts) struct TagsPage {
 impl TagsPage {
     pub(in crate::ui::accounts) fn build(sender: &ComponentSender<AccountsWindow>) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
+            page = ndl::PreferencesPage {
                 // Tags (#71): a name and color per keyword.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Tags"),
                     set_description: Some(
                         i18n("Tags are stored on the server as IMAP keywords, so Thunderbird and other clients show them too.\n\nDrag to reorder. The first nine are mapped to the 1–9 keys.").as_str()

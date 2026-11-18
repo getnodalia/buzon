@@ -5,9 +5,9 @@
 
 use super::row::Row;
 use super::{RowData, Slot};
-use adw::prelude::*;
 use gtk::glib;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::collections::HashMap;
 use std::rc::Rc;

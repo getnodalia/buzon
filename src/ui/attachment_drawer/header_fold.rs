@@ -2,7 +2,7 @@
 //! header is the reader's widest row, and a reader squeezed below it was
 //! drawn past the window's edge.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::{AttachmentDrawer, AttachmentDrawerInput, SLIDER_ROOM};
@@ -10,10 +10,10 @@ use super::{AttachmentDrawer, AttachmentDrawerInput, SLIDER_ROOM};
 /// The breakpoint that hides the slider, on the header's own bin. Its
 /// width is set by `fit_header` once the header has been measured.
 pub(super) fn header_fold(
-    bin: &adw::BreakpointBin,
+    bin: &ndl::BreakpointBin,
     sender: &ComponentSender<AttachmentDrawer>,
-) -> adw::Breakpoint {
-    let fold = adw::Breakpoint::new(max_width(0));
+) -> ndl::Breakpoint {
+    let fold = ndl::Breakpoint::new(max_width(0));
     let s = sender.input_sender().clone();
     fold.connect_apply(move |_| s.emit(AttachmentDrawerInput::SetNarrow(true)));
     let s = sender.input_sender().clone();
@@ -22,11 +22,11 @@ pub(super) fn header_fold(
     fold
 }
 
-fn max_width(px: i32) -> adw::BreakpointCondition {
-    adw::BreakpointCondition::new_length(
-        adw::BreakpointConditionLengthType::MaxWidth,
+fn max_width(px: i32) -> ndl::BreakpointCondition {
+    ndl::BreakpointCondition::new_length(
+        ndl::BreakpointConditionLengthType::MaxWidth,
         f64::from(px),
-        adw::LengthUnit::Px,
+        ndl::LengthUnit::Px,
     )
 }
 
@@ -39,7 +39,7 @@ impl AttachmentDrawer {
     /// Size the header's bin from the header as it now is: at least the
     /// header without the slider, and the slider folded below the width it
     /// needs with it. The count's label changes that width a little.
-    pub(super) fn fit_header(&self, bin: &adw::BreakpointBin, header: &gtk::Box) {
+    pub(super) fn fit_header(&self, bin: &ndl::BreakpointBin, header: &gtk::Box) {
         let Some(fold) = &self.header_fold else {
             return;
         };

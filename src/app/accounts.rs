@@ -1,7 +1,7 @@
 //! Accounts: saving and removing them, their secrets in the keyring, and
 //! keeping GNOME Online Accounts imports in step.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::{self, AccountConfig};
@@ -238,7 +238,6 @@ impl AppModel {
     ///
     /// `problem` is true when this is shown because a save actually failed;
     /// false for the proactive one-time tip (which offers "Don't show again").
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn show_keyring_help(&self, problem: bool) {
         let mint = crate::desktop::platform::is_mint_cinnamon();
 
@@ -296,7 +295,11 @@ impl AppModel {
             );
         }
 
-        let dialog = adw::MessageDialog::new(Some(&self.window), Some(&heading), Some(&body));
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
+            Some(&self.window),
+            Some(&heading),
+            Some(&body),
+        );
         dialog.add_response("ok", &i18n("Got it"));
         dialog.set_default_response(Some("ok"));
         // The proactive tip is a one-time thing: mark it seen once dismissed (by

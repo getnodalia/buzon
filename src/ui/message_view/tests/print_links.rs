@@ -1,7 +1,7 @@
 //! Printing, preview URIs, filenames and link previews.
 
 use super::*;
-use adw::prelude::*;
+use ndl::prelude::*;
 
 #[test]
 fn the_printed_page_carries_the_header() {

@@ -9,7 +9,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::i18n;
@@ -56,8 +56,8 @@ impl Component for ContactsPage {
             set_transition_type: gtk::StackTransitionType::Crossfade,
 
             // No contacts at all (or still loading the first read).
-            add_named[Some("none")] = &adw::ToolbarView {
-                add_top_bar = &adw::HeaderBar {
+            add_named[Some("none")] = &ndl::ToolbarView {
+                add_top_bar = &ndl::HeaderBar {
                     add_css_class: "flat",
                     #[wrap(Some)]
                     set_title_widget = &gtk::Label {
@@ -87,7 +87,7 @@ impl Component for ContactsPage {
                 },
 
                 #[wrap(Some)]
-                set_content = &adw::StatusPage {
+                set_content = &ndl::StatusPage {
                     set_icon_name: Some("x-office-address-book-symbolic"),
                     #[watch]
                     set_title: &if model.loading { i18n("Loading Contacts…") } else { i18n("No Contacts") },
@@ -134,8 +134,8 @@ impl Component for ContactsPage {
                 },
 
                 #[wrap(Some)]
-                set_start_child = &adw::ToolbarView {
-                    add_top_bar = &adw::HeaderBar {
+                set_start_child = &ndl::ToolbarView {
+                    add_top_bar = &ndl::HeaderBar {
                         add_css_class: "flat",
                         // Left pane: no window controls (the detail pane's
                         // header carries the window's close button).
@@ -264,10 +264,10 @@ impl Component for ContactsPage {
                     // The app mounts its contacts compose slot over this in
                     // init, so "New message" slides down right here.
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
+                    set_child = &ndl::ToolbarView {
                     set_hexpand: true,
 
-                    add_top_bar = &adw::HeaderBar {
+                    add_top_bar = &ndl::HeaderBar {
                         add_css_class: "flat",
                         set_show_start_title_buttons: false,
                         // Top-left of the card pane: edit the shown contact.
@@ -292,7 +292,7 @@ impl Component for ContactsPage {
                         set_hscrollbar_policy: gtk::PolicyType::Never,
                         add_css_class: "contact-detail-pane",
 
-                        adw::Clamp {
+                        ndl::Clamp {
                             set_maximum_size: 560,
                             set_tightening_threshold: 420,
 

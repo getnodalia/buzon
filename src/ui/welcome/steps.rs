@@ -18,16 +18,18 @@ impl Welcome {
             sender.input_sender().emit(WelcomeInput::Finish);
             return;
         }
-        let next = widgets.carousel.nth_page(pos + 1);
-        widgets.carousel.scroll_to(&next, true);
+        if let Some(next) = widgets.carousel.nth_page(pos + 1) {
+            widgets.carousel.scroll_to(&next, true);
+        }
         widgets.back_btn.set_visible(true);
     }
 
     pub(super) fn on_back(&mut self, widgets: &WelcomeWidgets) {
         let pos = widgets.carousel.position().round() as usize;
         if pos > 0 {
-            let prev = widgets.carousel.nth_page(pos as u32 - 1);
-            widgets.carousel.scroll_to(&prev, true);
+            if let Some(prev) = widgets.carousel.nth_page(pos as u32 - 1) {
+                widgets.carousel.scroll_to(&prev, true);
+            }
             widgets.back_btn.set_visible(pos > 1);
         }
     }
@@ -36,7 +38,7 @@ impl Welcome {
         &mut self,
         widgets: &WelcomeWidgets,
         sender: ComponentSender<Self>,
-        root: &adw::Window,
+        root: &ndl::Window,
     ) {
         let prefs = WelcomePrefs {
             block_remote: widgets.sw_remote.is_active(),

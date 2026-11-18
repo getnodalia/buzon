@@ -24,9 +24,13 @@ use std::cell::RefCell;
 
 use crate::desktop::theme_palettes::THEMES;
 
-/// The stock GNOME look: no palette of our own, just libadwaita and the
-/// desktop's accent color. The default, and what "no theme" saves as.
+/// The stock look: no palette of our own, just Nodalia's with Buzón's
+/// accent. The default, and what "no theme" saves as.
 pub(crate) const SYSTEM_ID: &str = "system";
+
+/// Buzón's accent, and the text drawn on it.
+pub(crate) const ACCENT: &str = "#D4241B";
+const ON_ACCENT: &str = "#ffffff";
 
 /// One palette — a theme's colors for a single appearance (light or dark).
 ///
@@ -134,6 +138,7 @@ thread_local! {
 /// light/dark flip, and GTK runs `notify::dark` handlers in the order they
 /// were connected.
 pub(crate) fn install(id: &str) {
+    ndl::StyleManager::default().set_accent(Some((ACCENT, ON_ACCENT)));
     let provider = gtk::CssProvider::new();
     if let Some(display) = gtk::gdk::Display::default() {
         // Above the static stylesheet and the scheme-dependent provider, so
@@ -151,7 +156,7 @@ pub(crate) fn install(id: &str) {
     CURRENT.with(|c| *c.borrow_mut() = id.to_string());
     repaint();
     // A light/dark flip swaps which of the theme's two palettes is on.
-    adw::StyleManager::default().connect_dark_notify(|_| repaint());
+    ndl::StyleManager::default().connect_dark_notify(|_| repaint());
 }
 
 /// Switch to `id` (or [`SYSTEM_ID`] for the stock look) and tell everything
@@ -191,7 +196,7 @@ pub(crate) fn connect_changed(f: impl Fn() -> bool + 'static) {
 
 /// Load the active palette (or nothing at all) into the provider.
 fn repaint() {
-    let dark = adw::StyleManager::default().is_dark();
+    let dark = ndl::StyleManager::default().is_dark();
     let css = palette(dark).map(|p| css(p, dark)).unwrap_or_default();
     PROVIDER.with(|p| {
         if let Some(provider) = p.borrow().as_ref() {

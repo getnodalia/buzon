@@ -118,7 +118,7 @@ pub(super) fn show_local_state(widgets: &AccountsWindowWidgets, local: bool) {
 
 /// Pick what to import (#552): a Maildir tree, opening on Evolution's own
 /// local folders where they are, or with `mbox`, mbox files.
-pub(super) fn pick_import(mbox: bool, sender: &ComponentSender<AccountsWindow>, root: &adw::Bin) {
+pub(super) fn pick_import(mbox: bool, sender: &ComponentSender<AccountsWindow>, root: &ndl::Bin) {
     let parent = root.root().and_downcast::<gtk::Window>();
     let dialog = gtk::FileDialog::new();
     let s = sender.clone();

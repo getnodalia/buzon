@@ -55,7 +55,7 @@ pub(crate) struct MessageWindow {
     fold_right: bool,
     /// The window and what fills it, for keeping the window's minimum
     /// width at its content's (see [`MessageWindow::fit_min_width`]).
-    window: adw::Window,
+    window: ndl::Window,
     content: gtk::Overlay,
     bar: Toolbar,
     gmail_keys: std::rc::Rc<std::cell::Cell<bool>>,

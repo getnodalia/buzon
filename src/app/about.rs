@@ -1,6 +1,6 @@
 //! The About window and the people it thanks.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -105,14 +105,14 @@ fn about_identity(page: &gtk::Box) {
 
 /// Release Notes (a sub-page of the window) and, on Linux Mint, the
 /// keyring setup tip again.
-fn about_info_rows(page: &gtk::Box, nav: &adw::NavigationView, sender: &ComponentSender<AppModel>) {
+fn about_info_rows(page: &gtk::Box, nav: &ndl::NavigationView, sender: &ComponentSender<AppModel>) {
     // Release notes: slide in as a sub-page of this window.
     let info = gtk::ListBox::new();
     info.add_css_class("boxed-list");
     info.set_selection_mode(gtk::SelectionMode::None);
     info.set_margin_top(20);
 
-    let notes_row = adw::ActionRow::builder()
+    let notes_row = ndl::ActionRow::builder()
         .title(i18n("Release Notes"))
         .subtitle(format!("What's new in {}", crate::VERSION))
         .activatable(true)
@@ -127,7 +127,7 @@ fn about_info_rows(page: &gtk::Box, nav: &adw::NavigationView, sender: &Componen
     // Linux Mint (Cinnamon): re-open the one-time keyring setup tip. Shown only
     // where that tip applies, so Mint users who dismissed it can find it again.
     if crate::desktop::platform::is_mint_cinnamon() {
-        let keyring_row = adw::ActionRow::builder()
+        let keyring_row = ndl::ActionRow::builder()
             .title(i18n("Keyring Setup Help"))
             .subtitle(i18n("Make account passwords persist on Linux Mint"))
             .activatable(true)
@@ -151,13 +151,13 @@ fn about_links(page: &gtk::Box) {
     let links = gtk::ListBox::new();
     links.add_css_class("boxed-list");
     links.set_selection_mode(gtk::SelectionMode::None);
-    let mk_row = |title: &str, url: &str| -> adw::ActionRow {
-        let row = adw::ActionRow::builder()
+    let mk_row = |title: &str, url: &str| -> ndl::ActionRow {
+        let row = ndl::ActionRow::builder()
             .title(title)
             .activatable(true)
             .build();
         row.set_tooltip_text(Some(url));
-        row.add_suffix(&gtk::Image::from_icon_name("adw-external-link-symbolic"));
+        row.add_suffix(&gtk::Image::from_icon_name("ndl-external-link-symbolic"));
         let u = url.to_string();
         row.connect_activated(move |_| crate::services::oauth::open_uri(&u));
         row
@@ -196,14 +196,14 @@ fn about_thanks(page: &gtk::Box) {
             } else {
                 format!("{note} · @{handle}")
             };
-            let row = adw::ActionRow::builder()
+            let row = ndl::ActionRow::builder()
                 .title(name)
                 .subtitle(subtitle)
                 .activatable(true)
                 .build();
             let url = format!("https://github.com/{handle}");
             row.set_tooltip_text(Some(&url));
-            row.add_suffix(&gtk::Image::from_icon_name("adw-external-link-symbolic"));
+            row.add_suffix(&gtk::Image::from_icon_name("ndl-external-link-symbolic"));
             row.connect_activated(move |_| crate::services::oauth::open_uri(&url));
             list.append(&row);
         }
@@ -232,7 +232,7 @@ impl AppModel {
     /// version chip, and a one-line description under it), then the feature
     /// sections laid out on the page itself, and project links.
     fn open_about(&self, sender: &ComponentSender<Self>) {
-        let win = adw::Window::builder()
+        let win = ndl::Window::builder()
             .transient_for(&self.window)
             .modal(false)
             .title(format!("{} {}", i18n("About"), crate::APP_NAME).as_str())
@@ -248,13 +248,13 @@ impl AppModel {
 
         // A navigation stack so Release Notes / Changelog slide in (and back out)
         // within the same window instead of spawning separate ones.
-        let nav = adw::NavigationView::new();
+        let nav = ndl::NavigationView::new();
 
         let scroller = gtk::ScrolledWindow::builder()
             .hscrollbar_policy(gtk::PolicyType::Never)
             .vexpand(true)
             .build();
-        let clamp = adw::Clamp::builder().maximum_size(420).build();
+        let clamp = ndl::Clamp::builder().maximum_size(420).build();
         let page = gtk::Box::new(gtk::Orientation::Vertical, 0);
         page.set_margin_top(18);
         page.set_margin_bottom(12);
@@ -268,14 +268,14 @@ impl AppModel {
         scroller.set_child(Some(&clamp));
 
         // The root page holds the identity + links; the sub-pages slide over it.
-        let main_tv = adw::ToolbarView::new();
-        let main_header = adw::HeaderBar::new();
+        let main_tv = ndl::ToolbarView::new();
+        let main_header = ndl::HeaderBar::new();
         main_header.add_css_class("flat");
         main_header.set_show_title(false);
         main_tv.add_top_bar(&main_header);
         main_tv.set_content(Some(&scroller));
         nav.add(
-            &adw::NavigationPage::builder()
+            &ndl::NavigationPage::builder()
                 .title(format!("{} {}", i18n("About"), crate::APP_NAME).as_str())
                 .tag("main")
                 .child(&main_tv)
