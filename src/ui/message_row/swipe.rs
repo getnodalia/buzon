@@ -19,7 +19,7 @@ use std::rc::Rc;
 glib::wrapper! {
     pub(crate) struct SwipeSurface(ObjectSubclass<swipe_surface_imp::SwipeSurface>)
         @extends gtk::Widget,
-        @implements adw::Swipeable;
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, adw::Swipeable;
 }
 
 impl Default for SwipeSurface {

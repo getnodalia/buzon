@@ -49,6 +49,7 @@ pub(crate) mod send_morph;
 mod sender_row;
 pub(crate) mod showcase;
 pub(crate) mod sidebar;
+pub(crate) mod texture;
 mod theme_picker;
 pub(crate) mod thumbnails;
 pub(crate) mod toast_countdown;

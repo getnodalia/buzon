@@ -210,7 +210,7 @@ impl DateRange {
             0.0,
         ) {
             self.quiet.set(true);
-            self.calendar.select_day(&at);
+            self.calendar.set_date(&at);
             self.quiet.set(false);
         }
     }

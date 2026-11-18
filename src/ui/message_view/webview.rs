@@ -187,7 +187,7 @@ fn launch_links(webview: &webkit6::WebView) {
         let is_new_window = decision_type == webkit6::PolicyDecisionType::NewWindowAction;
         if is_nav || is_new_window {
             if let Some(nav) = decision.downcast_ref::<webkit6::NavigationPolicyDecision>() {
-                if let Some(mut action) = nav.navigation_action() {
+                if let Some(action) = nav.navigation_action() {
                     // The documents are loaded from strings under a made-up
                     // `buzon.localhost` base, so a reload has nothing to fetch
                     // and shows "Connection refused" (#301).

@@ -361,7 +361,7 @@ pub(super) fn photo_editor(
             .build();
         let filter = gtk::FileFilter::new();
         filter.set_name(Some(&i18n("Images")));
-        filter.add_pixbuf_formats();
+        filter.add_mime_type("image/*");
         let filters = gtk::gio::ListStore::new::<gtk::FileFilter>();
         filters.append(&filter);
         dialog.set_filters(Some(&filters));

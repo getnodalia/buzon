@@ -100,7 +100,7 @@ pub(crate) fn open_link(uri: &str, parent: Option<&gtk::Window>) {
         return;
     }
     if web && !choice.is_empty() {
-        match gio::DesktopAppInfo::new(&choice) {
+        match gio_unix::DesktopAppInfo::new(&choice) {
             Some(info) => match info.launch_uris(&[uri], gio::AppLaunchContext::NONE) {
                 Ok(()) => return,
                 Err(e) => tracing::warn!(
@@ -239,11 +239,11 @@ pub(super) fn portal_request(
         .unwrap_or_default();
     let request_path = format!("/org/freedesktop/portal/desktop/request/{sender_token}/{token}");
 
-    let sub_id: Rc<RefCell<Option<gio::SignalSubscriptionId>>> = Rc::new(RefCell::new(None));
+    // Dropping the subscription is what unsubscribes.
+    let sub_id: Rc<RefCell<Option<gio::SignalSubscription>>> = Rc::new(RefCell::new(None));
     let sub = sub_id.clone();
-    let sig_conn = conn.clone();
     let on_response = done.clone();
-    let id = conn.signal_subscribe(
+    let id = conn.subscribe_to_signal(
         Some("org.freedesktop.portal.Desktop"),
         Some("org.freedesktop.portal.Request"),
         // The signal's name on the wire: never a translated string, or the
@@ -252,17 +252,15 @@ pub(super) fn portal_request(
         Some(&request_path),
         None,
         gio::DBusSignalFlags::NONE,
-        move |_, _, _, _, _, params| {
-            if let Some(id) = sub.borrow_mut().take() {
-                sig_conn.signal_unsubscribe(id);
-            }
-            on_response(Ok(params.child_value(0).get::<u32>().unwrap_or(2)));
+        move |signal| {
+            let answer = signal.parameters.child_value(0).get::<u32>().unwrap_or(2);
+            drop(sub.borrow_mut().take());
+            on_response(Ok(answer));
         },
     );
     *sub_id.borrow_mut() = Some(id);
 
     let params = params(&token);
-    let call_conn = conn.clone();
     conn.call_with_unix_fd_list(
         Some("org.freedesktop.portal.Desktop"),
         "/org/freedesktop/portal/desktop",
@@ -276,9 +274,7 @@ pub(super) fn portal_request(
         gio::Cancellable::NONE,
         move |res| {
             if let Err(e) = res {
-                if let Some(id) = sub_id.borrow_mut().take() {
-                    call_conn.signal_unsubscribe(id);
-                }
+                sub_id.borrow_mut().take();
                 done(Err(e.to_string()));
             }
         },

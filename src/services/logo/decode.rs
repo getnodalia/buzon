@@ -102,7 +102,7 @@ pub(super) fn decode(bytes: &[u8]) -> Option<gtk::gdk::Texture> {
         return None;
     }
     let pixbuf = loader.pixbuf()?;
-    Some(gtk::gdk::Texture::for_pixbuf(&pixbuf))
+    Some(crate::ui::texture::from_pixbuf(&pixbuf))
 }
 
 /// An SVG rasterised at logo size: framed to a `LOGO_PX` square first, so

@@ -91,7 +91,9 @@ fn wordmark_texture(art: Wordmark, width: i32, dark: bool) -> Option<gtk::gdk::T
     });
     loader.write(art.art(dark)).ok()?;
     loader.close().ok()?;
-    loader.pixbuf().map(|pb| gtk::gdk::Texture::for_pixbuf(&pb))
+    loader
+        .pixbuf()
+        .map(|pb| crate::ui::texture::from_pixbuf(&pb))
 }
 
 /// Hero and shrunk geometry for the floating wordmark.

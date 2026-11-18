@@ -71,7 +71,7 @@ pub(crate) fn run(
             };
             let uri = nav
                 .navigation_action()
-                .and_then(|mut a| a.request())
+                .and_then(|a| a.request())
                 .and_then(|r| r.uri())
                 .map(|u| u.to_string())
                 .unwrap_or_default();

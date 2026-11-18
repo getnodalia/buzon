@@ -403,7 +403,7 @@ impl Moment {
         if let Ok(d) =
             glib::DateTime::from_local(at.year(), at.month() as i32, at.day() as i32, 12, 0, 0.0)
         {
-            self.calendar.select_day(&d);
+            self.calendar.set_date(&d);
         }
     }
 
