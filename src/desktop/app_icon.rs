@@ -39,7 +39,7 @@ pub(crate) const DEFAULT_ID: &str = "default";
 /// choice once: the first start on such a release resets
 /// the stored choice to the default, and records the generation so a
 /// choice made afterwards stands.
-const ICON_GENERATION: u32 = 3;
+const ICON_GENERATION: u32 = 4;
 
 /// The icon this build installs under its app ID.
 #[cfg(not(feature = "beta"))]
