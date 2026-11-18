@@ -4,9 +4,9 @@
 //! that box evenly — a lone "J" or "T" drifts, and pairs lean — which is
 //! what this paintable corrects, at every size it is drawn at.
 //!
-//! Colors are libadwaita's own avatar palette (the same fourteen gradients
-//! `ndl::Avatar` picks from, chosen by the same hash of the name), so a
-//! sender keeps the color they have always had.
+//! Colors come from the fourteen-hue avatar palette, chosen by a hash of
+//! the name, so a sender keeps the color they have always had; each circle
+//! is one flat color, as NDL draws surfaces, never a gradient.
 //!
 //! The same drawing serves the sidebar's account circles (a glyph alone
 //! over the circle's own color — see [`glyph_picture`]) and the reader's
@@ -16,7 +16,7 @@
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 
-use gtk::{gdk, glib, graphene, gsk, pango, prelude::*, subclass::prelude::*};
+use gtk::{gdk, glib, graphene, pango, prelude::*, subclass::prelude::*};
 
 /// libadwaita's `avatar.color1`…`color14`: gradient top, gradient bottom,
 /// text (from its stylesheet; one palette for both themes).
@@ -108,7 +108,7 @@ mod imp {
     #[derive(Default)]
     pub(crate) struct InitialsPaintable {
         pub(super) initials: RefCell<String>,
-        /// The ground: a gradient top and bottom, or nothing (the widget
+        /// The ground: the palette's two stops (the deeper one is drawn), or nothing (the widget
         /// beneath paints its own).
         pub(super) ground: RefCell<Option<(gdk::RGBA, gdk::RGBA)>>,
         pub(super) fg: RefCell<Option<gdk::RGBA>>,
@@ -136,15 +136,12 @@ mod imp {
                 return;
             };
             // The circle's ground: the avatar clips this to its disc.
-            if let Some((top, bottom)) = *self.ground.borrow() {
-                snapshot.append_linear_gradient(
+            // One flat color, as NDL draws every surface: the palette's
+            // deeper stop, which keeps the letters legible.
+            if let Some((_, bottom)) = *self.ground.borrow() {
+                snapshot.append_color(
+                    &bottom,
                     &graphene::Rect::new(0.0, 0.0, width as f32, height as f32),
-                    &graphene::Point::new(0.0, 0.0),
-                    &graphene::Point::new(0.0, height as f32),
-                    &[
-                        gsk::ColorStop::new(0.0, top),
-                        gsk::ColorStop::new(1.0, bottom),
-                    ],
                 );
             }
 
