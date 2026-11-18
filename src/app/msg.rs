@@ -742,6 +742,21 @@ pub(crate) enum AppMsg {
     /// The import finished.
     ContactsImported(Result<crate::contacts::local::ImportOutcome, String>),
 
+    // ---- on_updates (updates.rs) ----
+    /// Look for a newer release; `user` when someone asked from the menu.
+    CheckForUpdates { user: bool },
+    /// What the look found, or why it failed (in the reader's language).
+    UpdateChecked {
+        user: bool,
+        result: Result<nodalia_update::Check, String>,
+    },
+    /// Download, verify and install the release that was offered.
+    InstallUpdate,
+    /// Open the offered release's page, for an install that is updated elsewhere.
+    OpenReleasePage,
+    /// The install finished: the new version is starting, or why it could not.
+    UpdateInstalled(Result<(), String>),
+
     // ---- on_about (about.rs) ----
     /// Open the About window.
     OpenAbout,

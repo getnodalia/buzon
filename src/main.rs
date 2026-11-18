@@ -142,6 +142,8 @@ fn main() {
     gtk::glib::set_prgname(Some(APP_ID));
     gtk::glib::set_application_name("Buzón");
 
+    // After an in-app update, the new copy waits for the old one to leave first.
+    app::wait_for_the_old_version();
     let adw_app = build_application();
 
     // A second launch (a mailto: link, or just opening the app again) must

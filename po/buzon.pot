@@ -8149,3 +8149,30 @@ msgstr ""
 
 msgid "Use your desktop's buttons instead of Buzón's round ones. Applies after a restart."
 msgstr ""
+
+msgid "Check for Updates…"
+msgstr ""
+
+msgid "The check for updates stopped."
+msgstr ""
+
+msgid "Buzón {version} is the latest version"
+msgstr ""
+
+msgid "Buzón {version} is available"
+msgstr ""
+
+msgid "Install and Restart"
+msgstr ""
+
+msgid "Open Download Page"
+msgstr ""
+
+msgid "Downloading Buzón {version}…"
+msgstr ""
+
+msgid "The update stopped."
+msgstr ""
+
+msgid "Update Buzón the way you installed it: with your software center, your package manager or the new release's package."
+msgstr ""

@@ -61,6 +61,11 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.1.2" date="2026-11-18">
+      <description>
+        <p>Buzón tells you when a new version is out, and the AppImage installs it from inside the app.</p>
+      </description>
+    </release>
     <release version="0.1.1" date="2026-11-18">
       <description>
         <p>Every color now comes from the Nodalia design, with no gradients: the welcome wizard, notices, console mode and avatars.</p>

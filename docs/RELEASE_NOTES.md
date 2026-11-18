@@ -3,6 +3,11 @@
 Buzón is the email client of the Nodalia suite: native, written in Rust, with no telemetry,
 remote content blocked by default and credentials kept in the system keyring.
 
+## What's new in 0.1.2
+
+- Updates from inside the app: Buzón tells you when a new version is out, and the AppImage installs it with one click
+- Check for Updates… in the Help menu, the global menu and the command palette
+
 ## What's new in 0.1.1
 
 - The welcome wizard, notices, console mode and avatars are drawn in the Nodalia design, with every color from its tokens and no gradients

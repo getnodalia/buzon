@@ -145,6 +145,7 @@ impl AppModel {
             reader_header: std::cell::OnceCell::new(),
             toasts: std::cell::OnceCell::new(),
             outgoing: Default::default(),
+            updates: Default::default(),
             merges: Default::default(),
             send_ticket: 0,
             reader_split: {
