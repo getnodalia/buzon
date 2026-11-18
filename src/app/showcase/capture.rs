@@ -1,6 +1,6 @@
 //! The small helpers the showcase hooks share.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::app::{AppModel, AppMsg};
@@ -75,7 +75,7 @@ pub(in crate::app) fn showcase_pgp(which: &str) -> Option<crate::models::PgpStat
 /// title when it is in one, else the focused widget's type and the classes
 /// of the views around it, and for a WebView where its document's own
 /// focus and caret are.
-pub(super) fn showcase_log_focus(main: &adw::ApplicationWindow) {
+pub(super) fn showcase_log_focus(main: &ndl::ApplicationWindow) {
     let tops = gtk::Window::toplevels();
     let main: gtk::Window = main.clone().upcast();
     let focus = (0..tops.n_items())
@@ -84,8 +84,8 @@ pub(super) fn showcase_log_focus(main: &adw::ApplicationWindow) {
         .max_by_key(|w| *w != main)
         .and_then(|w| gtk::prelude::GtkWindowExt::focus(&w));
     let row = focus.as_ref().and_then(|f| {
-        f.ancestor(adw::EntryRow::static_type())
-            .and_downcast::<adw::EntryRow>()
+        f.ancestor(ndl::EntryRow::static_type())
+            .and_downcast::<ndl::EntryRow>()
     });
     match (row, focus) {
         (Some(row), _) => tracing::info!("showcase: focus in the {:?} row", row.title()),
@@ -167,7 +167,7 @@ pub(super) fn stage_settings_window(sender: &ComponentSender<AppModel>, settings
 /// BUZON_SHOWCASE_DELAY_MS): the Settings window when `settings` named a
 /// panel, the newest window with BUZON_SHOWCASE_TOP, else the main one.
 pub(super) fn capture_window(
-    root: &adw::ApplicationWindow,
+    root: &ndl::ApplicationWindow,
     delay: u32,
     shot: String,
     settings: Option<String>,

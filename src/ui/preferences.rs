@@ -3,7 +3,7 @@
 //! OpenPGP, Cloud Storage, Translation and Contacts are components of their
 //! own hosted in the stack.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::{
@@ -117,7 +117,7 @@ pub(crate) struct Preferences {
     /// in its "accounts" slot), driven by the sidebar (#141).
     panels_stack: Option<gtk::Stack>,
     /// The accounts panel's slot, for the fresh panel each open brings.
-    accounts_slot: Option<adw::Bin>,
+    accounts_slot: Option<ndl::Bin>,
     /// Pages taken out of the stack until after the window's first paint:
     /// only the page shown is laid out and styled for it, the rest come
     /// back a moment later (or at once, should one be asked for first).
@@ -127,17 +127,17 @@ pub(crate) struct Preferences {
     /// The settings search in the sidebar (#260).
     search: Option<SettingsSearch>,
     /// The content pane's page, whose title names the chosen category.
-    content_page: Option<adw::NavigationPage>,
+    content_page: Option<ndl::NavigationPage>,
     /// The split view, to bring the content forward when collapsed.
-    split: Option<adw::NavigationSplitView>,
+    split: Option<ndl::NavigationSplitView>,
     /// The accounts component, told which of its pages the sidebar chose.
     accounts_sender: relm4::Sender<crate::ui::accounts::AccountsInput>,
     /// The content header bar; hidden while the accounts editor subpage is
     /// open, whose own header takes over.
-    host_header: Option<adw::HeaderBar>,
+    host_header: Option<ndl::HeaderBar>,
     /// Settings → Sidebar's Contacts placement row, kept in step with the
     /// same row in Settings → Contacts.
-    contacts_placement_row: Option<adw::ComboRow>,
+    contacts_placement_row: Option<ndl::ComboRow>,
     /// The OpenPGP page (#133), kept alive with the window.
     pgp_keys: Option<Controller<crate::ui::pgp_keys::PgpKeys>>,
     /// (name, address) per enabled account and alias, the rows of the
@@ -171,7 +171,7 @@ pub(crate) struct Preferences {
     /// when they differ: a combo row set to its current value is a no-op,
     /// but one set from `#[watch]` on every update hung GTK's list-item
     /// manager in the pre-warmed (unmapped) window.
-    files_rows: Option<(adw::ComboRow, adw::ComboRow, adw::SpinRow)>,
+    files_rows: Option<(ndl::ComboRow, ndl::ComboRow, ndl::SpinRow)>,
     /// Composing → Spelling → Languages, kept to follow a change made from
     /// a composer's right-click menu (#365).
     spell_langs: Option<SpellLangRows>,
@@ -237,7 +237,7 @@ impl Component for Preferences {
     }
 
     view! {
-        adw::Window {
+        ndl::Window {
             set_modal: false,
             set_default_width: 920,
             // The same size every time: the two-pane layout (#141) fits its
@@ -262,20 +262,20 @@ impl Component for Preferences {
             // (breakpoint in init) and the sidebar becomes the first page.
             #[wrap(Some)]
             #[name = "split"]
-            set_content = &adw::NavigationSplitView {
+            set_content = &ndl::NavigationSplitView {
                 set_min_sidebar_width: 180.0,
                 set_max_sidebar_width: 250.0,
                 set_sidebar_width_fraction: 0.27,
 
                 #[wrap(Some)]
-                set_sidebar = &adw::NavigationPage {
-                    set_title: &i18n("Settings"),
+                set_sidebar = &ndl::NavigationPage {
+                    set_title: i18n("Settings").as_str(),
 
                     #[wrap(Some)]
                     #[name = "side_toolbar"]
-                    set_child = &adw::ToolbarView {
+                    set_child = &ndl::ToolbarView {
                         #[name = "side_header"]
-                        add_top_bar = &adw::HeaderBar {
+                        add_top_bar = &ndl::HeaderBar {
                             set_show_end_title_buttons: false,
                         },
 
@@ -305,13 +305,13 @@ impl Component for Preferences {
 
                 #[wrap(Some)]
                 #[name = "content_page"]
-                set_content = &adw::NavigationPage {
-                    set_title: &i18n("General"),
+                set_content = &ndl::NavigationPage {
+                    set_title: i18n("General").as_str(),
 
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
+                    set_child = &ndl::ToolbarView {
                         #[name = "host_header"]
-                        add_top_bar = &adw::HeaderBar {
+                        add_top_bar = &ndl::HeaderBar {
                             set_show_start_title_buttons: false,
                         },
 
@@ -327,62 +327,62 @@ impl Component for Preferences {
                             set_vhomogeneous: false,
 
                             #[name = "accounts_slot"]
-                            add_named[Some("accounts")] = &adw::Bin {},
+                            add_named[Some("accounts")] = &ndl::Bin {},
 
                             // The OpenPGP key manager (#133), its own component.
                             #[name = "pgp_slot"]
-                            add_named[Some("openpgp")] = &adw::Bin {},
+                            add_named[Some("openpgp")] = &ndl::Bin {},
 
                             // Cloud attachment accounts (#144), its own component.
                             #[name = "cloud_slot"]
-                            add_named[Some("cloud")] = &adw::Bin {},
+                            add_named[Some("cloud")] = &ndl::Bin {},
 
                             // Message translation (#327), built by its own module.
                             #[name = "translation_slot"]
-                            add_named[Some("translation")] = &adw::Bin {},
+                            add_named[Some("translation")] = &ndl::Bin {},
 
                             // Every address book (#408), its own component.
                             #[name = "contacts_slot"]
-                            add_named[Some("contacts")] = &adw::Bin {},
+                            add_named[Some("contacts")] = &ndl::Bin {},
 
                             #[local_ref]
-                            add_named[Some("general")] = general_page -> adw::PreferencesPage {},
+                            add_named[Some("general")] = general_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("appearance")] = appearance_page -> adw::PreferencesPage {},
+                            add_named[Some("appearance")] = appearance_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("sidebar")] = sidebar_page -> adw::PreferencesPage {},
+                            add_named[Some("sidebar")] = sidebar_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("list")] = list_page -> adw::PreferencesPage {},
+                            add_named[Some("list")] = list_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("conversations")] = conversations_page -> adw::PreferencesPage {},
+                            add_named[Some("conversations")] = conversations_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("reading")] = reading_page -> adw::PreferencesPage {},
+                            add_named[Some("reading")] = reading_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("composing")] = composing_page -> adw::PreferencesPage {},
+                            add_named[Some("composing")] = composing_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("privacy")] = privacy_page -> adw::PreferencesPage {},
+                            add_named[Some("privacy")] = privacy_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("assistants")] = assistants_page -> adw::PreferencesPage {},
+                            add_named[Some("assistants")] = assistants_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("datetime")] = datetime_page -> adw::PreferencesPage {},
+                            add_named[Some("datetime")] = datetime_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("system")] = system_page -> adw::PreferencesPage {},
+                            add_named[Some("system")] = system_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("backup")] = backup_page -> adw::PreferencesPage {},
+                            add_named[Some("backup")] = backup_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("focus")] = focus_page -> adw::PreferencesPage {},
+                            add_named[Some("focus")] = focus_page -> ndl::PreferencesPage {},
                         },
                     },
                 },

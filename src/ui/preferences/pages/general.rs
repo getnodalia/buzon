@@ -1,7 +1,7 @@
 //! Settings → General: checking for mail, notifications and their
 //! sound, and the buttons a notification carries.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use super::super::{PrefInput, PrefOutput, Preferences, ViewSender};
 use crate::i18n::i18n;
@@ -9,34 +9,34 @@ use crate::i18n::i18n;
 /// The page, and the rows on it that the window reaches later.
 #[derive(Debug)]
 pub(in crate::ui::preferences) struct GeneralPage {
-    pub(in crate::ui::preferences) page: adw::PreferencesPage,
-    pub(in crate::ui::preferences) fetch_row: adw::ComboRow,
-    pub(in crate::ui::preferences) push_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) metered_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notifications_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notification_content_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notify_receipts_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) sound_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) sound_choice_row: adw::ComboRow,
-    pub(in crate::ui::preferences) sound_file_row: adw::ActionRow,
-    pub(in crate::ui::preferences) sound_focused_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notify_mark_read_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notify_archive_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notify_delete_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notify_reply_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notify_forward_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) notify_spam_row: adw::SwitchRow,
+    pub(in crate::ui::preferences) page: ndl::PreferencesPage,
+    pub(in crate::ui::preferences) fetch_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) push_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) metered_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notifications_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notification_content_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notify_receipts_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) sound_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) sound_choice_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) sound_file_row: ndl::ActionRow,
+    pub(in crate::ui::preferences) sound_focused_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notify_mark_read_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notify_archive_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notify_delete_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notify_reply_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notify_forward_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) notify_spam_row: ndl::SwitchRow,
 }
 
 impl GeneralPage {
     pub(in crate::ui::preferences) fn build(model: &Preferences, sender: &ViewSender) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
-                add = &adw::PreferencesGroup {
+            page = ndl::PreferencesPage {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("General"),
 
                     #[name = "fetch_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Check for new mail"),
                         connect_selected_notify[sender] => move |row| {
                             sender.input(PrefInput::ChangeFetchInterval(row.selected()));
@@ -44,7 +44,7 @@ impl GeneralPage {
                     },
 
                     #[name = "push_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Instant new mail (push)"),
                         set_subtitle: &i18n("Microsoft 365 accounts check at the interval above."),
                         connect_active_notify[sender] => move |row| {
@@ -53,7 +53,7 @@ impl GeneralPage {
                     },
 
                     #[name = "metered_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Save data on metered connections"),
                         set_subtitle: &i18n("New mail still arrives. Nothing else is fetched ahead."),
                         connect_active_notify[sender] => move |row| {
@@ -62,11 +62,11 @@ impl GeneralPage {
                     },
                 },
 
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Notifications"),
 
                     #[name = "notifications_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Desktop notifications"),
                         set_subtitle: &i18n("For new mail and errors, while the window is in the background."),
                         connect_active_notify[sender] => move |row| {
@@ -75,7 +75,7 @@ impl GeneralPage {
                     },
 
                     #[name = "notification_content_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.notifications,
                         set_title: &i18n("Show sender and subject"),
@@ -86,7 +86,7 @@ impl GeneralPage {
 
                     // When a receipt comes back for mail sent (#520).
                     #[name = "notify_receipts_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.notifications,
                         set_title: &i18n("Read receipts"),
@@ -100,7 +100,7 @@ impl GeneralPage {
                     // (#292): a built-in one or a file of the
                     // user's own.
                     #[name = "sound_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.notifications,
                         set_title: &i18n("Sound for new mail"),
@@ -110,7 +110,7 @@ impl GeneralPage {
                     },
 
                     #[name = "sound_choice_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         // Kept current by update_view.
                         set_sensitive: model.notifications && model.sound.enabled,
                         set_title: &i18n("Sound"),
@@ -129,7 +129,7 @@ impl GeneralPage {
                     },
 
                     #[name = "sound_file_row"]
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         // Kept current by update_view.
                         set_visible: model.sound.sound == crate::config::CUSTOM_SOUND,
                         // Kept current by update_view.
@@ -150,7 +150,7 @@ impl GeneralPage {
                     // in front, so by default there is no sound
                     // either; this plays it anyway (#337).
                     #[name = "sound_focused_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.notifications && model.sound.enabled,
                         set_title: &i18n("Also play while Buzón is in front"),
@@ -165,12 +165,12 @@ impl GeneralPage {
                 // carries (#244); a summary of several has none.
                 // Three at most: once three are on, the rest
                 // grey out until one is switched off.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Notification Buttons"),
                     set_description: Some(&i18n("Up to three buttons on a notification about one message.")),
 
                     #[name = "notify_mark_read_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.button_row_sensitive(crate::config::NotificationButton::MarkRead),
                         set_title: &i18n("Mark as Read"),
@@ -180,7 +180,7 @@ impl GeneralPage {
                     },
 
                     #[name = "notify_archive_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.button_row_sensitive(crate::config::NotificationButton::Archive),
                         set_title: &i18n("Archive"),
@@ -190,7 +190,7 @@ impl GeneralPage {
                     },
 
                     #[name = "notify_delete_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.button_row_sensitive(crate::config::NotificationButton::Delete),
                         set_title: &i18n("Delete"),
@@ -200,7 +200,7 @@ impl GeneralPage {
                     },
 
                     #[name = "notify_reply_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.button_row_sensitive(crate::config::NotificationButton::Reply),
                         set_title: &i18n("Reply"),
@@ -210,7 +210,7 @@ impl GeneralPage {
                     },
 
                     #[name = "notify_forward_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.button_row_sensitive(crate::config::NotificationButton::Forward),
                         set_title: &i18n("Forward"),
@@ -220,7 +220,7 @@ impl GeneralPage {
                     },
 
                     #[name = "notify_spam_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         // Kept current by update_view.
                         set_sensitive: model.button_row_sensitive(crate::config::NotificationButton::Spam),
                         set_title: &i18n("Mark as Spam"),

@@ -28,8 +28,8 @@
 use std::cell::Cell;
 use std::rc::Rc;
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::{self, DrawerState};
@@ -107,7 +107,7 @@ pub(crate) struct AttachmentDrawer {
     /// The running expand/collapse slide and its direction (`true` = closing
     /// toward the header). Held so a toggle or drag mid-slide can skip it to
     /// its end instead of fighting it over the divider.
-    toggle_anim: Rc<std::cell::RefCell<Option<(adw::TimedAnimation, bool)>>>,
+    toggle_anim: Rc<std::cell::RefCell<Option<(ndl::TimedAnimation, bool)>>>,
     /// Bumped whenever a slide is superseded, so a stale `ToggleSettled`
     /// from a skipped animation is recognised and ignored.
     toggle_gen: u64,
@@ -127,7 +127,7 @@ pub(crate) struct AttachmentDrawer {
     /// narrow reader would otherwise be pushed past the window's edge.
     narrow: bool,
     /// Applies below the width the header needs with the slider showing.
-    header_fold: Option<adw::Breakpoint>,
+    header_fold: Option<ndl::Breakpoint>,
 }
 
 /// What the drawer asks the app to do.
@@ -267,7 +267,7 @@ impl SimpleComponent for AttachmentDrawer {
                 // than hold the reader wider than its pane (#624). The
                 // sizes are set in post_view, from the header's.
                 #[name = "header_bin"]
-                adw::BreakpointBin {
+                ndl::BreakpointBin {
                 #[wrap(Some)]
                 #[name = "header"]
                 set_child = &gtk::Box {

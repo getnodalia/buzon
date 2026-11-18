@@ -10,10 +10,10 @@ use super::Compose;
 use super::ComposeWidgets;
 use crate::i18n::i18n;
 use crate::ui::context_menu::{show_context_menu, MenuEntry};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
-/// The narrowest the compose pane goes (its `adw::BreakpointBin` floor).
+/// The narrowest the compose pane goes (its `ndl::BreakpointBin` floor).
 pub(super) const COMPOSE_MIN_WIDTH: i32 = 360;
 
 /// Fallback fold threshold when the toolbar could not be measured at init.
@@ -66,8 +66,8 @@ fn header_rows_width(header: &gtk::Widget) -> Option<i32> {
 /// own header in place, and a second set of controls mid-pane would be wrong.
 /// In a window of its own the header is the window's, close button and all.
 pub(super) fn size_for_host(
-    root: &adw::ToolbarView,
-    header: &adw::HeaderBar,
+    root: &ndl::ToolbarView,
+    header: &ndl::HeaderBar,
     editor_holder: &gtk::Box,
     windowed: bool,
     decorations: bool,
@@ -92,7 +92,6 @@ pub(super) fn set_toggle_icon(btn: &gtk::Button, windowed: bool) {
 /// Save the edited message, discard it, or go back to it. Escape answers
 /// Keep Editing, so a second press never discards what the first one asked
 /// about (#290).
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 fn confirm_discard_dialog(
     parent: Option<&gtk::Window>,
     template: bool,
@@ -111,12 +110,16 @@ fn confirm_discard_dialog(
             i18n("Save Draft"),
         )
     };
-    let dialog = adw::MessageDialog::new(parent, Some(heading.as_str()), Some(body.as_str()));
+    let dialog = crate::ui::message_dialog::MessageDialog::new(
+        parent,
+        Some(heading.as_str()),
+        Some(body.as_str()),
+    );
     dialog.add_response("keep", &i18n("Keep Editing"));
     dialog.add_response("discard", &i18n("Discard"));
     dialog.add_response("save", &save);
-    dialog.set_response_appearance("discard", adw::ResponseAppearance::Destructive);
-    dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("discard", ndl::ResponseAppearance::Destructive);
+    dialog.set_response_appearance("save", ndl::ResponseAppearance::Suggested);
     dialog.set_default_response(Some("save"));
     dialog.set_close_response("keep");
     dialog.connect_response(None, move |_, resp| {
@@ -170,7 +173,7 @@ impl Compose {
     pub(super) fn on_confirm_discard(
         &mut self,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         if self.asking_discard {
             return;
@@ -219,7 +222,7 @@ impl Compose {
         &mut self,
         narrow: bool,
         widgets: &ComposeWidgets,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         self.narrow = narrow;
         self.dress_format_buttons();
@@ -413,7 +416,7 @@ impl Compose {
 }
 
 pub(super) fn fold_on_first_map(
-    root: &adw::BreakpointBin,
+    root: &ndl::BreakpointBin,
     widgets: &ComposeWidgets,
     sender: &ComponentSender<Compose>,
 ) {
@@ -445,10 +448,10 @@ pub(super) fn fold_on_first_map(
         } else {
             need as f64 + 24.0
         };
-        let bp = adw::Breakpoint::new(adw::BreakpointCondition::new_length(
-            adw::BreakpointConditionLengthType::MaxWidth,
+        let bp = ndl::Breakpoint::new(ndl::BreakpointCondition::new_length(
+            ndl::BreakpointConditionLengthType::MaxWidth,
             threshold,
-            adw::LengthUnit::Px,
+            ndl::LengthUnit::Px,
         ));
         let s1 = s.clone();
         bp.connect_apply(move |_| s1.input_sender().emit(ComposeInput::SetNarrow(true)));

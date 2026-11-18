@@ -6,7 +6,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f};
@@ -24,10 +24,10 @@ pub(super) struct CloudAccounts {
     /// rebuild does not ask again.
     probed: std::collections::HashSet<String>,
     list: gtk::ListBox,
-    toasts: Option<adw::ToastOverlay>,
-    nav: Option<adw::NavigationView>,
-    editor_page: Option<adw::NavigationPage>,
-    editor_slot: Option<adw::Bin>,
+    toasts: Option<ndl::ToastOverlay>,
+    nav: Option<ndl::NavigationView>,
+    editor_page: Option<ndl::NavigationPage>,
+    editor_slot: Option<ndl::Bin>,
     /// The editor header's Remove, shown while an existing account is up.
     remove_btn: Option<gtk::Button>,
     /// Which account the editor shows (none for a new one).
@@ -95,23 +95,23 @@ impl SimpleComponent for CloudAccounts {
     type Output = CloudAccountsOutput;
 
     view! {
-        adw::Bin {
+        ndl::Bin {
             #[wrap(Some)]
             #[name = "nav"]
-            set_child = &adw::NavigationView {
+            set_child = &ndl::NavigationView {
                 // ---- list page ----
-                add = &adw::NavigationPage {
-                    set_title: &i18n("Cloud Storage"),
+                add = &ndl::NavigationPage {
+                    set_title: i18n("Cloud Storage").as_str(),
                     set_tag: Some("list"),
 
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
+                    set_child = &ndl::ToolbarView {
                         #[wrap(Some)]
                         #[name = "toasts"]
-                        set_content = &adw::ToastOverlay {
+                        set_content = &ndl::ToastOverlay {
                             #[wrap(Some)]
-                            set_child = &adw::PreferencesPage {
-                                add = &adw::PreferencesGroup {
+                            set_child = &ndl::PreferencesPage {
+                                add = &ndl::PreferencesGroup {
                                     set_title: &i18n("Cloud storage"),
                                     set_description: Some(&i18n("Upload large files and send a link instead of attaching them.\n\nSupported providers: Nextcloud, ownCloud, OpenCloud, OneDrive, Dropbox and Seafile.")),
                                     // Across from the heading: the services' marks
@@ -159,13 +159,13 @@ impl SimpleComponent for CloudAccounts {
 
                 // ---- editor page ----
                 #[name = "editor_page"]
-                add = &adw::NavigationPage {
-                    set_title: &i18n("Cloud Account"),
+                add = &ndl::NavigationPage {
+                    set_title: i18n("Cloud Account").as_str(),
                     set_tag: Some("editor"),
 
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
-                        add_top_bar = &adw::HeaderBar {
+                    set_child = &ndl::ToolbarView {
+                        add_top_bar = &ndl::HeaderBar {
                             // The window's close button lives here while the
                             // editor is up (the shared header hides).
                             set_show_end_title_buttons: true,
@@ -189,7 +189,7 @@ impl SimpleComponent for CloudAccounts {
                         set_content = &gtk::ScrolledWindow {
                             set_hscrollbar_policy: gtk::PolicyType::Never,
                             #[wrap(Some)]
-                            set_child = &adw::Clamp {
+                            set_child = &ndl::Clamp {
                                 set_maximum_size: 640,
                                 set_tightening_threshold: 480,
                                 set_margin_top: 24,
@@ -198,7 +198,7 @@ impl SimpleComponent for CloudAccounts {
                                 set_margin_end: 24,
                                 #[wrap(Some)]
                                 #[name = "editor_slot"]
-                                set_child = &adw::Bin {},
+                                set_child = &ndl::Bin {},
                             },
                         },
                     },
@@ -408,7 +408,7 @@ impl SimpleComponent for CloudAccounts {
 impl CloudAccounts {
     fn toast(&self, text: &str) {
         if let Some(t) = &self.toasts {
-            t.add_toast(adw::Toast::new(text));
+            t.add_toast(ndl::Toast::new(text));
         }
     }
 
@@ -423,7 +423,7 @@ impl CloudAccounts {
         else {
             return;
         };
-        page.set_title(&if index.is_some() {
+        page.set_title(if index.is_some() {
             i18n("Edit Cloud Account")
         } else {
             i18n("Add Cloud Account")

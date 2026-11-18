@@ -3,7 +3,7 @@
 //! shows; contacts dragged from the list are copied onto a book (moved, with
 //! Ctrl held) or put in a group.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::i18n::{i18n, ni18n_f};
 use crate::ui::contacts_page::{

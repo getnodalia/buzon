@@ -9,7 +9,7 @@ use crate::config::{sender_identity, NamedSignature, SignaturePosition};
 use crate::i18n::i18n;
 use crate::ui::context_menu::{show_context_menu, MenuEntry};
 use crate::ui::rich_editor::{self, js_escape, SourceKind};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// A signature block as HTML, under a `-- ` line when `dashes` is set. The

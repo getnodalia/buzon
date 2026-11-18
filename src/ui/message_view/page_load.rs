@@ -2,7 +2,7 @@
 
 use super::MessageView;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use webkit6::prelude::WebViewExt;
 

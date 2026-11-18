@@ -7,7 +7,7 @@ use super::*;
 /// groups out in is not exposed, so it is found among the descendants.
 pub(super) fn widen_page(page: &gtk::Widget, max: i32) {
     fn walk(w: &gtk::Widget, max: i32) -> bool {
-        if let Some(clamp) = w.downcast_ref::<adw::Clamp>() {
+        if let Some(clamp) = w.downcast_ref::<ndl::Clamp>() {
             clamp.set_maximum_size(max);
             return true;
         }
@@ -43,7 +43,7 @@ pub(super) fn collect_named(root: &gtk::Widget, name: &str, out: &mut Vec<gtk::W
 /// "Jane Doe <jane.doe@exam…" (#261). The selected value shows the address
 /// alone, the part that tells the choices apart, and gives way in the
 /// middle; the popup list shows every choice whole.
-pub(super) fn middle_ellipsize(row: &adw::ComboRow) {
+pub(super) fn middle_ellipsize(row: &ndl::ComboRow) {
     fn factory(selected: bool) -> gtk::SignalListItemFactory {
         let factory = gtk::SignalListItemFactory::new();
         factory.connect_setup(move |_, item| {
@@ -85,7 +85,7 @@ pub(super) fn middle_ellipsize(row: &adw::ComboRow) {
 /// ("Account of the current folder") reads whole instead of trailing off.
 /// The value label is the row's only descendant label showing the
 /// selected string; nothing else in the row is touched.
-pub(super) fn widen_combo_value(row: &adw::ComboRow, extra: i32) {
+pub(super) fn widen_combo_value(row: &ndl::ComboRow, extra: i32) {
     let Some(want) = row
         .selected_item()
         .and_downcast::<gtk::StringObject>()
@@ -118,7 +118,7 @@ pub(super) fn widen_combo_value(row: &adw::ComboRow, extra: i32) {
 /// the recent picks, each drawn in its own face, then Other Font…, which
 /// opens the font chooser and adds what it picks to the list (#358).
 pub(super) fn compose_font_setup(
-    row: &adw::ComboRow,
+    row: &ndl::ComboRow,
     current: &str,
     sender: ComponentSender<Preferences>,
 ) {
@@ -132,7 +132,7 @@ pub(super) fn compose_font_setup(
         /// Set while the list is rebuilt, which selects as it goes.
         filling: Cell<bool>,
     }
-    fn fill(row: &adw::ComboRow, state: &State) {
+    fn fill(row: &ndl::ComboRow, state: &State) {
         let chosen = state.chosen.borrow().clone();
         let choices = crate::ui::rich_editor::compose_font_choices(&chosen);
         let mut names: Vec<String> = choices.iter().map(|(_, name)| name.clone()).collect();
@@ -238,7 +238,7 @@ impl Preferences {
 /// doesn't stick ("Follow system" → "Follow s…"). Give every combo a
 /// plain factory whose labels never ellipsize; the short row titles
 /// yield the space instead.
-pub(super) fn no_truncate(row: &adw::ComboRow) {
+pub(super) fn no_truncate(row: &ndl::ComboRow) {
     let factory = gtk::SignalListItemFactory::new();
     factory.connect_setup(|_, item| {
         if let Some(item) = item.downcast_ref::<gtk::ListItem>() {

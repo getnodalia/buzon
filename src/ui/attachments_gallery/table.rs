@@ -1,6 +1,6 @@
 //! One row of the gallery's table view.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::ComponentSender;
 
 use crate::i18n::i18n;

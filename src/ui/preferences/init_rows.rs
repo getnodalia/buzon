@@ -498,6 +498,10 @@ impl Preferences {
             .system
             .fullscreen_row
             .set_active(init.start_fullscreen);
+        widgets
+            .system
+            .window_controls_row
+            .set_active(init.system_window_controls);
         // Starting at login only means anything if Buzón stays running.
         widgets
             .system

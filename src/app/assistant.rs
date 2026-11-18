@@ -9,7 +9,7 @@
 
 use std::collections::{HashMap, VecDeque};
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use tokio::sync::oneshot;
 
@@ -463,7 +463,7 @@ impl AppModel {
         let busy_here = ours_in_front();
         if busy_here {
             self.show_toast(
-                &adw::Toast::builder()
+                &ndl::Toast::builder()
                     .title(i18n("An AI agent prepared a message"))
                     .button_label(i18n("Show"))
                     .action_name(format!(

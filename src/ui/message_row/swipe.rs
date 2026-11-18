@@ -1,25 +1,25 @@
-//! Swiping a row (`SwipeSurface`, "BuzonSwipeSurface", an AdwSwipeable):
-//! the surface, its progress, and the row's swipe actions and animation.
+//! Swiping a row (`SwipeSurface`, "BuzonSwipeSurface", driven by a
+//! [`SwipeTracker`]): the surface, its progress, and the row's swipe actions
+//! and animation.
 
 use super::row::Row;
 use super::{RowAction, SWIPE_ARM, SWIPE_EXIT_MS, SWIPE_MAX, SWIPE_RESTORE_MS, THREAD_NODE_REACH};
 use crate::i18n::i18n;
-use adw::prelude::*;
 use gtk::glib;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::rc::Rc;
 
-// A two-layer container implementing `AdwSwipeable`, so a real
-// `AdwSwipeTracker` — the gesture engine behind `AdwFlap` and `AdwCarousel` —
-// can drive the row's swipe-to-act gesture (#swipe): `background` is the
-// fixed action strip, always allocated full-size and never moving;
-// `foreground` is the row's real content, translated across it via a
-// `GskTransform` on its allocation as the swipe drags it, Gmail-style.
+// A two-layer container a [`SwipeTracker`] drives for the row's swipe-to-act
+// gesture (#swipe): `background` is the fixed action strip, always allocated
+// full-size and never moving; `foreground` is the row's real content,
+// translated across it via a `GskTransform` on its allocation as the swipe
+// drags it, Gmail-style.
 glib::wrapper! {
     pub(crate) struct SwipeSurface(ObjectSubclass<swipe_surface_imp::SwipeSurface>)
         @extends gtk::Widget,
-        @implements adw::Swipeable;
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for SwipeSurface {
@@ -41,8 +41,8 @@ impl SwipeSurface {
         child.set_parent(self);
     }
 
-    /// The live swipe distance, in `AdwSwipeTracker`'s own px convention
-    /// (`AdwSwipeable::progress` reports it back verbatim). Queues a fresh
+    /// The live swipe distance, in the tracker's px convention (dragged left
+    /// is positive). Queues a fresh
     /// allocation so the translation actually moves — setting this alone
     /// touches no property GTK would otherwise notice.
     pub(super) fn set_progress_px(&self, px: f64) {
@@ -56,8 +56,8 @@ impl SwipeSurface {
         self.imp().progress_px.get()
     }
 
-    /// The trackpad sensitivity preference, so both `AdwSwipeable::distance`
-    /// and the tracker's own callback see the same figure.
+    /// The trackpad sensitivity preference, so both [`Self::distance`] and
+    /// the tracker's own callback see the same figure.
     pub(super) fn set_sensitivity(&self, factor: f64) {
         self.imp().sensitivity.set(factor.clamp(
             crate::config::SWIPE_SENSITIVITY_MIN,
@@ -68,14 +68,141 @@ impl SwipeSurface {
     fn sensitivity(&self) -> f64 {
         self.imp().sensitivity.get()
     }
+
+    /// What one full swipe (progress ±1.0) costs the pointer: `SWIPE_MAX` px
+    /// at sensitivity 1.0, and deliberately *more* the higher the trackpad
+    /// sensitivity goes. The tracker divides a mouse or touchscreen drag by
+    /// this and `Row::wire_swipe` multiplies the progress back by the same
+    /// factor, so a drag still moves the row exactly as far as the pointer
+    /// went; a trackpad scroll is scaled against a fixed
+    /// [`TOUCHPAD_DISTANCE`], so the multiplication is all it feels.
+    fn distance(&self) -> f64 {
+        SWIPE_MAX * self.sensitivity()
+    }
+}
+
+/// The px of two-finger trackpad scrolling that make one full swipe.
+const TOUCHPAD_DISTANCE: f64 = 400.0;
+/// How far a drag goes before it counts as a horizontal swipe or a vertical
+/// scroll, whichever it moved further in.
+const DRAG_THRESHOLD: f64 = 8.0;
+
+/// The gestures behind a row's swipe: a horizontal drag (mouse or touch) and
+/// a two-finger trackpad scroll, both reported as one progress, positive
+/// when the row is dragged left, and one end.
+pub(crate) struct SwipeTracker {
+    enabled: Rc<std::cell::Cell<bool>>,
+    drag: gtk::GestureDrag,
+}
+
+impl SwipeTracker {
+    fn new(
+        surface: &SwipeSurface,
+        on_update: impl Fn(f64) + 'static,
+        on_end: impl Fn() + 'static,
+    ) -> Self {
+        use std::cell::Cell;
+        let enabled = Rc::new(Cell::new(true));
+        let on_update = Rc::new(on_update);
+        let on_end = Rc::new(on_end);
+
+        // Drags: undecided until they pass the threshold, then either ours
+        // (claimed, so the list does not also scroll) or not (denied, so a
+        // click or a vertical scroll goes on as if we were not here).
+        let drag = gtk::GestureDrag::new();
+        drag.set_touch_only(false);
+        let swiping = Rc::new(Cell::new(false));
+        {
+            let swiping = swiping.clone();
+            drag.connect_drag_begin(move |_, _, _| swiping.set(false));
+        }
+        {
+            let (enabled, swiping, update) = (enabled.clone(), swiping.clone(), on_update.clone());
+            let surface = surface.downgrade();
+            drag.connect_drag_update(move |g, dx, dy| {
+                let Some(surface) = surface.upgrade() else {
+                    return;
+                };
+                if !enabled.get() {
+                    return;
+                }
+                if !swiping.get() {
+                    if dx.abs().max(dy.abs()) < DRAG_THRESHOLD {
+                        return;
+                    }
+                    if dy.abs() >= dx.abs() {
+                        g.set_state(gtk::EventSequenceState::Denied);
+                        return;
+                    }
+                    g.set_state(gtk::EventSequenceState::Claimed);
+                    swiping.set(true);
+                }
+                update(-dx / surface.distance());
+            });
+        }
+        {
+            let (swiping, end) = (swiping.clone(), on_end.clone());
+            drag.connect_drag_end(move |_, _, _| {
+                if swiping.replace(false) {
+                    end();
+                }
+            });
+        }
+        surface.add_controller(drag.clone());
+
+        // Two-finger scrolls on a trackpad. A mouse wheel's notches are not a
+        // swipe, so only scrolls measured in surface pixels count.
+        let scroll = gtk::EventControllerScroll::new(gtk::EventControllerScrollFlags::BOTH_AXES);
+        let scrolled = Rc::new(Cell::new(None::<f64>));
+        {
+            let scrolled = scrolled.clone();
+            scroll.connect_scroll_begin(move |_| scrolled.set(None));
+        }
+        {
+            let (enabled, scrolled, update) =
+                (enabled.clone(), scrolled.clone(), on_update.clone());
+            scroll.connect_scroll(move |c, dx, dy| {
+                if !enabled.get() || c.unit() != gtk::gdk::ScrollUnit::Surface {
+                    return glib::Propagation::Proceed;
+                }
+                let total = match scrolled.get() {
+                    Some(t) => t + dx,
+                    None if dx.abs() > dy.abs() => dx,
+                    None => return glib::Propagation::Proceed,
+                };
+                scrolled.set(Some(total));
+                update(total / TOUCHPAD_DISTANCE);
+                glib::Propagation::Stop
+            });
+        }
+        {
+            let (scrolled, end) = (scrolled, on_end);
+            scroll.connect_scroll_end(move |_| {
+                if scrolled.take().is_some() {
+                    end();
+                }
+            });
+        }
+        surface.add_controller(scroll);
+
+        Self { enabled, drag }
+    }
+
+    /// Stops (or restarts) following the pointer, dropping a drag under way.
+    pub(super) fn set_enabled(&self, enabled: bool) {
+        self.enabled.set(enabled);
+        if !enabled {
+            self.drag.reset();
+        }
+    }
 }
 
 mod swipe_surface_imp {
     use std::cell::Cell;
 
-    use adw::subclass::prelude::*;
     use gtk::glib;
     use gtk::prelude::*;
+    use gtk::subclass::prelude::*;
 
     pub(crate) struct SwipeSurface {
         pub(super) progress_px: Cell<f64>,
@@ -99,7 +226,6 @@ mod swipe_surface_imp {
         const NAME: &'static str = "BuzonSwipeSurface";
         type Type = super::SwipeSurface;
         type ParentType = gtk::Widget;
-        type Interfaces = (adw::Swipeable,);
     }
 
     impl ObjectImpl for SwipeSurface {
@@ -211,47 +337,6 @@ mod swipe_surface_imp {
             snapshot.pop();
         }
     }
-
-    impl SwipeableImpl for SwipeSurface {
-        // What one full swipe (progress ±1.0) costs the pointer: `SWIPE_MAX`
-        // px at sensitivity 1.0, and deliberately *more* the higher the
-        // trackpad sensitivity goes. `AdwSwipeTracker` divides a mouse or
-        // touchscreen drag by this, and `Row::wire_swipe` multiplies the
-        // progress back by the same factor, so a drag still moves the row
-        // exactly as far as the pointer went, whatever the preference says.
-        // A trackpad's two-finger scroll never reaches here — libadwaita
-        // scales that against a fixed 400px of its own — so the
-        // multiplication is all that path feels, which is exactly the knob
-        // this preference wants.
-        fn distance(&self) -> f64 {
-            super::SWIPE_MAX * self.sensitivity.get()
-        }
-
-        fn progress(&self) -> f64 {
-            self.progress_px.get() / (super::SWIPE_MAX * self.sensitivity.get())
-        }
-
-        fn cancel_progress(&self) -> f64 {
-            0.0
-        }
-
-        // Three stops: fully committed left, at rest, fully committed
-        // right. `AdwSwipeTracker` picks whichever is nearest on release,
-        // factoring in velocity — a fast flick short of the full distance
-        // still commits, exactly like a real swipe-to-dismiss should.
-        fn snap_points(&self) -> Vec<f64> {
-            vec![-1.0, 0.0, 1.0]
-        }
-
-        fn swipe_area(
-            &self,
-            _navigation_direction: adw::NavigationDirection,
-            _is_drag: bool,
-        ) -> gtk::gdk::Rectangle {
-            let w = self.obj();
-            gtk::gdk::Rectangle::new(0, 0, w.width(), w.height())
-        }
-    }
 }
 
 /// The px a tracker `progress` reading moves the row: it undoes the
@@ -264,20 +349,15 @@ pub(crate) fn swipe_progress_px(progress: f64, sensitivity: f64) -> f64 {
 }
 
 impl Row {
-    /// The `AdwSwipeTracker` driving the swipe-to-act gesture (#swipe):
-    /// mouse-drag and trackpad both arrive as the same signals.
+    /// The [`SwipeTracker`] driving the swipe-to-act gesture (#swipe):
+    /// mouse-drag and trackpad both arrive as the same callbacks.
     pub(super) fn wire_swipe(&self) {
-        let tracker = adw::SwipeTracker::new(&self.w.surface);
-        tracker.set_orientation(gtk::Orientation::Horizontal);
-        tracker.set_allow_mouse_drag(true);
-        // `AdwSwipeTracker`'s progress/snap-point convention runs opposite to
-        // the row's "dragged left is negative" one for a horizontal tracker,
-        // hence the negation — kept only where each value is consumed, since
-        // `AdwSwipeable::progress` still answers the tracker in its own.
-        {
+        // The tracker's convention runs opposite to the row's "dragged left
+        // is negative" one, hence the negation where each value is consumed.
+        let update = {
             let weak = self.me.clone();
             let surface = self.w.surface.clone();
-            tracker.connect_update_swipe(move |_, progress| {
+            move |progress: f64| {
                 let raw_px = swipe_progress_px(progress, surface.sensitivity());
                 if let Some(row) = weak.upgrade() {
                     if row.st.borrow().swipe_committing {
@@ -286,18 +366,18 @@ impl Row {
                     surface.set_progress_px(raw_px);
                     row.swipe_update(-raw_px);
                 }
-            });
-        }
-        {
+            }
+        };
+        // Whether it fires is decided on the distance alone (see `swipe_end`).
+        let end = {
             let weak = self.me.clone();
-            // The release's own resolved snap point isn't used: whether it
-            // fires is decided on the distance alone (see `swipe_end`).
-            tracker.connect_end_swipe(move |_, _velocity, _to| {
+            move || {
                 if let Some(row) = weak.upgrade() {
                     row.swipe_end();
                 }
-            });
-        }
+            }
+        };
+        let tracker = SwipeTracker::new(&self.w.surface, update, end);
         self.tracker.replace(Some(tracker));
     }
 
@@ -384,8 +464,8 @@ impl Row {
         self.animate_swipe();
     }
 
-    /// Whether it fires is decided on the distance alone rather than on
-    /// `AdwSwipeTracker`'s velocity-aware snap point: a quick flick short of
+    /// Whether it fires is decided on the distance alone rather than on a
+    /// velocity-aware snap point: a quick flick short of
     /// the commit distance reads as a false positive when the intent was
     /// clearly to back out.
     fn swipe_end(&self) {
@@ -443,7 +523,7 @@ impl Row {
         }
         let setter = {
             let surface = surface.clone();
-            adw::CallbackAnimationTarget::new(move |v| surface.set_progress_px(v))
+            ndl::CallbackAnimationTarget::new(move |v| surface.set_progress_px(v))
         };
         let anim = if committing {
             if exit_started {
@@ -455,7 +535,7 @@ impl Row {
             // convention, like the snap-back.
             let span = (surface.width() as f64).max(SWIPE_MAX * 2.0);
             let target = if side < 0 { span } else { -span };
-            let anim = adw::TimedAnimation::new(
+            let anim = ndl::TimedAnimation::new(
                 &self.w.overlay,
                 surface.progress_px(),
                 target,
@@ -465,7 +545,7 @@ impl Row {
             let action = self.swipe_action();
             // The action fires as the exit lands, so the removal that
             // follows has nothing left to hide.
-            anim.connect_done(move |_| {
+            anim.connect_done(move || {
                 let Some(row) = weak.upgrade() else { return };
                 if row.st.borrow().gen != gen || !row.st.borrow().swipe_committing {
                     return;
@@ -504,9 +584,9 @@ impl Row {
             }
             // Bound to the row overlay (always mapped), not the surface —
             // adw skips animations on unmapped widgets.
-            let anim = adw::TimedAnimation::new(&self.w.overlay, current, target, 180, setter);
+            let anim = ndl::TimedAnimation::new(&self.w.overlay, current, target, 180, setter);
             if progress == 0.0 {
-                anim.connect_done(move |_| {
+                anim.connect_done(move || {
                     if let Some(row) = weak.upgrade() {
                         if row.st.borrow().gen == gen {
                             row.swipe_settled();
@@ -516,7 +596,7 @@ impl Row {
             }
             anim
         };
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         let old = self.st.borrow_mut().swipe_anim.replace(anim.clone());
         if let Some(old) = old {
             old.pause();

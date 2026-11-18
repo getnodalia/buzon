@@ -7,8 +7,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Duration;
 
-use adw::prelude::*;
-
 use crate::cache::at_rest::{self, FileState, Key, KeyStore, Problem};
 use crate::i18n::i18n;
 
@@ -105,7 +103,7 @@ fn ask(problem: &Problem, encrypt: bool, encrypted_file: bool) -> Choice {
     let offer_unencrypted = encrypt && matches!(problem, Problem::KeyringUnavailable(_));
     loop {
         let (heading, body) = explain(problem);
-        let dialog = adw::AlertDialog::new(Some(&heading), Some(&body));
+        let dialog = ndl::AlertDialog::new(Some(&heading), Some(&body));
         dialog.add_response("quit", &i18n("Quit"));
         if offer_unencrypted {
             dialog.add_response("unencrypted", &i18n("Store Unencrypted…"));
@@ -113,7 +111,7 @@ fn ask(problem: &Problem, encrypt: bool, encrypted_file: bool) -> Choice {
             dialog.add_response("reset", &i18n("Reset Cache…"));
         }
         dialog.add_response("retry", &i18n("Try Again"));
-        dialog.set_response_appearance("retry", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("retry", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("retry"));
         dialog.set_close_response("quit");
         match choose(&dialog).as_str() {
@@ -133,7 +131,7 @@ fn init_gtk() -> bool {
     if gtk::init().is_err() {
         return false;
     }
-    adw::init().ok();
+    ndl::init();
     true
 }
 
@@ -174,10 +172,10 @@ fn confirm_reset() -> bool {
         i18n("Mail kept on this computer is deleted and downloaded again from the server."),
         loss_warning()
     );
-    let dialog = adw::AlertDialog::new(Some(&i18n("Reset the Mail Cache?")), Some(&body));
+    let dialog = ndl::AlertDialog::new(Some(&i18n("Reset the Mail Cache?")), Some(&body));
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("reset", &i18n("Reset"));
-    dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
+    dialog.set_response_appearance("reset", ndl::ResponseAppearance::Destructive);
     dialog.set_default_response(Some("cancel"));
     dialog.set_close_response("cancel");
     choose(&dialog) == "reset"
@@ -202,10 +200,10 @@ fn confirm_unencrypted(encrypted_file: bool) -> bool {
         body.push(' ');
         body.push_str(&loss_warning());
     }
-    let dialog = adw::AlertDialog::new(Some(&i18n("Store Mail Unencrypted?")), Some(&body));
+    let dialog = ndl::AlertDialog::new(Some(&i18n("Store Mail Unencrypted?")), Some(&body));
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("unencrypted", &i18n("Store Unencrypted"));
-    dialog.set_response_appearance("unencrypted", adw::ResponseAppearance::Destructive);
+    dialog.set_response_appearance("unencrypted", ndl::ResponseAppearance::Destructive);
     dialog.set_default_response(Some("cancel"));
     dialog.set_close_response("cancel");
     choose(&dialog) == "unencrypted"
@@ -213,7 +211,7 @@ fn confirm_unencrypted(encrypted_file: bool) -> bool {
 
 /// Show `dialog` on its own and wait for its answer. There is no window to
 /// attach it to yet, and nothing else for the main loop to do meanwhile.
-fn choose(dialog: &adw::AlertDialog) -> String {
+fn choose(dialog: &ndl::AlertDialog) -> String {
     let main_loop = gtk::glib::MainLoop::new(None, false);
     let chosen = Rc::new(RefCell::new(String::new()));
     dialog.connect_response(None, {

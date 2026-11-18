@@ -8,7 +8,7 @@ use crate::models::Attachment;
 use crate::ui::attachment_io::{open_bytes, save_attachment_as};
 use crate::ui::attachments_gallery::fade_out;
 use crate::ui::context_menu::{show_context_menu, MenuEntry};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl AttachmentDrawer {

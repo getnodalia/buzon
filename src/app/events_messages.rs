@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::models::{FolderKind, Message};

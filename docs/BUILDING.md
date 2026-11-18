@@ -1,7 +1,7 @@
 # Building from source
 
 Buzón needs the Rust toolchain ([rustup](https://rustup.rs)), a C compiler,
-and the GTK 4 / libadwaita / WebKitGTK 6 development libraries, plus
+and the GTK 4.20 / WebKitGTK 6 development libraries, plus
 OpenSSL, gettext and Wayland headers. OpenSSL's libcrypto also backs the
 SQLCipher that encrypts the mail cache, which is built from the copy
 `rusqlite` bundles. At runtime it needs a Secret Service provider (e.g.
@@ -12,14 +12,14 @@ gnome-keyring), which keeps the cache's key as well as the passwords.
 **Fedora**
 
 ```sh
-sudo dnf install gcc gcc-c++ gtk4-devel libadwaita-devel webkitgtk6.0-devel \
+sudo dnf install gcc gcc-c++ gtk4-devel webkitgtk6.0-devel \
     poppler-glib-devel openssl-devel gettext-devel wayland-devel
 ```
 
 **Debian / Ubuntu**
 
 ```sh
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev \
+sudo apt install build-essential pkg-config libgtk-4-dev \
     libwebkitgtk-6.0-dev libpoppler-glib-dev libssl-dev gettext libwayland-dev
 ```
 
@@ -60,10 +60,10 @@ A beta's version is written `1.45.0~beta.1` in both, which sorts before
 (`.aarch64.rpm`, `_arm64.deb`) come from an arm64 machine.
 
 The RPM wraps a release build from the host, so it is built on Fedora. The
-Debian package is built inside a Debian 13 container (the script starts one
-with podman), because a binary built on Fedora needs a newer C library than
-Debian has, and Debian 13 is the oldest release with libadwaita 1.7. On a
-Debian host with the dependencies above and `dpkg-dev`, it builds in place.
+Debian package is built inside an Ubuntu 26.04 container (the script starts
+one with podman), because a binary built on Fedora needs a newer C library than
+Ubuntu has, and Ubuntu 26.04 is the oldest LTS with GTK 4.20. On a
+Debian or Ubuntu host with the dependencies above and `dpkg-dev`, it builds in place.
 `dpkg-shlibdeps` works out the package's dependencies from the binary.
 
 ## AppImage

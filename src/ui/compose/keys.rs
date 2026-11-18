@@ -5,7 +5,7 @@ use super::messages::ComposeInput;
 use super::types::Field;
 use super::Compose;
 use crate::ui::rich_editor;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Ctrl+Shift+A, T, C, B or M as what it asks the composer for.
@@ -105,7 +105,7 @@ fn cycle_focus(root: &gtk::Widget, direction: gtk::DirectionType) {
 }
 
 impl Compose {
-    pub(super) fn install_keys(&self, root: &adw::BreakpointBin, sender: &ComponentSender<Self>) {
+    pub(super) fn install_keys(&self, root: &ndl::BreakpointBin, sender: &ComponentSender<Self>) {
         // Drive the suggestion list from a single capture-phase key handler on
         // the window — the toplevel sees every key first, regardless of focus.
         let key = gtk::EventControllerKey::new();

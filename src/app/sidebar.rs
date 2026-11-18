@@ -1,7 +1,7 @@
 //! The sidebar: its outputs, its header in rail mode, and the state it keeps
 //! (collapsed accounts, folder order, sizes).
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -18,7 +18,7 @@ use super::msg::AppMsg;
 /// stylesheet). The reader pane's header still carries the window's close button,
 /// so nothing becomes unreachable.
 pub(super) fn set_sidebar_header_compact(
-    header: &adw::HeaderBar,
+    header: &ndl::HeaderBar,
     title: &gtk::Label,
     menu: &gtk::MenuButton,
     refresh: &gtk::Button,

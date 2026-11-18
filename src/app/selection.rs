@@ -1,7 +1,7 @@
 //! Which messages an action applies to: the open one, the list's
 //! selection, or the conversation.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::models::{FolderKind, Message};

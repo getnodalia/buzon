@@ -2,9 +2,9 @@
 //! fields.
 
 use super::RecipientRow;
-use adw::prelude::*;
-use adw::subclass::prelude::*;
 use gtk::gdk;
+use gtk::subclass::prelude::*;
+use ndl::prelude::*;
 
 pub(super) fn is_selected(pill: &gtk::Widget) -> bool {
     pill.has_css_class("selected")

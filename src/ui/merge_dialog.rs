@@ -1,13 +1,13 @@
 //! The Mail Merge dialog (#447): where the rows come from, a preview of each
 //! message as it will go, and Send for all of them.
 //!
-//! An `adw::MessageDialog`, as Create Event is (see `ui::dialog`).
+//! A `MessageDialog` (`ui::message_dialog`), as Create Event is (see `ui::dialog`).
 
 use std::cell::RefCell;
 use std::path::Path;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::config::ComposeFormat;
 use crate::contacts::Contact;
@@ -147,16 +147,19 @@ fn duration_label(n: usize, interval: std::time::Duration) -> String {
 /// Show the dialog over `parent`. `done` gets the messages to send, one per
 /// row with an address, and the wait from one to the next if the rate is
 /// limited.
-#[allow(deprecated)] // adw::MessageDialog, see ui::dialog
 pub(crate) fn show(
     parent: &gtk::Window,
     start: Start,
     done: impl Fn(Vec<Letter>, Option<std::time::Duration>) + 'static,
 ) {
-    let dialog = adw::MessageDialog::new(Some(parent), Some(&i18n("Mail Merge")), None);
+    let dialog = crate::ui::message_dialog::MessageDialog::new(
+        Some(parent),
+        Some(&i18n("Mail Merge")),
+        None,
+    );
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("send", &i18n("Send"));
-    dialog.set_response_appearance("send", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("send", ndl::ResponseAppearance::Suggested);
     dialog.set_response_enabled("send", false);
     dialog.set_close_response("cancel");
 
@@ -166,7 +169,7 @@ pub(crate) fn show(
 
     // Contact groups are offered only where there are some.
     let source = (!start.groups.is_empty()).then(|| {
-        let row = adw::ComboRow::new();
+        let row = ndl::ComboRow::new();
         row.set_title(&i18n("Send to"));
         let mut labels = vec![i18n("A CSV file")];
         labels.extend(start.groups.iter().map(|(name, _)| name.clone()));
@@ -176,7 +179,7 @@ pub(crate) fn show(
         row
     });
 
-    let file_row = adw::ActionRow::new();
+    let file_row = ndl::ActionRow::new();
     file_row.set_title(&i18n("CSV file"));
     file_row.set_subtitle(&i18n("Its first row names the fields."));
     let choose = gtk::Button::with_label(&i18n("Choose…"));
@@ -185,7 +188,7 @@ pub(crate) fn show(
     file_row.set_activatable_widget(Some(&choose));
     form.append(&file_row);
 
-    let fields_row = adw::ActionRow::new();
+    let fields_row = ndl::ActionRow::new();
     fields_row.set_title(&i18n("Fields"));
     fields_row.set_subtitle_selectable(true);
     fields_row.set_visible(false);
@@ -205,7 +208,7 @@ pub(crate) fn show(
     let missing_list = gtk::ListBox::new();
     missing_list.add_css_class("boxed-list");
     missing_list.set_selection_mode(gtk::SelectionMode::None);
-    let blank_row = adw::SwitchRow::new();
+    let blank_row = ndl::SwitchRow::new();
     blank_row.set_title(&i18n("Leave these fields empty"));
     missing_list.append(&blank_row);
     let missing_box = gtk::Box::new(gtk::Orientation::Vertical, 6);
@@ -270,12 +273,12 @@ pub(crate) fn show(
 
     // How fast the messages go, for a provider that limits it.
     let rate = crate::config::load_merge_rate();
-    let rate_row = adw::ExpanderRow::new();
+    let rate_row = ndl::ExpanderRow::new();
     rate_row.set_title(&i18n("Limit sending rate"));
     rate_row.set_show_enable_switch(true);
     rate_row.set_enable_expansion(rate.on);
     rate_row.set_expanded(rate.on);
-    let count_row = adw::ActionRow::new();
+    let count_row = ndl::ActionRow::new();
     count_row.set_title(&i18n("Messages"));
     let count_spin = gtk::SpinButton::with_range(1.0, 1000.0, 1.0);
     count_spin.set_value(f64::from(rate.count.clamp(1, 1000)));
@@ -427,7 +430,7 @@ pub(crate) fn show(
                 missing_list.remove(&row);
             }
             for (i, m) in result.missing.iter().enumerate() {
-                let row = adw::ActionRow::new();
+                let row = ndl::ActionRow::new();
                 row.set_use_markup(false);
                 row.set_title(&format!("{{{{{}}}}}", m.name));
                 row.set_subtitle(&places_label(&m.places));
@@ -525,16 +528,20 @@ pub(crate) fn show(
             let picker = csv_file_dialog();
             let (use_table, file_table, file_row) =
                 (use_table.clone(), file_table.clone(), file_row.clone());
-            picker.open(Some(&dialog_ref), gtk::gio::Cancellable::NONE, move |res| {
-                let Some(path) = res.ok().and_then(|f| f.path()) else {
-                    return;
-                };
-                let name = file_name(&path);
-                file_row.set_subtitle(&name);
-                let source = (read_table(&path), name);
-                *file_table.borrow_mut() = source.clone();
-                use_table(source);
-            });
+            picker.open(
+                dialog_ref.transient_for().as_ref(),
+                gtk::gio::Cancellable::NONE,
+                move |res| {
+                    let Some(path) = res.ok().and_then(|f| f.path()) else {
+                        return;
+                    };
+                    let name = file_name(&path);
+                    file_row.set_subtitle(&name);
+                    let source = (read_table(&path), name);
+                    *file_table.borrow_mut() = source.clone();
+                    use_table(source);
+                },
+            );
         });
     }
 
@@ -581,11 +588,10 @@ pub(crate) fn show(
 /// were chosen and captures the dialog two seconds later; with
 /// BUZON_SHOWCASE_MERGE_BLANK missing fields are left empty first, and
 /// with BUZON_SHOWCASE_MERGE_SEND it then sends.
-#[allow(deprecated)] // adw::MessageDialog, see ui::dialog
 fn showcase(
-    dialog: &adw::MessageDialog,
-    file_row: &adw::ActionRow,
-    blank_row: &adw::SwitchRow,
+    dialog: &crate::ui::message_dialog::MessageDialog,
+    file_row: &ndl::ActionRow,
+    blank_row: &ndl::SwitchRow,
     use_table: &dyn Fn(Source),
 ) {
     let (Ok(v), Some(_)) = (
@@ -604,7 +610,7 @@ fn showcase(
     }
     let (dialog, png) = (dialog.clone(), png.to_string());
     gtk::glib::timeout_add_seconds_local_once(2, move || {
-        crate::ui::showcase::showcase_capture(dialog.upcast_ref(), &png);
+        crate::ui::showcase::showcase_capture(&dialog.widget(), &png);
         if std::env::var_os("BUZON_SHOWCASE_MERGE_SEND").is_some() {
             dialog.response("send");
         }

@@ -1,7 +1,7 @@
 //! The sidebar's icon rail and the peek that slides the full sidebar over
 //! the list.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::ui::sidebar::SidebarInput;
@@ -119,16 +119,16 @@ impl AppModel {
         };
 
         let s = split.clone();
-        let target = adw::CallbackAnimationTarget::new(move |v| {
+        let target = ndl::CallbackAnimationTarget::new(move |v| {
             s.set_min_sidebar_width(v);
             s.set_max_sidebar_width(v);
         });
-        let anim = adw::TimedAnimation::new(&split, from, to, 200, target);
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        let anim = ndl::TimedAnimation::new(&split, from, to, 200, target);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         if !collapsing {
             // Restore responsive sizing once expanded, so window resizes track again.
             let s2 = split.clone();
-            anim.connect_done(move |_| {
+            anim.connect_done(move || {
                 s2.set_min_sidebar_width(180.0);
                 s2.set_max_sidebar_width(280.0);
                 s2.set_sidebar_width_fraction(0.2);

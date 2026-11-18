@@ -59,7 +59,7 @@ pub(crate) fn texture(id: &str, px: i32) -> Option<gtk::gdk::Texture> {
     loader.set_size(px, px);
     loader.write(bytes).ok()?;
     loader.close().ok()?;
-    let texture = gtk::gdk::Texture::for_pixbuf(&loader.pixbuf()?);
+    let texture = crate::ui::texture::from_pixbuf(&loader.pixbuf()?);
     CACHE.with(|c| c.borrow_mut().insert(key, texture.clone()));
     Some(texture)
 }

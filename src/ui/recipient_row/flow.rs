@@ -1,9 +1,9 @@
 //! `PillFlow`, the layout that wraps pills and the text into lines.
 
 use super::{SPACING, TEXT_MIN};
-use adw::prelude::*;
-use adw::subclass::prelude::*;
 use gtk::glib;
+use gtk::subclass::prelude::*;
+use ndl::prelude::*;
 use std::cell::{Cell, RefCell};
 
 mod flow_imp {

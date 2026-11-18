@@ -3,7 +3,7 @@
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::{ContactEdit, Labeled, Member};
@@ -17,7 +17,7 @@ use super::types::ContactForm;
 type Matcher = Rc<dyn Fn(&str) -> Vec<Pick>>;
 
 /// Adds a picked person and starts the field over.
-type Take = Rc<dyn Fn(&Pick, &adw::EntryRow)>;
+type Take = Rc<dyn Fn(&Pick, &ndl::EntryRow)>;
 
 /// One of the people the group form offers for what is typed.
 #[derive(Clone)]
@@ -44,7 +44,7 @@ pub(super) fn member_editor(
 ) -> Rc<RefCell<Vec<Member>>> {
     let list = group(detail, &i18n("Members"));
     let members: Rc<RefCell<Vec<Member>>> = Rc::new(RefCell::new(Vec::new()));
-    let entry = adw::EntryRow::new();
+    let entry = ndl::EntryRow::new();
     entry.set_title(&i18n("Add a person by name or address"));
     entry.set_show_apply_button(true);
     list.append(&entry);
@@ -84,7 +84,7 @@ pub(super) fn member_editor(
     // Add a match as a member and start the field over.
     let take = {
         let add = add.clone();
-        move |pick: &Pick, entry: &adw::EntryRow| {
+        move |pick: &Pick, entry: &ndl::EntryRow| {
             add(pick.member.clone());
             entry.set_text("");
             entry.grab_focus();
@@ -108,7 +108,7 @@ pub(super) fn member_editor(
     );
     // Return or the apply button: the match picked, else the addresses typed
     // or pasted.
-    let commit = move |e: &adw::EntryRow| {
+    let commit = move |e: &ndl::EntryRow| {
         let picked = chosen.get().and_then(|i| shown.borrow().get(i).cloned());
         if let Some(sug) = picked.filter(|_| found.is_visible()) {
             take(&sug, e);
@@ -153,7 +153,7 @@ pub(super) fn member_editor(
 /// button above the entry, unless they are in already.
 fn member_adder(
     list: &gtk::ListBox,
-    entry: &adw::EntryRow,
+    entry: &ndl::EntryRow,
     members: &Rc<RefCell<Vec<Member>>>,
 ) -> Rc<dyn Fn(Member)> {
     // Widgets are held weakly in the handlers they own, so the form is
@@ -166,7 +166,7 @@ fn member_adder(
         if members.borrow().iter().any(|x| x.same(&m)) {
             return;
         }
-        let row = adw::ActionRow::new();
+        let row = ndl::ActionRow::new();
         let named = !m.name.trim().is_empty() && m.name != m.email;
         row.set_title(&gtk::glib::markup_escape_text(if named {
             &m.name
@@ -275,7 +275,7 @@ fn member_matcher(
 
 /// List the people matching the typing under the field as it changes.
 fn show_matches_as_typed(
-    entry: &adw::EntryRow,
+    entry: &ndl::EntryRow,
     found: &gtk::ListBox,
     matches: Matcher,
     shown: Rc<RefCell<Vec<Pick>>>,
@@ -291,7 +291,7 @@ fn show_matches_as_typed(
         let text = e.text();
         *shown.borrow_mut() = matches(&text);
         for sug in shown.borrow().iter() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&gtk::glib::markup_escape_text(&sug.title));
             if !sug.subtitle.is_empty() {
                 row.set_subtitle(&gtk::glib::markup_escape_text(&sug.subtitle));
@@ -326,7 +326,7 @@ fn show_matches_as_typed(
 /// The keys of the field: Down and Up move through the matches, Up from
 /// the first goes back to what was typed, and Escape puts the list away.
 fn move_through_matches(
-    entry: &adw::EntryRow,
+    entry: &ndl::EntryRow,
     found: &gtk::ListBox,
     shown: Rc<RefCell<Vec<Pick>>>,
     chosen: Rc<Cell<Option<usize>>>,

@@ -7,8 +7,8 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 
 use crate::i18n::{i18n, i18n_f};
 use crate::services::grammar::{self, Engine, Settings};
@@ -20,7 +20,7 @@ const ENGINES: [Engine; 3] = [Engine::Harper, Engine::Local, Engine::Server];
 
 type Save = Rc<dyn Fn(&dyn Fn(&mut Settings))>;
 
-pub(in crate::ui::preferences) fn group() -> adw::PreferencesGroup {
+pub(in crate::ui::preferences) fn group() -> ndl::PreferencesGroup {
     let settings = Rc::new(RefCell::new(grammar::load()));
     // Someone who has not chosen is offered the checker for the languages
     // they write in; it is saved with the first thing they change.
@@ -28,16 +28,16 @@ pub(in crate::ui::preferences) fn group() -> adw::PreferencesGroup {
         let langs = spelling_languages();
         settings.borrow_mut().engine = Some(grammar::suggested_engine(&langs));
     }
-    let group = adw::PreferencesGroup::new();
+    let group = ndl::PreferencesGroup::new();
     group.set_title(&i18n("Grammar"));
 
-    let check_row = adw::SwitchRow::new();
+    let check_row = ndl::SwitchRow::new();
     check_row.set_title(&i18n("Check grammar and style"));
     check_row.set_subtitle(&i18n("Right-click a marked phrase for suggestions."));
     check_row.set_active(settings.borrow().enabled);
     group.add(&check_row);
 
-    let engine_row = adw::ComboRow::new();
+    let engine_row = ndl::ComboRow::new();
     engine_row.set_title(&i18n("Checker"));
     engine_row.set_model(Some(&gtk::StringList::new(&[
         &i18n("Harper"),
@@ -156,25 +156,25 @@ fn spelling_languages() -> Vec<String> {
 
 struct ServerRows {
     rows: Vec<gtk::Widget>,
-    key_row: adw::PasswordEntryRow,
+    key_row: ndl::PasswordEntryRow,
 }
 
 /// A LanguageTool server's address, the Premium account, and a check that
 /// they work.
 fn server_rows(settings: &Rc<RefCell<Settings>>, save: Save) -> ServerRows {
-    let url_row = adw::EntryRow::new();
+    let url_row = ndl::EntryRow::new();
     url_row.set_title(&i18n("LanguageTool server"));
     url_row.set_text(&settings.borrow().url);
 
-    let user_row = adw::EntryRow::new();
+    let user_row = ndl::EntryRow::new();
     user_row.set_title(&i18n("Username (LanguageTool Premium)"));
     user_row.set_text(&settings.borrow().username);
 
-    let key_row = adw::PasswordEntryRow::new();
+    let key_row = ndl::PasswordEntryRow::new();
     key_row.set_title(&i18n("API key (LanguageTool Premium)"));
     key_row.set_show_apply_button(true);
 
-    let test_row = adw::ActionRow::new();
+    let test_row = ndl::ActionRow::new();
     test_row.set_title(&i18n("Check the settings"));
     test_row.set_subtitle(&i18n("Sends a test sentence to the server."));
     test_row.set_subtitle_lines(3);

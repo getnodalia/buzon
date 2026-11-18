@@ -5,7 +5,7 @@
 //! It uses an `AdwNavigationView` with two pages: a list of accounts (drag rows
 //! to set the sidebar order) and a reusable editor form pushed on top.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::{
@@ -75,7 +75,7 @@ pub(crate) struct AccountsWindow {
     filters_list: Option<gtk::ListBox>,
     /// The On This Computer group (#552), shown while there is no such
     /// account to add it as.
-    local_group: Option<adw::PreferencesGroup>,
+    local_group: Option<ndl::PreferencesGroup>,
     /// The filters page's search text, read by the list's filter function.
     filters_query: std::rc::Rc<std::cell::RefCell<String>>,
     /// The open filter or tag page's Save: reads the form and hands the
@@ -213,18 +213,18 @@ impl Component for AccountsWindow {
     }
 
     view! {
-        adw::Bin {
+        ndl::Bin {
             #[wrap(Some)]
             #[name = "nav"]
-            set_child = &adw::NavigationView {
+            set_child = &ndl::NavigationView {
 
                 // ---- list page ----
-                add = &adw::NavigationPage {
-                    set_title: &i18n("Accounts"),
+                add = &ndl::NavigationPage {
+                    set_title: i18n("Accounts").as_str(),
                     set_tag: Some("list"),
 
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
+                    set_child = &ndl::ToolbarView {
                         // No header of its own: the combined settings window's
                         // shared header (with the view switcher) sits above.
 
@@ -238,19 +238,19 @@ impl Component for AccountsWindow {
                             set_vhomogeneous: false,
 
                             #[local_ref]
-                            add_named[Some("accounts")] = accounts_page -> adw::PreferencesPage {},
+                            add_named[Some("accounts")] = accounts_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("tags")] = tags_page -> adw::PreferencesPage {},
+                            add_named[Some("tags")] = tags_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("smart")] = smart_page -> adw::PreferencesPage {},
+                            add_named[Some("smart")] = smart_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("filters")] = filters_page -> adw::PreferencesPage {},
+                            add_named[Some("filters")] = filters_page -> ndl::PreferencesPage {},
 
                             #[local_ref]
-                            add_named[Some("senders")] = senders_page -> adw::PreferencesPage {},
+                            add_named[Some("senders")] = senders_page -> ndl::PreferencesPage {},
                         },
                     },
                 },
@@ -258,13 +258,13 @@ impl Component for AccountsWindow {
                 // ---- editor page ---- (taken out of the view until an
                 // editor opens: see `mount_editor`)
                 #[name = "editor_page"]
-                add = &adw::NavigationPage {
-                    set_title: &i18n("Account"),
+                add = &ndl::NavigationPage {
+                    set_title: i18n("Account").as_str(),
                     set_tag: Some("editor"),
 
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
-                        add_top_bar = &adw::HeaderBar {
+                    set_child = &ndl::ToolbarView {
+                        add_top_bar = &ndl::HeaderBar {
                             // The window's close button lives here while the
                             // editor is up (the shared header hides), so it
                             // is never out of reach.
@@ -287,7 +287,7 @@ impl Component for AccountsWindow {
 
                         #[wrap(Some)]
                         #[local_ref]
-                        set_content = editor_form -> adw::PreferencesPage {},
+                        set_content = editor_form -> ndl::PreferencesPage {},
                     },
                 },
             },

@@ -1,6 +1,6 @@
 //! The Settings window and its accounts panel.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::{self, AccountConfig};
@@ -186,6 +186,7 @@ impl AppModel {
             run_in_background: self.run_in_background.get(),
             autostart: self.autostart,
             start_fullscreen: self.start_fullscreen,
+            system_window_controls: self.system_window_controls,
             tray: self.tray_enabled,
             tray_icon: self.tray_icon,
             tray_mail: self.tray_mail,

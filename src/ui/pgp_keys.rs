@@ -5,7 +5,7 @@
 //! (see `crate::mail::pgp`); passphrases for a new key travel down a pipe to
 //! gpg and are not kept.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f, ni18n_f};
@@ -33,8 +33,8 @@ pub(super) struct PgpKeys {
     others_show: KeyShow,
     accepted_list: gtk::ListBox,
     /// Shown only while a Send Anyway can be taken back.
-    accepted_group: Option<adw::PreferencesGroup>,
-    toasts: Option<adw::ToastOverlay>,
+    accepted_group: Option<ndl::PreferencesGroup>,
+    toasts: Option<ndl::ToastOverlay>,
     /// A background action (generate, fetch) is running.
     busy: bool,
     /// Bumped per reload, so a slower, older listing never lands on top
@@ -109,20 +109,20 @@ impl Component for PgpKeys {
 
     view! {
         #[name = "toasts"]
-        adw::ToastOverlay {
+        ndl::ToastOverlay {
             #[wrap(Some)]
-            set_child = &adw::PreferencesPage {
-                add = &adw::PreferencesGroup {
+            set_child = &ndl::PreferencesPage {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("GnuPG"),
                     #[name = "status_row"]
-                    adw::ActionRow {
+                    ndl::ActionRow {
                         set_title: &i18n("GnuPG"),
                         set_subtitle: &i18n("The same keyring the gpg command and other mail apps use."),
                     },
                 },
 
                 #[name = "own_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Your keys"),
                     set_description: Some(
                         i18n("Your key signs what you send and opens what is encrypted to you. Share its public half with people who write to you.").as_str()
@@ -153,7 +153,7 @@ impl Component for PgpKeys {
                 },
 
                 #[name = "others_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Other people's keys"),
                     set_description: Some(
                         i18n("Keys you encrypt to and check signatures with. Check a fingerprint with its owner before trusting it.").as_str()
@@ -202,7 +202,7 @@ impl Component for PgpKeys {
                 },
 
                 #[name = "accepted_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Unchecked keys you encrypt to"),
                     set_description: Some(
                         i18n("Send Anyway stopped the warning for these keys.").as_str()
@@ -387,7 +387,7 @@ impl Component for PgpKeys {
 impl PgpKeys {
     fn toast(&self, text: &str) {
         if let Some(t) = &self.toasts {
-            t.add_toast(adw::Toast::new(text));
+            t.add_toast(ndl::Toast::new(text));
         }
     }
 
@@ -484,26 +484,25 @@ impl PgpKeys {
 
     /// The form for a new key: which identity, how long it lasts, and the
     /// passphrase that protects it.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn generate_dialog(&self, sender: &ComponentSender<Self>) {
         let parent = relm4::main_application().active_window();
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             parent.as_ref(),
             Some(&i18n("Generate a Key")),
             Some(&i18n("This will be kept in the GnuPG keyring. The passphrase is asked for when the key is used.")),
         );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("generate", &i18n("Generate"));
-        dialog.set_response_appearance("generate", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("generate", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("generate"));
 
         let form = gtk::ListBox::new();
         form.add_css_class("boxed-list");
         form.set_selection_mode(gtk::SelectionMode::None);
 
-        let name_row = adw::EntryRow::new();
+        let name_row = ndl::EntryRow::new();
         name_row.set_title(&i18n("Name"));
-        let email_row = adw::ComboRow::new();
+        let email_row = ndl::ComboRow::new();
         email_row.set_title(&i18n("Address"));
         let emails: Vec<String> = self.identities.iter().map(|(_, e)| e.clone()).collect();
         let email_refs: Vec<&str> = emails.iter().map(String::as_str).collect();
@@ -520,14 +519,14 @@ impl PgpKeys {
                 }
             });
         }
-        let expiry_row = adw::ComboRow::new();
+        let expiry_row = ndl::ComboRow::new();
         expiry_row.set_title(&i18n("Expires"));
         let labels: Vec<String> = EXPIRIES.iter().map(|(l, _)| i18n(l)).collect();
         let label_refs: Vec<&str> = labels.iter().map(String::as_str).collect();
         expiry_row.set_model(Some(&gtk::StringList::new(&label_refs)));
-        let pass_row = adw::PasswordEntryRow::new();
+        let pass_row = ndl::PasswordEntryRow::new();
         pass_row.set_title(&i18n("Passphrase"));
-        let confirm_row = adw::PasswordEntryRow::new();
+        let confirm_row = ndl::PasswordEntryRow::new();
         confirm_row.set_title(&i18n("Confirm passphrase"));
         for row in [
             name_row.clone().upcast::<gtk::Widget>(),
@@ -684,7 +683,6 @@ impl PgpKeys {
     }
 
     /// Ask before deleting a key.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn on_delete(&mut self, fingerprint: String, secret: bool, sender: &ComponentSender<Self>) {
         let Some(key) = self
             .own
@@ -711,7 +709,11 @@ impl PgpKeys {
                 i18n_f("{uid} will be removed from your keyring. It can be imported or fetched again later.", &[("uid", key.primary_uid())]),
             )
         };
-        let dialog = adw::MessageDialog::new(parent.as_ref(), Some(&title), Some(&body));
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
+            parent.as_ref(),
+            Some(&title),
+            Some(&body),
+        );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response(
             "delete",
@@ -721,7 +723,7 @@ impl PgpKeys {
                 i18n("Remove")
             },
         );
-        dialog.set_response_appearance("delete", adw::ResponseAppearance::Destructive);
+        dialog.set_response_appearance("delete", ndl::ResponseAppearance::Destructive);
         dialog.set_default_response(Some("cancel"));
         let s = sender.clone();
         dialog.connect_response(None, move |_, resp| {
@@ -761,22 +763,21 @@ impl PgpKeys {
     }
 
     /// Ask which address to look a key up for.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn on_fetch(&mut self, sender: &ComponentSender<Self>) {
         let parent = relm4::main_application().active_window();
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             parent.as_ref(),
             Some(&i18n("Fetch a Key")),
             Some(&i18n("Looks the address up where its provider publishes keys (WKD), then on the keyservers.")),
         );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("fetch", &i18n("Fetch"));
-        dialog.set_response_appearance("fetch", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("fetch", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("fetch"));
         let form = gtk::ListBox::new();
         form.add_css_class("boxed-list");
         form.set_selection_mode(gtk::SelectionMode::None);
-        let addr_row = adw::EntryRow::new();
+        let addr_row = ndl::EntryRow::new();
         addr_row.set_title(&i18n("Email address"));
         addr_row.set_input_purpose(gtk::InputPurpose::Email);
         form.append(&addr_row);
@@ -809,7 +810,6 @@ impl PgpKeys {
     }
 
     /// Ask before vouching for a key.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn on_trust(&mut self, fpr: String, sender: &ComponentSender<Self>) {
         let Some(key) = self.others.iter().find(|k| k.fingerprint == fpr).cloned() else {
             return;
@@ -821,7 +821,7 @@ impl PgpKeys {
             return;
         }
         let parent = relm4::main_application().active_window();
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             parent.as_ref(),
             Some(&i18n("Trust this key?")),
             Some(&i18n_f(
@@ -837,7 +837,7 @@ impl PgpKeys {
         dialog.set_extra_child(Some(&fpr_label));
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("trust", &i18n("Trust"));
-        dialog.set_response_appearance("trust", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("trust", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("cancel"));
         let s = sender.clone();
         dialog.connect_response(None, move |_, resp| {

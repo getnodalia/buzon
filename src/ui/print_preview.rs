@@ -19,8 +19,8 @@ use std::cell::{Cell, RefCell};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
-use adw::prelude::*;
 use gtk::{cairo, gdk, gio, glib, pango};
+use ndl::prelude::*;
 use webkit6::prelude::WebViewExt;
 
 use crate::config::PrintOptions;
@@ -426,7 +426,7 @@ fn file_printer() -> Option<String> {
 /// Show `html` as it will print, page by page, with a Print button that
 /// prints it and a button that saves it as a PDF.
 pub(super) fn open(parent: &gtk::Window, html: &str, job_name: &str) {
-    let win = adw::Window::builder()
+    let win = ndl::Window::builder()
         .transient_for(parent)
         .modal(false)
         .title(i18n("Print Preview"))
@@ -450,14 +450,14 @@ pub(super) fn open(parent: &gtk::Window, html: &str, job_name: &str) {
     }
 
     let stack = gtk::Stack::new();
-    let spinner = adw::Spinner::builder()
+    let spinner = ndl::Spinner::builder()
         .width_request(32)
         .height_request(32)
         .halign(gtk::Align::Center)
         .valign(gtk::Align::Center)
         .build();
     stack.add_named(&spinner, Some("loading"));
-    let failure = adw::StatusPage::builder()
+    let failure = ndl::StatusPage::builder()
         .icon_name("printer-symbolic")
         .build();
     stack.add_named(&failure, Some("failed"));
@@ -475,10 +475,10 @@ pub(super) fn open(parent: &gtk::Window, html: &str, job_name: &str) {
     stack.set_visible_child_name("loading");
 
     // Toasts confirm a save without stealing focus from the preview.
-    let toasts = adw::ToastOverlay::new();
+    let toasts = ndl::ToastOverlay::new();
     toasts.set_child(Some(&stack));
 
-    let header = adw::HeaderBar::new();
+    let header = ndl::HeaderBar::new();
     let print_btn = gtk::Button::builder()
         .label(i18n("Print…"))
         .css_classes(["suggested-action"])
@@ -510,7 +510,7 @@ pub(super) fn open(parent: &gtk::Window, html: &str, job_name: &str) {
     }
     header.pack_start(&save_btn);
 
-    let toolbar = adw::ToolbarView::new();
+    let toolbar = ndl::ToolbarView::new();
     toolbar.add_top_bar(&header);
     toolbar.set_content(Some(&toasts));
     win.set_content(Some(&toolbar));
@@ -619,7 +619,7 @@ fn page_textures(path: &Path, scale: f64) -> Result<Vec<(gdk::Texture, f64, f64)
 ///
 /// The file comes from the portal's file chooser, so the place handed back
 /// is one the sandbox may write to.
-fn save_as_pdf(pdf: &Path, suggested_name: &str, parent: &adw::Window, toasts: &adw::ToastOverlay) {
+fn save_as_pdf(pdf: &Path, suggested_name: &str, parent: &ndl::Window, toasts: &ndl::ToastOverlay) {
     let chooser = gtk::FileDialog::new();
     chooser.set_title(&i18n("Save as PDF"));
     chooser.set_initial_name(Some(&format!("{suggested_name}.pdf")));
@@ -642,11 +642,11 @@ fn save_as_pdf(pdf: &Path, suggested_name: &str, parent: &adw::Window, toasts: &
         ) {
             Ok(()) => {
                 tracing::info!(uri = %file.uri(), "saved a PDF");
-                toasts.add_toast(adw::Toast::new(&i18n_f("Saved {name}", &[("name", &name)])));
+                toasts.add_toast(ndl::Toast::new(&i18n_f("Saved {name}", &[("name", &name)])));
             }
             Err(e) => {
                 tracing::warn!("saving the PDF failed: {e}");
-                toasts.add_toast(adw::Toast::new(&i18n_f(
+                toasts.add_toast(ndl::Toast::new(&i18n_f(
                     "Could not save the PDF: {error}",
                     &[("error", &e.to_string())],
                 )));

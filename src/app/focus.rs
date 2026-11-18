@@ -1,6 +1,6 @@
 //! Focus Mode: the chrome that slides away, and back.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;

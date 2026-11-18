@@ -2,12 +2,11 @@
 //! (see `legacy`): what came over, that the old app is untouched, and how
 //! to remove it once everything checks out.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::desktop::legacy::Predecessor;
 use crate::i18n::{i18n, i18n_f};
 
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 pub(crate) fn show(parent: &impl IsA<gtk::Window>, from: &'static Predecessor) {
     let heading = i18n_f("Welcome to Buzón, formerly {old}", &[("old", from.name)]);
     let mut body = i18n_f(
@@ -27,7 +26,7 @@ pub(crate) fn show(parent: &impl IsA<gtk::Window>, from: &'static Predecessor) {
     // The wordmark sits above the title, so the whole content is one child
     // rather than the dialog's own heading and body (which nothing can go
     // above).
-    let dialog = adw::MessageDialog::new(Some(parent.as_ref()), None, None);
+    let dialog = crate::ui::message_dialog::MessageDialog::new(Some(parent.as_ref()), None, None);
     dialog.set_size_request(480, -1);
 
     let content = gtk::Box::new(gtk::Orientation::Vertical, 10);

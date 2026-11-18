@@ -1,6 +1,6 @@
 //! Desktop notifications for new mail and what their buttons do.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::models::{Folder, FolderKind, Message};
@@ -89,7 +89,7 @@ impl AppModel {
         }
     }
 
-    pub(super) fn show_toast(&self, toast: &adw::Toast) {
+    pub(super) fn show_toast(&self, toast: &ndl::Toast) {
         if let Some(t) = self.toasts.get() {
             t.add_toast(toast.clone());
         }

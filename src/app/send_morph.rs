@@ -1,7 +1,7 @@
 //! A reply sent from the split pane turning into its card in the
 //! conversation, and the card standing in until the Sent copy arrives.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::models::{Attachment, FolderKind, Message};
@@ -211,8 +211,8 @@ impl AppModel {
             .map(|h| h.clone().upcast::<gtk::Widget>());
         let header_shown = header
             .as_ref()
-            .and_then(|h| h.ancestor(adw::ToolbarView::static_type()))
-            .and_downcast::<adw::ToolbarView>()
+            .and_then(|h| h.ancestor(ndl::ToolbarView::static_type()))
+            .and_downcast::<ndl::ToolbarView>()
             .is_some_and(|tv| tv.reveals_top_bars());
         let editor_view = find_widget(&editor, &|w| w.is::<webkit6::WebView>())
             .and_downcast::<webkit6::WebView>();

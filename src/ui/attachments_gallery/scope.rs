@@ -4,8 +4,8 @@
 
 use std::collections::HashMap;
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::ComponentSender;
 
 use crate::models::FolderKind;
@@ -144,7 +144,7 @@ impl AttachmentsGallery {
                 self.folder_list.append(&header);
             }
             for folder in &acct.folders {
-                let row = adw::ActionRow::new();
+                let row = ndl::ActionRow::new();
                 row.set_title(&glib::markup_escape_text(&folder.name));
                 row.add_prefix(&gtk::Image::from_icon_name(folder.kind.icon()));
                 let check = gtk::CheckButton::new();

@@ -113,15 +113,12 @@ pub(crate) fn export_text(memory: &str) -> String {
     };
     let mut out = String::new();
     out.push_str(&format!(
-        "Buzón {} ({}), {host}\n{os}, GTK {}.{}.{}, libadwaita {}.{}.{}\nExported {}\nEmail addresses are shortened to their domain.\n\n",
+        "Buzón {} ({}), {host}\n{os}, GTK {}.{}.{}, Nodalia Design\nExported {}\nEmail addresses are shortened to their domain.\n\n",
         crate::VERSION,
         crate::APP_ID,
         gtk::major_version(),
         gtk::minor_version(),
         gtk::micro_version(),
-        adw::major_version(),
-        adw::minor_version(),
-        adw::micro_version(),
         chrono::Local::now().format("%Y-%m-%d %H:%M:%S %Z"),
     ));
     if !memory.is_empty() {

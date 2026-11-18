@@ -6,7 +6,7 @@ use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::{ContactDetails, Labeled, Member};
@@ -78,7 +78,7 @@ pub(super) fn line_photo_key(c: &ContactDetails) -> u64 {
 
 /// The widgets of one row, which the list view binds to line after line.
 /// Kept light, since the view holds a couple of hundred: the face is an
-/// image in a clipped disc rather than an `adw::Avatar`, and the parts only
+/// image in a clipped disc rather than an `ndl::Avatar`, and the parts only
 /// a heading, a note or a group needs are made when one first shows here.
 pub(super) struct ListRow {
     root: gtk::Box,
@@ -90,7 +90,7 @@ pub(super) struct ListRow {
     title: gtk::Label,
     subtitle: gtk::Label,
     /// For a group, or a name with no letter to draw: libadwaita's avatar.
-    avatar: RefCell<Option<adw::Avatar>>,
+    avatar: RefCell<Option<ndl::Avatar>>,
     /// The heading or note text, for those lines.
     banner: RefCell<Option<gtk::Label>>,
     /// The line bound now, for the right-click.
@@ -107,7 +107,7 @@ impl ListRow {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
         // `header`, as in a list box row: the selected row's text takes the
         // accent's foreground by that class (styles.css).
-        // The measures of the `adw::ActionRow` the list had before.
+        // The measures of the `ndl::ActionRow` the list had before.
         let header = gtk::Box::new(gtk::Orientation::Horizontal, 12);
         header.add_css_class("header");
         header.set_size_request(-1, 50);
@@ -222,7 +222,7 @@ impl ListRow {
             return;
         };
         let a = avatar.get_or_insert_with(|| {
-            let a = adw::Avatar::new(FACE, None, true);
+            let a = ndl::Avatar::new(FACE, None, true);
             self.disc.append(&a);
             a
         });
@@ -468,7 +468,7 @@ pub(super) fn same_contacts(shown: &[ContactDetails], read: &[ContactDetails]) -
 
 /// The contact's avatar: their GNOME Contacts photo when they have one, the
 /// usual initials disc when not.
-pub(super) fn avatar_for(c: &ContactDetails, size: i32) -> adw::Avatar {
+pub(super) fn avatar_for(c: &ContactDetails, size: i32) -> ndl::Avatar {
     // The list's thumbnail does for a small face, without reading the photo.
     if size <= 48 {
         if let Some(Some(texture)) = crate::services::avatar::photo_thumbnail(line_photo_key(c)) {
@@ -481,8 +481,8 @@ pub(super) fn avatar_for(c: &ContactDetails, size: i32) -> adw::Avatar {
 }
 
 /// [`avatar_for`] with the photo already in hand.
-pub(super) fn avatar_with(c: &ContactDetails, size: i32, photo: Option<&[u8]>) -> adw::Avatar {
-    let avatar = adw::Avatar::new(size, Some(&c.name), !c.is_group());
+pub(super) fn avatar_with(c: &ContactDetails, size: i32, photo: Option<&[u8]>) -> ndl::Avatar {
+    let avatar = ndl::Avatar::new(size, Some(&c.name), !c.is_group());
     if c.is_group() {
         avatar.set_icon_name(Some("system-users-symbolic"));
     } else if let Some(initials) = crate::ui::initials::InitialsPaintable::for_name(&c.name) {
@@ -514,8 +514,8 @@ pub(super) fn group(detail: &gtk::Box, title: &str) -> gtk::ListBox {
 }
 
 /// A value row with its (optional) "Home"/"Work" label as the subtitle.
-pub(super) fn labeled_row(l: &Labeled) -> adw::ActionRow {
-    let row = adw::ActionRow::new();
+pub(super) fn labeled_row(l: &Labeled) -> ndl::ActionRow {
+    let row = ndl::ActionRow::new();
     row.set_title(&gtk::glib::markup_escape_text(&l.value));
     if !l.label.is_empty() {
         row.set_subtitle(&gtk::glib::markup_escape_text(&l.label));

@@ -18,7 +18,7 @@
 //! asynchronous snapshot from WebKit came too late on real hardware, where
 //! the app is busy right after a click, and the pane went uncovered.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
@@ -39,7 +39,7 @@ struct Inner {
     /// backstop) can't end the next.
     generation: Cell<u64>,
     /// The still fading out after a reveal.
-    fade: RefCell<Option<adw::TimedAnimation>>,
+    fade: RefCell<Option<ndl::TimedAnimation>>,
 }
 
 /// One reading pane's freeze. Cheap to clone; the reader, its attachment
@@ -147,14 +147,14 @@ impl ReaderSwap {
             return;
         }
         let still = inner.still.clone();
-        let target = adw::CallbackAnimationTarget::new(move |v| still.set_opacity(v));
-        let fade = adw::TimedAnimation::new(&inner.still, 1.0, 0.0, FADE_MS, target);
+        let target = ndl::CallbackAnimationTarget::new(move |v| still.set_opacity(v));
+        let fade = ndl::TimedAnimation::new(&inner.still, 1.0, 0.0, FADE_MS, target);
         // Five frames at 60 Hz: an eased curve spends most of its change in
         // the first, which reads as a cut. Even steps dissolve.
-        fade.set_easing(adw::Easing::Linear);
+        fade.set_easing(ndl::Easing::Linear);
         // Weak: the animation is kept in `Inner`.
         let weak = Rc::downgrade(&self.0);
-        fade.connect_done(move |_| {
+        fade.connect_done(move || {
             let Some(inner) = weak.upgrade() else { return };
             // A freeze since has put up a still of its own.
             if inner.frozen.get() || inner.generation.get() != generation {

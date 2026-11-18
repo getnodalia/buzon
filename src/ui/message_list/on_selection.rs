@@ -6,7 +6,7 @@ use super::threading::{reader_conversation, row_for_reader_key};
 use super::types::{MessageListInput, MessageListOutput};
 use super::MessageList;
 use crate::models::Message;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageList {

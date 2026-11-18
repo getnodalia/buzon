@@ -5,7 +5,7 @@ use super::threading::thread_slot;
 use super::types::{BulkAction, MessageListInput, MessageListOutput};
 use super::{MessageList, RowAction};
 use crate::models::Message;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageList {

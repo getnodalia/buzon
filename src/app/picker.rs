@@ -1,7 +1,7 @@
 //! A small searchable list dialog that picks one message: a draft to add
 //! files to, a message to reply to, a template.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::i18n;
@@ -15,7 +15,6 @@ use crate::models::Message;
 /// `hand_off` back with the choice, or `None` for a new message; Cancel drops
 /// it.
 #[allow(clippy::too_many_arguments)]
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 pub(super) fn show_message_picker<T: 'static>(
     parent: &gtk::Window,
     heading: &str,
@@ -27,13 +26,14 @@ pub(super) fn show_message_picker<T: 'static>(
     new_instead: bool,
     on_pick: impl Fn(T, Option<Message>) + 'static,
 ) {
-    let dialog = adw::MessageDialog::new(Some(parent), Some(heading), Some(body));
+    let dialog =
+        crate::ui::message_dialog::MessageDialog::new(Some(parent), Some(heading), Some(body));
     dialog.add_response("cancel", &i18n("Cancel"));
     if new_instead {
         dialog.add_response("new", &i18n("New Message Instead"));
     }
     dialog.add_response("pick", pick_label);
-    dialog.set_response_appearance("pick", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("pick", ndl::ResponseAppearance::Suggested);
     dialog.set_response_enabled("pick", false);
     dialog.set_close_response("cancel");
 
@@ -79,9 +79,8 @@ pub(super) fn show_message_picker<T: 'static>(
 
 /// The list, its search box and the dialog's wiring, for a picker with
 /// messages to offer.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 fn fill_picker(
-    dialog: &adw::MessageDialog,
+    dialog: &crate::ui::message_dialog::MessageDialog,
     column: &gtk::Box,
     list: &gtk::ListBox,
     items: &std::rc::Rc<Vec<(Message, String)>>,
@@ -118,15 +117,14 @@ fn fill_picker(
         list.connect_row_activated(move |l, row| {
             l.select_row(Some(row));
             dialog.response("pick");
-            dialog.set_visible(false);
         });
     }
 }
 
 /// One message's row: its subject, then who it is from (or to), its date
 /// and its account.
-fn picker_row(m: &Message, account: &str) -> adw::ActionRow {
-    let row = adw::ActionRow::new();
+fn picker_row(m: &Message, account: &str) -> ndl::ActionRow {
+    let row = ndl::ActionRow::new();
     let subject = if m.subject.trim().is_empty() {
         i18n("(no subject)")
     } else {

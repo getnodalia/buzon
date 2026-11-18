@@ -1,7 +1,7 @@
 //! A manual Apply Filters run (#198) over chosen folders, its progress
 //! dialog and its report.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f, ni18n_f};
@@ -86,9 +86,8 @@ impl FilterRun {
 
 /// The widgets of a manual run's progress dialog, kept so its live text can be
 /// rewritten as folders report and so the finish can turn it into the report.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
 struct FilterRunDialog {
-    dialog: adw::MessageDialog,
+    dialog: crate::ui::message_dialog::MessageDialog,
     spinner: gtk::Spinner,
     body: gtk::Label,
 }
@@ -174,7 +173,6 @@ impl AppModel {
     /// The dialog a manual run puts up: a spinner, a live count, and one
     /// button that sends the run to the background while it is working and
     /// closes the report once it is not.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn build_filter_run_dialog(&self, sender: &ComponentSender<Self>) -> FilterRunDialog {
         // Parented on Settings when the run was started there, so the dialog
         // is not stranded behind it.
@@ -185,8 +183,11 @@ impl AppModel {
             .filter(|w| w.is_visible())
             .map(|w| w.upcast())
             .or_else(|| Some(self.window.clone().upcast()));
-        let dialog =
-            adw::MessageDialog::new(parent.as_ref(), Some(&i18n("Applying Filters")), None);
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
+            parent.as_ref(),
+            Some(&i18n("Applying Filters")),
+            None,
+        );
         dialog.set_body_use_markup(false);
         dialog.add_response(FILTER_RUN_RESPONSE, &i18n("Run in Background"));
         dialog.set_close_response(FILTER_RUN_RESPONSE);
@@ -372,7 +373,6 @@ impl AppModel {
     /// folders stop counting as manually swept; without it the scope stands,
     /// and the server's answer to the same load is filtered too. Reports once
     /// either way.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn report_filter_run(&mut self, end: bool) {
         let Some(run) = self.filter_run.as_mut() else {
             return;
@@ -470,7 +470,7 @@ impl AppModel {
                     .set_response_label(FILTER_RUN_RESPONSE, &i18n("Close"));
                 d.dialog.set_response_appearance(
                     FILTER_RUN_RESPONSE,
-                    adw::ResponseAppearance::Suggested,
+                    ndl::ResponseAppearance::Suggested,
                 );
             }
             None => {

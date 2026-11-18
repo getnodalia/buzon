@@ -3,7 +3,7 @@
 //! layout and Focus Mode, the accounts reconciled against GNOME Online
 //! Accounts, and the main menu and its two stateful actions.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::ComponentSender;
 
 use crate::config::{self, AccountConfig};
@@ -38,7 +38,7 @@ pub(super) struct Boot {
 
 impl Boot {
     /// Runs the steps in the order they depend on each other.
-    pub(super) fn read(root: &adw::ApplicationWindow) -> Self {
+    pub(super) fn read(root: &ndl::ApplicationWindow) -> Self {
         let prefs = install_globals(root);
         let (mut sidebar_state, focus, icon_only, rail_now) = load_sidebar_layout(&prefs);
         let config = load_accounts(&mut sidebar_state);
@@ -57,7 +57,7 @@ impl Boot {
 }
 
 /// Reads privacy.toml and puts the process-wide state in place.
-fn install_globals(root: &adw::ApplicationWindow) -> config::PrivacyFile {
+fn install_globals(root: &ndl::ApplicationWindow) -> config::PrivacyFile {
     let prefs = config::load_privacy();
     // Before the workers start, so their first connection already knows
     // whether there is a network to make it on (#442).

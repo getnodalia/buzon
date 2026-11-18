@@ -4,7 +4,7 @@
 use super::types::MessageWindowOutput;
 use super::MessageWindow;
 use crate::models::{Attachment, Message};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::ToolbarItem;
@@ -44,7 +44,7 @@ impl MessageWindow {
     pub(super) fn on_set_sender_check(
         &mut self,
         check: Box<crate::models::SenderCheck>,
-        root: &adw::Window,
+        root: &ndl::Window,
     ) {
         // Decrypted, the window is named by the subject inside (#493).
         if let Some(subject) = check.pgp.as_ref().and_then(|p| p.subject.as_deref()) {
@@ -126,7 +126,7 @@ impl MessageWindow {
         id: u32,
         index: usize,
         save: bool,
-        root: &adw::Window,
+        root: &ndl::Window,
     ) {
         let Some(files) = self
             .attachments
@@ -168,7 +168,7 @@ impl MessageWindow {
         });
     }
 
-    pub(super) fn on_spam(&mut self, sender: &ComponentSender<Self>, root: &adw::Window) {
+    pub(super) fn on_spam(&mut self, sender: &ComponentSender<Self>, root: &ndl::Window) {
         let action = if self.in_junk {
             RowAction::NotSpam
         } else {
@@ -178,7 +178,7 @@ impl MessageWindow {
         root.close();
     }
 
-    pub(super) fn on_move_to(&mut self, sender: &ComponentSender<Self>, root: &adw::Window) {
+    pub(super) fn on_move_to(&mut self, sender: &ComponentSender<Self>, root: &ndl::Window) {
         // Under the Move To button, or under the ⋯ that stands in
         // for it while the toolbar is folded.
         let button = self

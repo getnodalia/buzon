@@ -4,8 +4,8 @@
 use super::{AttachmentDrawer, AttachmentDrawerInput, MIN_HEIGHT};
 use crate::config;
 use crate::models::Attachment;
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl AttachmentDrawer {
@@ -72,17 +72,17 @@ impl AttachmentDrawer {
         // as a user drag.
         self.adjusting.set(true);
         paned.set_shrink_end_child(true);
-        let anim = adw::TimedAnimation::new(
+        let anim = ndl::TimedAnimation::new(
             &paned,
             paned.position() as f64,
             (total - target_h).max(0) as f64,
             300,
-            adw::CallbackAnimationTarget::new({
+            ndl::CallbackAnimationTarget::new({
                 let paned = paned.clone();
                 move |v| paned.set_position(v as i32)
             }),
         );
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         self.toggle_gen += 1;
         let gen = self.toggle_gen;
         let cell = self.toggle_anim.clone();
@@ -92,7 +92,7 @@ impl AttachmentDrawer {
         // minimum, then the settle snaps it back — a visible flash (and a
         // window where the jump could be recorded as a height). The settle
         // handler restores state in the right order instead.
-        anim.connect_done(move |_| {
+        anim.connect_done(move || {
             cell.borrow_mut().take();
             s.input_sender().emit(AttachmentDrawerInput::ToggleSettled {
                 collapsed: closing,

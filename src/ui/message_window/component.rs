@@ -11,7 +11,7 @@ use crate::ui::lightbox::{Lightbox, LightboxInput};
 use crate::ui::message_list::RowAction;
 use crate::ui::message_view::{MessageView, MessageViewInput, MessageViewOutput};
 use crate::ui::reader_swap::ReaderSwap;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 #[relm4::component(pub(crate))]
@@ -22,7 +22,7 @@ impl Component for MessageWindow {
     type CommandOutput = ();
 
     view! {
-        adw::Window {
+        ndl::Window {
             set_title: Some(&title_text(&model.msg)),
             set_default_width: 720,
             set_default_height: 820,
@@ -33,11 +33,11 @@ impl Component for MessageWindow {
             },
 
             #[wrap(Some)]
-            set_content = &adw::ToolbarView {
+            set_content = &ndl::ToolbarView {
                 // The main window's reader toolbar: its buttons are packed
                 // in `init`, in the order Settings gives them.
                 #[name = "header"]
-                add_top_bar = &adw::HeaderBar {
+                add_top_bar = &ndl::HeaderBar {
                     add_css_class: "flat",
                     add_css_class: "reader-toolbar",
                     #[wrap(Some)]
@@ -129,14 +129,14 @@ impl Component for MessageWindow {
             window: root.clone(),
             content: gtk::Overlay::new(),
             bar: Toolbar {
-                header: adw::HeaderBar::new(),
+                header: ndl::HeaderBar::new(),
                 buttons: Vec::new(),
                 overflow: gtk::Button::new(),
                 spinner: gtk::Spinner::new(),
-                breakpoint: adw::Breakpoint::new(adw::BreakpointCondition::new_length(
-                    adw::BreakpointConditionLengthType::MaxWidth,
+                breakpoint: ndl::Breakpoint::new(ndl::BreakpointCondition::new_length(
+                    ndl::BreakpointConditionLengthType::MaxWidth,
                     0.0,
-                    adw::LengthUnit::Px,
+                    ndl::LengthUnit::Px,
                 )),
             },
             gmail_keys: init.gmail_keys.clone(),

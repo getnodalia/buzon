@@ -11,7 +11,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f, i18n_noop};
@@ -88,7 +88,7 @@ pub(crate) struct Sidebar {
     freeze_frame: Option<gtk::Picture>,
     freeze_timer: std::rc::Rc<std::cell::RefCell<Option<gtk::glib::SourceId>>>,
     /// The freeze-frame's fade during a rail toggle (see `rebuild_normal`).
-    freeze_fade: std::rc::Rc<std::cell::RefCell<Option<adw::TimedAnimation>>>,
+    freeze_fade: std::rc::Rc<std::cell::RefCell<Option<ndl::TimedAnimation>>>,
     /// The rail state the rows on screen were built for, so a rebuild can
     /// tell a full ↔ rail toggle from an in-place refresh.
     built_collapsed: bool,

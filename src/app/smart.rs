@@ -2,7 +2,6 @@
 
 use std::collections::HashMap;
 
-use adw::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -360,7 +359,7 @@ impl AppModel {
         let Some(folder) = self.smart_folders.iter().find(|f| f.id == id) else {
             return;
         };
-        let dialog = adw::AlertDialog::new(
+        let dialog = ndl::AlertDialog::new(
             Some(&i18n_f("Delete “{name}”?", &[("name", &folder.name)])),
             Some(&i18n(
                 "The smart folder goes from the sidebar. The mail it shows stays where it is.",
@@ -370,7 +369,7 @@ impl AppModel {
         dialog.add_response("delete", &i18n("Delete"));
         dialog.set_default_response(Some("cancel"));
         dialog.set_close_response("cancel");
-        dialog.set_response_appearance("delete", adw::ResponseAppearance::Destructive);
+        dialog.set_response_appearance("delete", ndl::ResponseAppearance::Destructive);
         let s = sender.clone();
         let rest: Vec<config::SmartFolder> = self
             .smart_folders

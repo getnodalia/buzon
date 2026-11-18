@@ -8,7 +8,7 @@ use super::Compose;
 use super::ComposeWidgets;
 use crate::contacts::Suggestion;
 use crate::ui::recipient_row::RecipientRow;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Replace the recipient being typed with the chosen suggestion, as a pill.
@@ -211,7 +211,7 @@ impl Compose {
         &mut self,
         widgets: &ComposeWidgets,
         sender: &ComponentSender<Self>,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         // Browse contacts; the chosen one is appended to the To field.
         let Some(win) = root.root().and_downcast::<gtk::Window>() else {

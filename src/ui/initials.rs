@@ -1,11 +1,11 @@
 //! The initials circle a sender gets when no picture is known: drawn here
-//! rather than by `adw::Avatar`'s label, so the letters sit centred by their
+//! rather than by `ndl::Avatar`'s label, so the letters sit centred by their
 //! ink. A label centres its *logical* box, and a glyph's ink rarely fills
 //! that box evenly — a lone "J" or "T" drifts, and pairs lean — which is
 //! what this paintable corrects, at every size it is drawn at.
 //!
 //! Colors are libadwaita's own avatar palette (the same fourteen gradients
-//! `adw::Avatar` picks from, chosen by the same hash of the name), so a
+//! `ndl::Avatar` picks from, chosen by the same hash of the name), so a
 //! sender keeps the color they have always had.
 //!
 //! The same drawing serves the sidebar's account circles (a glyph alone
@@ -37,7 +37,7 @@ const PALETTE: [(&str, &str, &str); 14] = [
     ("#c0bfbc", "#6e6d71", "#d8d7d3"),
 ];
 
-/// The palette entry `adw::Avatar` gives `text`: GLib's `g_str_hash`
+/// The palette entry `ndl::Avatar` gives `text`: GLib's `g_str_hash`
 /// (djb2) modulo the palette, as libadwaita does it.
 fn palette_index(text: &str) -> usize {
     let hash = text.bytes().fold(5381u32, |h, b| {
@@ -82,7 +82,7 @@ pub(crate) fn word_initials(text: &str) -> Vec<char> {
 }
 
 /// The initials for `text`: the first letter of the first word and of the
-/// last, uppercased, as `adw::Avatar` picks them but by [`word_initials`];
+/// last, uppercased, as `ndl::Avatar` picks them but by [`word_initials`];
 /// nothing for an empty name.
 fn initials_of(text: &str) -> String {
     let letters = word_initials(&text.to_uppercase());
@@ -128,7 +128,7 @@ mod imp {
 
     impl PaintableImpl for InitialsPaintable {
         fn flags(&self) -> gdk::PaintableFlags {
-            gdk::PaintableFlags::SIZE | gdk::PaintableFlags::CONTENTS
+            gdk::PaintableFlags::STATIC_SIZE | gdk::PaintableFlags::STATIC_CONTENTS
         }
 
         fn snapshot(&self, snapshot: &gdk::Snapshot, width: f64, height: f64) {

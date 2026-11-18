@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;

@@ -72,7 +72,7 @@ pub(crate) enum RowAction {
     Snooze(crate::ui::later::SnoozeChoice),
 }
 
-/// A full swipe (#swipe): also `AdwSwipeable`'s reported `distance`, the px
+/// A full swipe (#swipe): also the surface's swipe `distance`, the px
 /// one full drag (progress ±1.0) spans.
 pub(super) const SWIPE_MAX: f64 = 120.0;
 
@@ -132,8 +132,7 @@ fn column_width(look: &RowLook, column: ListColumn) -> i32 {
 }
 
 /// Distance past which the indicator reads as "armed" (full color) — purely
-/// a visual cue; `AdwSwipeTracker` makes the real commit decision on
-/// release, factoring in velocity too.
+/// a visual cue, and the distance a release must reach to commit.
 pub(super) const SWIPE_ARM: f64 = 72.0;
 
 /// The commit exit (#swipe): a released swipe that cleared `SWIPE_ARM` flies

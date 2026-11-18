@@ -10,7 +10,7 @@
 //! encrypted, or holds what was decrypted, gives nothing away and takes no
 //! edit.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::assistant::{fill_banner, outside};
@@ -156,7 +156,7 @@ impl Compose {
         &mut self,
         input: ComposeInput,
         widgets: &ComposeWidgets,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
         sender: &ComponentSender<Self>,
     ) {
         match input {
@@ -371,7 +371,7 @@ impl Compose {
     pub(super) fn on_apply_assistant_edit(
         &mut self,
         widgets: &ComposeWidgets,
-        root: &adw::BreakpointBin,
+        root: &ndl::BreakpointBin,
     ) {
         if self.assistant_edit.is_none() {
             return;

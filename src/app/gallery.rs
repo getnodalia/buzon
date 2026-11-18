@@ -221,8 +221,8 @@ impl AppModel {
         sender: &ComponentSender<Self>,
     ) {
         use gtk::prelude::*;
-        let gallery_tv = adw::ToolbarView::new();
-        let gallery_hb = adw::HeaderBar::new();
+        let gallery_tv = ndl::ToolbarView::new();
+        let gallery_hb = ndl::HeaderBar::new();
         gallery_hb.add_css_class("flat");
         let title = gtk::Label::new(Some(i18n("Attachments").as_str()));
         title.add_css_class("pane-title");

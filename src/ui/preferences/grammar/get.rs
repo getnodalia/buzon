@@ -9,8 +9,8 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Duration;
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 
 use super::Save;
 use crate::i18n::{i18n, i18n_f};
@@ -25,7 +25,7 @@ enum Action {
 }
 
 struct Inner {
-    row: adw::ActionRow,
+    row: ndl::ActionRow,
     bar: gtk::ProgressBar,
     button: gtk::Button,
     action: Cell<Action>,
@@ -42,7 +42,7 @@ pub(super) struct Get(Rc<Inner>);
 impl Get {
     /// The row for `engine`, Harper or LanguageTool.
     pub(super) fn new(engine: Engine, save: Save) -> Self {
-        let row = adw::ActionRow::new();
+        let row = ndl::ActionRow::new();
         row.set_subtitle_lines(3);
         let bar = gtk::ProgressBar::new();
         bar.set_valign(gtk::Align::Center);
@@ -72,7 +72,7 @@ impl Get {
         get
     }
 
-    pub(super) fn widget(&self) -> &adw::ActionRow {
+    pub(super) fn widget(&self) -> &ndl::ActionRow {
         &self.0.row
     }
 

@@ -259,6 +259,10 @@ impl AppModel {
                 pref!(self.start_fullscreen = on);
             }
 
+            PrefOutput::SetSystemWindowControls(on) => {
+                pref!(self.system_window_controls = on);
+            }
+
             PrefOutput::SetKeepDownloads(days) => {
                 if self.keep_downloads_days != days {
                     self.keep_downloads_days = days;

@@ -6,46 +6,46 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 
 use crate::i18n::{i18n, i18n_f};
 use crate::services::translate::{self, Service, Settings, LANGUAGES};
 
-pub(super) fn build() -> adw::PreferencesPage {
+pub(super) fn build() -> ndl::PreferencesPage {
     let settings = Rc::new(RefCell::new(translate::load()));
-    let page = adw::PreferencesPage::new();
+    let page = ndl::PreferencesPage::new();
 
-    let service_group = adw::PreferencesGroup::new();
+    let service_group = ndl::PreferencesGroup::new();
     service_group.set_title(&i18n("Translation"));
     service_group.set_description(Some(&i18n(
         "Uses a translation service under your own key. A message's text is sent only when you translate it.",
     )));
 
     let names: Vec<String> = Service::ALL.iter().map(|s| s.name()).collect();
-    let service_row = adw::ComboRow::new();
+    let service_row = ndl::ComboRow::new();
     service_row.set_title(&i18n("Service"));
     service_row.set_model(Some(&gtk::StringList::new(
         &names.iter().map(String::as_str).collect::<Vec<_>>(),
     )));
     service_group.add(&service_row);
 
-    let key_row = adw::PasswordEntryRow::new();
+    let key_row = ndl::PasswordEntryRow::new();
     key_row.set_title(&i18n("Key"));
     key_row.set_show_apply_button(true);
     service_group.add(&key_row);
 
-    let url_row = adw::EntryRow::new();
+    let url_row = ndl::EntryRow::new();
     url_row.set_title(&i18n("Server"));
     url_row.set_text(&settings.borrow().url);
     service_group.add(&url_row);
 
-    let region_row = adw::EntryRow::new();
+    let region_row = ndl::EntryRow::new();
     region_row.set_title(&i18n("Region (empty for a global resource)"));
     region_row.set_text(&settings.borrow().region);
     service_group.add(&region_row);
 
-    let check_row = adw::ActionRow::new();
+    let check_row = ndl::ActionRow::new();
     check_row.set_title(&i18n("Check the settings"));
     check_row.set_subtitle(&i18n("Translates a greeting to test the service."));
     check_row.set_subtitle_lines(3);
@@ -55,7 +55,7 @@ pub(super) fn build() -> adw::PreferencesPage {
     service_group.add(&check_row);
     page.add(&service_group);
 
-    let reading_group = adw::PreferencesGroup::new();
+    let reading_group = ndl::PreferencesGroup::new();
     reading_group.set_title(&i18n("Messages"));
     let mut targets = vec![i18n_f(
         "Buzón's language ({language})",
@@ -65,7 +65,7 @@ pub(super) fn build() -> adw::PreferencesPage {
         )],
     )];
     targets.extend(LANGUAGES.iter().map(|c| translate::language_name(c)));
-    let target_row = adw::ComboRow::new();
+    let target_row = ndl::ComboRow::new();
     target_row.set_title(&i18n("Translate into"));
     target_row.set_model(Some(&gtk::StringList::new(
         &targets.iter().map(String::as_str).collect::<Vec<_>>(),
@@ -78,7 +78,7 @@ pub(super) fn build() -> adw::PreferencesPage {
     );
     reading_group.add(&target_row);
 
-    let offer_row = adw::SwitchRow::new();
+    let offer_row = ndl::SwitchRow::new();
     offer_row.set_title(&i18n("Offer to translate"));
     offer_row.set_subtitle(&i18n(
         "Messages in another language show a Translate button. The language is detected on this computer.",

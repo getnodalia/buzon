@@ -6,7 +6,7 @@ use super::html::{attr_escape, body_html};
 use super::remote::{route_remote, strip_remote};
 use super::style::{auto_direction, inject_csp, inject_reader_style, reader_style_css};
 use super::types::CardAttachment;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// The three grounds for `dark`, resolved from the live libadwaita theme
@@ -22,7 +22,7 @@ pub(crate) fn theme_grounds_for(
     dark: bool,
 ) -> (String, String, String) {
     let style = widget.style_context();
-    if dark == adw::StyleManager::default().is_dark() {
+    if dark == ndl::StyleManager::default().is_dark() {
         if let Some(c) = style.lookup_color("view_bg_color") {
             let hex =
                 |r: f32, g: f32, b: f32| crate::color::to_hex(&gtk::gdk::RGBA::new(r, g, b, 1.0));
@@ -95,7 +95,7 @@ impl StatusColors {
 #[allow(deprecated)] // lookup_color: named theme colors have no successor yet
 pub(crate) fn theme_status_for(widget: &impl IsA<gtk::Widget>, dark: bool) -> StatusColors {
     let mut colors = StatusColors::stock(dark);
-    if dark == adw::StyleManager::default().is_dark() {
+    if dark == ndl::StyleManager::default().is_dark() {
         let style = widget.style_context();
         for (name, slot) in [
             ("error_color", &mut colors.error),

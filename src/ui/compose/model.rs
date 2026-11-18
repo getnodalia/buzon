@@ -150,7 +150,7 @@ pub(crate) struct Compose {
     pub(super) preview_btn: gtk::ToggleButton,
     /// The preview toggle's icon-and-label insides, kept only so the label
     /// can be dropped in a pane too narrow to carry it.
-    pub(super) preview_content: adw::ButtonContent,
+    pub(super) preview_content: ndl::ButtonContent,
     /// Send Later (#145): when set, Send queues the message for this time.
     pub(super) send_at: Option<i64>,
     /// Cloud attachments (#144): the accounts files can be uploaded to, the

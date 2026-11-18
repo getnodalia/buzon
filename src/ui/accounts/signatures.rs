@@ -236,7 +236,7 @@ impl AccountsWindow {
         self.sync_source_button(widgets);
     }
 
-    pub(super) fn on_signature_import(&mut self, sender: ComponentSender<Self>, root: &adw::Bin) {
+    pub(super) fn on_signature_import(&mut self, sender: ComponentSender<Self>, root: &ndl::Bin) {
         let dialog = gtk::FileDialog::new();
         dialog.set_title(&i18n("Import Signature"));
         let filter = gtk::FileFilter::new();
@@ -263,7 +263,7 @@ impl AccountsWindow {
         &mut self,
         path: std::path::PathBuf,
         widgets: &AccountsWindowWidgets,
-        root: &adw::Bin,
+        root: &ndl::Bin,
     ) {
         match std::fs::read(&path) {
             Ok(bytes) => {

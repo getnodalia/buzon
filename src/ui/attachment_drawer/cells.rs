@@ -8,8 +8,8 @@ use crate::ui::thumbnails::{
     icon_color_class, icon_for, is_pdf_name, spawn_thumbnail_render, texture_from,
     thumbnail_texture, Thumbnail,
 };
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Whether an attachment can be shown in the drawer's lightbox: a decodable
@@ -297,7 +297,7 @@ glib::wrapper! {
     /// ignoring the child's intrinsic size. This keeps every thumbnail uniformly
     /// sized (so images don't blow the cell out to their native pixel width) and
     /// lets the grid pack many per row, flowing left-to-right.
-    struct SquareBox(ObjectSubclass<imp::SquareBox>) @extends gtk::Widget;
+    struct SquareBox(ObjectSubclass<imp::SquareBox>) @extends gtk::Widget, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl SquareBox {

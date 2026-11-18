@@ -4,7 +4,7 @@
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::ContactDetails;
@@ -544,7 +544,7 @@ impl ContactsPage {
                 MenuEntry::new(i18n("Open in GNOME Contacts"), move || {
                     let _ = sg.send(ContactsPageInput::OpenInGnome(idx));
                 })
-                .icon("adw-external-link-symbolic"),
+                .icon("ndl-external-link-symbolic"),
             );
         }
         vec![
@@ -684,7 +684,7 @@ impl ContactsPage {
         let list = group(detail, &i18n("Selected"));
         for &i in &chosen {
             let c = &self.contacts[i];
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_title(&gtk::glib::markup_escape_text(&c.name));
             row.set_subtitle(&gtk::glib::markup_escape_text(&c.book_name));
             row.add_prefix(&avatar_for(c, 32));

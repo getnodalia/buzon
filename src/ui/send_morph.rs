@@ -12,9 +12,9 @@
 
 use std::cell::{Cell, RefCell};
 
-use adw::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gdk, glib, graphene};
+use ndl::prelude::*;
 
 mod capture;
 mod draw;
@@ -146,7 +146,7 @@ mod imp {
         pub(super) tick: RefCell<Option<gtk::TickCallbackId>>,
         /// The stage's size when it went up: a resize mid-flight ends it.
         pub(super) size: Cell<(i32, i32)>,
-        pub(super) fading: RefCell<Option<adw::TimedAnimation>>,
+        pub(super) fading: RefCell<Option<ndl::TimedAnimation>>,
         /// The composer's ground, which the stage shows where it stood.
         pub(super) base: Cell<Option<gdk::RGBA>>,
         /// The composer without its editor card, and the editor card.
@@ -187,7 +187,7 @@ mod imp {
 
 glib::wrapper! {
     pub(crate) struct SendMorph(ObjectSubclass<imp::SendMorph>)
-        @extends gtk::Widget;
+        @extends gtk::Widget, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for SendMorph {
@@ -322,14 +322,14 @@ impl SendMorph {
         }
         self.set_can_target(false);
         self.set_pane_drawn(true);
-        let target = adw::CallbackAnimationTarget::new({
+        let target = ndl::CallbackAnimationTarget::new({
             let obj = self.clone();
             move |v| obj.set_opacity(v)
         });
-        let anim = adw::TimedAnimation::new(self, self.opacity(), 0.0, 160, target);
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        let anim = ndl::TimedAnimation::new(self, self.opacity(), 0.0, 160, target);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         let obj = self.clone();
-        anim.connect_done(move |_| {
+        anim.connect_done(move || {
             obj.imp().fading.take();
             obj.finish();
         });

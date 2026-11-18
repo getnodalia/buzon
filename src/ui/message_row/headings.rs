@@ -8,7 +8,7 @@ use crate::i18n::i18n;
 use crate::models::Message;
 use crate::ui::column_bin::ColumnBin;
 use crate::ui::context_menu::MenuEntry;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::cell::Cell;
 use std::collections::HashMap;

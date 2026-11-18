@@ -1,7 +1,7 @@
 //! Messages about one contact: composing to it, the editors and saving
 //! them, and deleting.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::{GroupEdit, GroupFormat};

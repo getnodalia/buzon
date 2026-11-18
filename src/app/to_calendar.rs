@@ -2,7 +2,7 @@
 //! task, written to a calendar in Evolution Data Server, or handed to the
 //! calendar application as an `.ics` file where EDS has none.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::calendar::{Item, ItemKind, Source};

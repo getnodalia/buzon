@@ -1,7 +1,7 @@
 //! Settings that act on data: importing and exporting settings, logs and
 //! local contacts.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f, ni18n_f};
@@ -229,7 +229,6 @@ impl AppModel {
     /// Second stage of ImportSettings: the chosen file, applied on a clean
     /// main-loop turn (working inside the chooser's completion callback froze
     /// the app when the confirmation dialog presented there).
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn import_settings_from(&self, path: std::path::PathBuf) {
         let outcome = std::fs::read_to_string(&path)
             .map_err(|e| e.to_string())
@@ -245,7 +244,7 @@ impl AppModel {
                 let parent = relm4::main_application()
                     .active_window()
                     .unwrap_or_else(|| self.window.clone().upcast());
-                let alert = adw::MessageDialog::new(
+                let alert = crate::ui::message_dialog::MessageDialog::new(
                     Some(&parent),
                     Some(i18n("Settings Imported").as_str()),
                     Some(&i18n_f(
@@ -258,7 +257,7 @@ impl AppModel {
                 );
                 alert.add_response("later", &i18n("Later"));
                 alert.add_response("restart", &i18n("Restart Buzón"));
-                alert.set_response_appearance("restart", adw::ResponseAppearance::Suggested);
+                alert.set_response_appearance("restart", ndl::ResponseAppearance::Suggested);
                 alert.connect_response(None, |_, resp| {
                     if resp == "restart" {
                         // A detached shell starts the next instance

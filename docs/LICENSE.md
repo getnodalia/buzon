@@ -9,7 +9,8 @@ Contributions ship under the same licence; there is no CLA
 
 ## App icon and wordmark
 
-The app icon is Buzón's Nodalia portrait ([data/icons/](../data/icons/README.md)).
+The app icon is Buzón's Nodalia portrait of Sir Rowland Hill, from a public-domain
+photograph ([assets/app-icon/](../assets/app-icon/README.md)).
 The wordmarks in `data/about/` and `data/welcome/` are the word "Buzón" set in
 [Sora](https://github.com/sora-xor/sora-font) ExtraBold (SIL Open Font License
 1.1) and converted to outlines by `tools/gen-wordmarks.py`; no font file is

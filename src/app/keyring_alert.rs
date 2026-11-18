@@ -4,7 +4,6 @@
 
 use std::cell::RefCell;
 
-use adw::prelude::*;
 use relm4::ComponentSender;
 
 use super::{AppModel, AppMsg};
@@ -19,7 +18,7 @@ struct Alert {
     /// Accounts whose read failed, by label, with the keyring's error.
     failed: Vec<(String, String)>,
     #[allow(deprecated)]
-    dialog: Option<adw::MessageDialog>,
+    dialog: Option<crate::ui::message_dialog::MessageDialog>,
 }
 
 thread_local! {
@@ -29,7 +28,6 @@ thread_local! {
 
 impl AppModel {
     /// A worker's keyring read went wrong, or answered after all.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     pub(super) fn on_keyring_read(
         &self,
         account_id: u32,
@@ -69,7 +67,8 @@ impl AppModel {
             return;
         }
         let dialog = dialog.unwrap_or_else(|| {
-            let dialog = adw::MessageDialog::new(Some(&self.window), None, None);
+            let dialog =
+                crate::ui::message_dialog::MessageDialog::new(Some(&self.window), None, None);
             dialog.add_response("close", &i18n("Close"));
             dialog.set_close_response("close");
             let s = sender.clone();
@@ -87,7 +86,7 @@ impl AppModel {
         // waited for, and a new read would queue behind the one that waits.
         if !failed.is_empty() && !dialog.has_response("retry") {
             dialog.add_response("retry", &i18n("Retry"));
-            dialog.set_response_appearance("retry", adw::ResponseAppearance::Suggested);
+            dialog.set_response_appearance("retry", ndl::ResponseAppearance::Suggested);
             dialog.set_default_response(Some("retry"));
         }
         dialog.set_heading(Some(&heading(&failed)));

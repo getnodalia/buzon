@@ -2,7 +2,7 @@
 //! back, and which of other people's keys a search and the show filter leave
 //! in view (#432).
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::{PgpKeys, PgpKeysInput};
@@ -13,8 +13,8 @@ use crate::mail::pgp::{self, KeyInfo};
 pub(super) fn accepted_row(
     key: crate::config::AcceptedKey,
     sender: &ComponentSender<PgpKeys>,
-) -> adw::ActionRow {
-    let row = adw::ActionRow::new();
+) -> ndl::ActionRow {
+    let row = ndl::ActionRow::new();
     row.set_title(&gtk::glib::markup_escape_text(&key.addr));
     row.set_subtitle(&pgp::key_display(&key.fingerprint));
     let ask = gtk::Button::with_label(&i18n("Ask Again"));
@@ -74,8 +74,8 @@ pub(super) fn key_row(
     key: &KeyInfo,
     own: bool,
     sender: &ComponentSender<PgpKeys>,
-) -> adw::ActionRow {
-    let row = adw::ActionRow::new();
+) -> ndl::ActionRow {
+    let row = ndl::ActionRow::new();
     row.add_css_class(crate::ui::preferences::NOT_SEARCHED);
     row.set_title(&gtk::glib::markup_escape_text(key.primary_uid()));
     let mut parts = vec![pgp::key_display(&key.key_id)];

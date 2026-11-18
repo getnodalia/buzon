@@ -182,7 +182,6 @@ impl Preferences {
 
     /// The sidebar moved away from an open account editor: save, discard,
     /// or stay. Staying puts the selection back on Mail Accounts.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     pub(super) fn ask_to_leave_editor(&self, id: &str, sender: &ComponentSender<Self>) {
         let parent = relm4::main_application().active_window();
         let (heading, body) = match self.editor_page {
@@ -207,12 +206,16 @@ impl Preferences {
                 i18n("Your changes are lost if you discard them."),
             ),
         };
-        let dialog = adw::MessageDialog::new(parent.as_ref(), Some(&heading), Some(&body));
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
+            parent.as_ref(),
+            Some(&heading),
+            Some(&body),
+        );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("discard", &i18n("Discard"));
         dialog.add_response("save", &i18n("Save"));
-        dialog.set_response_appearance("discard", adw::ResponseAppearance::Destructive);
-        dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("discard", ndl::ResponseAppearance::Destructive);
+        dialog.set_response_appearance("save", ndl::ResponseAppearance::Suggested);
         dialog.set_default_response(Some("save"));
         dialog.set_close_response("cancel");
         let s = sender.clone();
@@ -289,7 +292,7 @@ impl Preferences {
             }
         }
         if let Some(cp) = &self.content_page {
-            cp.set_title(&i18n(page.title));
+            cp.set_title(i18n(page.title));
         }
         if let Some(split) = &self.split {
             if split.is_collapsed() {

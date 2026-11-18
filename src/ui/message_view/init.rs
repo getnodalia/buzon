@@ -10,7 +10,7 @@ use super::links::{is_launchable_uri, link_destination, CLICK_LINK_PROBE};
 use super::menu::{menu_lookup, menu_skipped, MenuHit};
 use super::types::MessageViewInput;
 use super::MessageView;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use webkit6::prelude::WebViewExt;
 
@@ -318,7 +318,7 @@ impl MessageView {
         {
             let s = sender.input_sender().clone();
             let handler = std::rc::Rc::new(std::cell::Cell::new(None));
-            let id = adw::StyleManager::default().connect_dark_notify({
+            let id = ndl::StyleManager::default().connect_dark_notify({
                 let handler = handler.clone();
                 move |manager| {
                     if s.send(MessageViewInput::ThemeChanged).is_err() {

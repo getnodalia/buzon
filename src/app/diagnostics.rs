@@ -1,6 +1,6 @@
 //! Diagnostics: the memory report in the exported log.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::desktop::memory_report::{human_bytes, human_count, messages_bytes};

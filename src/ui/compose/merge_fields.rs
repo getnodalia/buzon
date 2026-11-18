@@ -6,7 +6,7 @@
 
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::messages::ComposeInput;

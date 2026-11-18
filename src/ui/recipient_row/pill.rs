@@ -5,9 +5,9 @@ use super::parse::normalise_separators;
 use super::selection::{acting_on, drag_icon, is_selected, set_selected};
 use super::RecipientRow;
 use crate::i18n::{i18n, i18n_f};
-use adw::prelude::*;
-use adw::subclass::prelude::*;
+use gtk::subclass::prelude::*;
 use gtk::{gdk, glib};
+use ndl::prelude::*;
 use std::cell::Cell;
 
 impl RecipientRow {

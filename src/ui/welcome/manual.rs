@@ -21,15 +21,20 @@ pub(super) fn form_has_input(widgets: &WelcomeWidgets) -> bool {
     let (preset_host, _, preset_smtp, _) = wizard_provider(widgets.provider_row.selected())
         .map(|p| p.wizard_servers())
         .unwrap_or_default();
-    let typed = |row: &adw::EntryRow| row.is_visible() && !row.text().trim().is_empty();
-    typed(&widgets.name_row)
-        || typed(&widgets.email_row)
+    let typed = |row: &gtk::Widget| {
+        row.is_visible()
+            && row
+                .downcast_ref::<gtk::Editable>()
+                .is_some_and(|e| !e.text().trim().is_empty())
+    };
+    typed(widgets.name_row.upcast_ref())
+        || typed(widgets.email_row.upcast_ref())
         || typed(widgets.pass_row.upcast_ref())
-        || typed(&widgets.oauth_client_id_row)
+        || typed(widgets.oauth_client_id_row.upcast_ref())
         || typed(widgets.oauth_secret_row.upcast_ref())
-        || typed(&widgets.oauth_auth_url_row)
-        || typed(&widgets.oauth_token_url_row)
-        || typed(&widgets.oauth_scope_row)
+        || typed(widgets.oauth_auth_url_row.upcast_ref())
+        || typed(widgets.oauth_token_url_row.upcast_ref())
+        || typed(widgets.oauth_scope_row.upcast_ref())
         || widgets.host_row.text().trim() != preset_host
         || (widgets.smtp_row.is_visible() && widgets.smtp_row.text().trim() != preset_smtp)
 }
@@ -47,7 +52,7 @@ impl Welcome {
         host: String,
         smtp: String,
     ) {
-        let text = |row: &adw::EntryRow| row.text().trim().to_string();
+        let text = |row: &ndl::EntryRow| row.text().trim().to_string();
         let builtin =
             wizard_provider(widgets.provider_row.selected()).and_then(|p| p.wizard_builtin_oauth());
         let protocol = if builtin.is_some() {

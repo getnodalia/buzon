@@ -11,7 +11,7 @@ use super::types::{BulkAction, MessageListInput, MessageListOutput};
 use super::MessageList;
 use crate::i18n::i18n;
 use crate::ui::message_row::RowShared;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 #[relm4::component(pub(crate))]
@@ -112,7 +112,7 @@ impl SimpleComponent for MessageList {
                 // Placeholder when the folder has loaded and holds nothing.
                 // Same full-size AdwStatusPage styling as the reader's
                 // "No message selected", so the two placeholders match.
-                add_overlay = &adw::StatusPage {
+                add_overlay = &ndl::StatusPage {
                     set_icon_name: Some("mail-inbox-symbolic"),
                     #[watch]
                     set_title: &(if model.quick.is_empty() { i18n("No Messages") } else { i18n("No Matching Messages") }),

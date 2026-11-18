@@ -4,7 +4,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::config::{parse_forward_addresses, FilterRule};
 use crate::i18n::{i18n, i18n_f};
@@ -58,9 +58,9 @@ pub(super) fn action_summary(rule: &FilterRule) -> Vec<String> {
 
 /// One action's rows.
 struct ActionRow {
-    kind: adw::ComboRow,
-    forward: adw::EntryRow,
-    dest: adw::ComboRow,
+    kind: ndl::ComboRow,
+    forward: ndl::EntryRow,
+    dest: ndl::ComboRow,
 }
 
 impl ActionRow {
@@ -81,9 +81,9 @@ struct Destinations {
 #[derive(Clone)]
 pub(super) struct ActionList {
     /// Titled "Then"; holds the action rows.
-    pub(super) group: adw::PreferencesGroup,
+    pub(super) group: ndl::PreferencesGroup,
     /// The Add Action row, in a group of its own below.
-    pub(super) add_group: adw::PreferencesGroup,
+    pub(super) add_group: ndl::PreferencesGroup,
     rows: Rc<RefCell<Vec<ActionRow>>>,
     dests: Rc<RefCell<Destinations>>,
     changed: Rc<dyn Fn()>,
@@ -96,10 +96,10 @@ impl ActionList {
     /// `own` are the accounts' (name, address) pairs, for the address
     /// suggestions of the Forward rows.
     pub(super) fn new(changed: Rc<dyn Fn()>, own: Vec<(String, String)>) -> Self {
-        let group = adw::PreferencesGroup::new();
+        let group = ndl::PreferencesGroup::new();
         group.set_title(&i18n("Then"));
-        let add_group = adw::PreferencesGroup::new();
-        let add_row = adw::ActionRow::new();
+        let add_group = ndl::PreferencesGroup::new();
+        let add_row = ndl::ActionRow::new();
         add_row.set_title(&i18n("Add Action"));
         add_row.set_activatable(true);
         add_row.add_prefix(&gtk::Image::from_icon_name("list-add-symbolic"));
@@ -130,7 +130,7 @@ impl ActionList {
     }
 
     /// Put the folder list in a Move row, keeping `keep` (a path) selected.
-    fn fill_dest(&self, dest: &adw::ComboRow, keep: &str) {
+    fn fill_dest(&self, dest: &ndl::ComboRow, keep: &str) {
         let d = self.dests.borrow();
         let names: Vec<&str> = d.names.iter().map(String::as_str).collect();
         dest.set_model(Some(&gtk::StringList::new(&names)));
@@ -158,7 +158,7 @@ impl ActionList {
     /// Add a row: blank (Forward), or set to a kind with its value (the
     /// addresses of a Forward, the path of a Move).
     fn add(&self, init: Option<(ActionKind, String)>) {
-        let kind = adw::ComboRow::new();
+        let kind = ndl::ComboRow::new();
         kind.set_title(&i18n("Action"));
         let labels: Vec<String> = ActionKind::ALL.iter().map(|k| k.label()).collect();
         let refs: Vec<&str> = labels.iter().map(String::as_str).collect();
@@ -168,10 +168,10 @@ impl ActionList {
         trash.set_valign(gtk::Align::Center);
         trash.set_tooltip_text(Some(i18n("Remove action").as_str()));
         kind.add_suffix(&trash);
-        let forward = adw::EntryRow::new();
+        let forward = ndl::EntryRow::new();
         forward.set_title(&i18n("Addresses, separated by commas"));
         super::address_suggest::attach(&forward, self.own.clone());
-        let dest = adw::ComboRow::new();
+        let dest = ndl::ComboRow::new();
         dest.set_title(&i18n("Folder"));
         let (init_kind, value) = init.unwrap_or((ActionKind::Forward, String::new()));
         self.fill_dest(
@@ -198,7 +198,7 @@ impl ActionList {
         };
         let show = {
             let (forward, dest) = (forward.clone(), dest.clone());
-            move |kind: &adw::ComboRow| {
+            move |kind: &ndl::ComboRow| {
                 let chosen = ActionKind::ALL[kind.selected() as usize % ActionKind::ALL.len()];
                 forward.set_visible(chosen == ActionKind::Forward);
                 dest.set_visible(chosen == ActionKind::Move);

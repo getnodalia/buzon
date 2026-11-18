@@ -1,7 +1,7 @@
 //! Root component: the application window, three-pane adaptive layout, and the
 //! routing between the sidebar, list, reader, and the per-account mail workers.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -168,7 +168,7 @@ impl SimpleComponent for AppModel {
     type Output = ();
 
     view! {
-        adw::ApplicationWindow {
+        ndl::ApplicationWindow {
             set_title: Some(crate::APP_NAME),
             set_icon_name: Some(crate::APP_ID),
             add_css_class: "buzon",
@@ -194,7 +194,7 @@ impl SimpleComponent for AppModel {
             // included, and never move the layout.
             #[wrap(Some)]
             #[name = "toasts"]
-            set_content = &adw::ToastOverlay {
+            set_content = &ndl::ToastOverlay {
             #[wrap(Some)]
             #[name = "window_overlay"]
             set_child = &gtk::Overlay {
@@ -210,7 +210,7 @@ impl SimpleComponent for AppModel {
                 // rail underneath stays exactly as it is (see
                 // set_sidebar_peek). The account split view is its content.
                 #[name = "peek_split"]
-                adw::OverlaySplitView {
+                ndl::OverlaySplitView {
                     set_vexpand: true,
                     set_collapsed: true,
                     set_show_sidebar: false,
@@ -221,10 +221,10 @@ impl SimpleComponent for AppModel {
                     set_enable_show_gesture: false,
 
                     #[wrap(Some)]
-                    set_sidebar = &adw::ToolbarView {
+                    set_sidebar = &ndl::ToolbarView {
                         // Laid out like the expanded sidebar's header: Refresh
                         // top-left, the title centred, the menu top-right.
-                        add_top_bar = &adw::HeaderBar {
+                        add_top_bar = &ndl::HeaderBar {
                             add_css_class: "flat",
                             set_show_start_title_buttons: false,
                             set_show_end_title_buttons: false,
@@ -262,7 +262,7 @@ impl SimpleComponent for AppModel {
 
                     #[wrap(Some)]
                     #[name = "sidebar_split"]
-                    set_content = &adw::OverlaySplitView {
+                    set_content = &ndl::OverlaySplitView {
                     set_vexpand: true,
                     set_max_sidebar_width: 280.0,
                     // Low enough (with the panes' own minimums) that the whole
@@ -271,10 +271,12 @@ impl SimpleComponent for AppModel {
                     set_sidebar_width_fraction: 0.2,
 
                     #[wrap(Some)]
-                    set_sidebar = &adw::ToolbarView {
+                    set_sidebar = &ndl::ToolbarView {
                         #[name = "sidebar_header"]
-                        add_top_bar = &adw::HeaderBar {
+                        add_top_bar = &ndl::HeaderBar {
                             add_css_class: "flat",
+                            // The window's buttons belong to the pane at its edge.
+                            set_show_end_title_buttons: false,
                             #[wrap(Some)]
                             #[name = "app_title"]
                             set_title_widget = &gtk::Label {
@@ -351,9 +353,9 @@ impl SimpleComponent for AppModel {
                                 },
                             },
                             #[wrap(Some)]
-                            set_child = &adw::ToolbarView {
+                            set_child = &ndl::ToolbarView {
                             #[name = "list_header"]
-                            add_top_bar = &adw::HeaderBar {
+                            add_top_bar = &ndl::HeaderBar {
                                 add_css_class: "flat",
                                 // Middle pane: no window controls (the reader pane's
                                 // header carries the window's close button),
@@ -469,7 +471,7 @@ impl SimpleComponent for AppModel {
 
                         #[wrap(Some)]
                         #[name = "reader_bin"]
-                        set_end_child = &adw::BreakpointBin {
+                        set_end_child = &ndl::BreakpointBin {
                             // The narrowest the reader may become. The header's
                             // actions collapse into the overflow menu before this
                             // matters (see the breakpoint added in init). The
@@ -481,9 +483,9 @@ impl SimpleComponent for AppModel {
                             #[watch]
                             set_visible: model.reader_shown(),
                             #[wrap(Some)]
-                            set_child = &adw::ToolbarView {
+                            set_child = &ndl::ToolbarView {
                             #[name = "reader_header"]
-                            add_top_bar = &adw::HeaderBar {
+                            add_top_bar = &ndl::HeaderBar {
                                 // Below the list the window's controls are
                                 // in the list's header, at the top.
                                 #[watch]

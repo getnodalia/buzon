@@ -7,7 +7,7 @@ use crate::i18n::i18n;
 use crate::models::Message;
 use crate::ui::context_menu::{show_context_menu_popover, MenuEntry};
 use crate::ui::message_actions::{KeysOf, MessageAction as A};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 /// Makes one menu entry that sends the row's action for the clicked message.

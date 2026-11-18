@@ -5,7 +5,7 @@
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use crate::contacts::Suggestion;
 
@@ -60,7 +60,7 @@ fn matches_for(all: &[Suggestion], text: &str) -> Vec<Suggestion> {
 
 /// Give `row` the composer's address suggestions. `own` are the accounts'
 /// (name, address) pairs, which the suggestions rank last.
-pub(super) fn attach(row: &adw::EntryRow, own: Vec<(String, String)>) {
+pub(super) fn attach(row: &ndl::EntryRow, own: Vec<(String, String)>) {
     let all: Rc<RefCell<Vec<Suggestion>>> = Rc::default();
     {
         let all = all.clone();

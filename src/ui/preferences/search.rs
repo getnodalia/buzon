@@ -41,8 +41,8 @@ const SEARCH_LIMIT: usize = 60;
 
 impl SettingsSearch {
     pub(super) fn build(
-        toolbar: &adw::ToolbarView,
-        header: &adw::HeaderBar,
+        toolbar: &ndl::ToolbarView,
+        header: &ndl::HeaderBar,
         scroller: &gtk::ScrolledWindow,
         window: &gtk::Widget,
         sender: &ComponentSender<Preferences>,
@@ -75,7 +75,7 @@ impl SettingsSearch {
         results_scroller.set_hscrollbar_policy(gtk::PolicyType::Never);
         results_scroller.set_child(Some(&results));
 
-        let empty = adw::StatusPage::new();
+        let empty = ndl::StatusPage::new();
         empty.set_icon_name(Some("system-search-symbolic"));
         empty.set_title(&i18n("No Results"));
         empty.add_css_class("compact");
@@ -282,7 +282,7 @@ fn index_widget(page: &'static str, w: &gtk::Widget, place: &str, out: &mut Vec<
         return;
     }
     let mut place = place.to_string();
-    if let Some(group) = w.downcast_ref::<adw::PreferencesGroup>() {
+    if let Some(group) = w.downcast_ref::<ndl::PreferencesGroup>() {
         let title = group.title();
         if !title.is_empty() {
             out.push(search_hit(
@@ -297,17 +297,16 @@ fn index_widget(page: &'static str, w: &gtk::Widget, place: &str, out: &mut Vec<
                 place = format!("{place} \u{203a} {title}");
             }
         }
-    } else if let Some(row) = w.downcast_ref::<adw::PreferencesRow>() {
-        let title = row.title();
+    } else if let Some(title) = ndl::row_title(w) {
         let subtitle = w
-            .downcast_ref::<adw::ActionRow>()
-            .and_then(|r| r.subtitle())
-            .or_else(|| w.downcast_ref::<adw::ExpanderRow>().map(|r| r.subtitle()))
+            .downcast_ref::<ndl::ActionRow>()
+            .map(|r| r.subtitle())
+            .or_else(|| w.downcast_ref::<ndl::ExpanderRow>().map(|r| r.subtitle()))
             .unwrap_or_default();
         if !title.is_empty() {
             out.push(search_hit(page, &title, &subtitle, &place, w));
             // An expander's own rows sit inside it.
-            if w.is::<adw::ExpanderRow>() {
+            if w.is::<ndl::ExpanderRow>() {
                 place = format!("{place} \u{203a} {title}");
             } else {
                 return;

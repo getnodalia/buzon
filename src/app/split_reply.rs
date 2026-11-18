@@ -1,6 +1,6 @@
 //! The split reply: a composer under the reader on a Paned.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -55,8 +55,8 @@ impl AppModel {
         };
         header.set_opacity(1.0);
         let tv = header
-            .ancestor(adw::ToolbarView::static_type())
-            .and_downcast::<adw::ToolbarView>();
+            .ancestor(ndl::ToolbarView::static_type())
+            .and_downcast::<ndl::ToolbarView>();
         if let Some(tv) = tv {
             if !tv.reveals_top_bars() {
                 // libadwaita skips the slide of an unmapped toolbar view and
@@ -84,8 +84,8 @@ impl AppModel {
             return;
         };
         let tv = header
-            .ancestor(adw::ToolbarView::static_type())
-            .and_downcast::<adw::ToolbarView>();
+            .ancestor(ndl::ToolbarView::static_type())
+            .and_downcast::<ndl::ToolbarView>();
         if let Some(tv) = tv {
             if tv.reveals_top_bars() == shown {
                 return;
@@ -94,12 +94,12 @@ impl AppModel {
         }
         let from = header.opacity();
         let to = if shown { 1.0 } else { 0.0 };
-        let target = adw::CallbackAnimationTarget::new({
+        let target = ndl::CallbackAnimationTarget::new({
             let header = header.clone();
             move |v| header.set_opacity(v)
         });
-        let anim = adw::TimedAnimation::new(header, from, to, 300, target);
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        let anim = ndl::TimedAnimation::new(header, from, to, 300, target);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         anim.play();
     }
 
@@ -342,17 +342,17 @@ impl AppModel {
         };
         set_split_shrink(&split, bottom, true);
         split.set_position(from as i32);
-        let anim = adw::TimedAnimation::new(
+        let anim = ndl::TimedAnimation::new(
             &split,
             from,
             to,
             300,
-            adw::CallbackAnimationTarget::new({
+            ndl::CallbackAnimationTarget::new({
                 let split = split.clone();
                 move |v| split.set_position(v as i32)
             }),
         );
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         let cell = self.split_close_anim.clone();
         // Focus waits for the slide: the pane opens from nothing, and a
         // Paned child with no height is hidden, so focus given to it at
@@ -360,7 +360,7 @@ impl AppModel {
         // it (#266).
         anim.connect_done({
             let cell = cell.clone();
-            move |_| {
+            move || {
                 cell.borrow_mut().take();
                 set_split_shrink(&split, bottom, false);
                 compose.emit(ComposeInput::FocusInitial);

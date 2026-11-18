@@ -65,10 +65,10 @@ provider such as gnome-keyring.
 
 ```bash
 # Fedora
-sudo dnf install gcc gcc-c++ gtk4-devel libadwaita-devel webkitgtk6.0-devel poppler-glib-devel \
+sudo dnf install gcc gcc-c++ gtk4-devel webkitgtk6.0-devel poppler-glib-devel \
     openssl-devel gettext-devel wayland-devel
 # Debian / Ubuntu
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev libwebkitgtk-6.0-dev \
+sudo apt install build-essential pkg-config libgtk-4-dev libwebkitgtk-6.0-dev \
     libpoppler-glib-dev libssl-dev gettext libwayland-dev
 ```
 

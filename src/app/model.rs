@@ -66,7 +66,7 @@ pub(crate) struct AppModel {
     /// at the backend): what the Accounts panel edits, kept in memory so a
     /// changed color, emoji or picture shows without touching disk.
     pub(super) demo_config: Vec<AccountConfig>,
-    pub(super) window: adw::ApplicationWindow,
+    pub(super) window: ndl::ApplicationWindow,
     pub(super) prefs: Option<Controller<Preferences>>,
     pub(super) accounts_win: Option<Controller<AccountsWindow>>,
     /// What the accounts panel was built over (its init, printed), to tell
@@ -123,13 +123,13 @@ pub(crate) struct AppModel {
     /// The running slide (open or close) of the split reply — held so the
     /// opposite motion can skip it to its end instead of fighting it over
     /// the divider.
-    pub(super) split_close_anim: std::rc::Rc<std::cell::RefCell<Option<adw::TimedAnimation>>>,
+    pub(super) split_close_anim: std::rc::Rc<std::cell::RefCell<Option<ndl::TimedAnimation>>>,
     /// The reader pane's own header bar: hidden while a split reply hosts,
     /// since it would show a second set of window decorations mid-window and
     /// spend vertical space the split needs.
-    pub(super) reader_header: std::cell::OnceCell<adw::HeaderBar>,
+    pub(super) reader_header: std::cell::OnceCell<ndl::HeaderBar>,
     /// Where Send says what it is doing, with Undo while it can (#434).
-    pub(super) toasts: std::cell::OnceCell<adw::ToastOverlay>,
+    pub(super) toasts: std::cell::OnceCell<ndl::ToastOverlay>,
     /// Messages on their way out (#434), shared with the quit paths, which
     /// park any still waiting out the Undo Send delay in the Outbox.
     pub(super) outgoing: super::outgoing::OutgoingList,
@@ -303,12 +303,12 @@ pub(crate) struct AppModel {
     /// line and the one report at the end.
     pub(super) transfer_tally: TransferTally,
     /// The account-list split view, narrowed to icon-only width when collapsed.
-    pub(super) sidebar_split: Option<adw::OverlaySplitView>,
+    pub(super) sidebar_split: Option<ndl::OverlaySplitView>,
     /// The "Buzón" title label, hidden while the sidebar is collapsed.
     pub(super) app_title: Option<gtk::Label>,
     /// Sidebar header. In the icon-only rail its window-control buttons are
     /// hidden so the header stops forcing a minimum width wider than the rail.
-    pub(super) sidebar_header: Option<adw::HeaderBar>,
+    pub(super) sidebar_header: Option<ndl::HeaderBar>,
     /// The main-menu button, which moves into the header's centre (the title
     /// slot) while the sidebar is a rail.
     pub(super) sidebar_menu: Option<gtk::MenuButton>,
@@ -341,7 +341,7 @@ pub(crate) struct AppModel {
     /// account split's content slot, so its overlay sidebar slides out from
     /// the rail's right edge over the panes while the docked rail itself is
     /// never touched — not collapsed, not re-laid, not snapshotted.
-    pub(super) peek_split: Option<adw::OverlaySplitView>,
+    pub(super) peek_split: Option<ndl::OverlaySplitView>,
     /// The icon/spinner stack in the peek panel's own Refresh button.
     pub(super) peek_refresh_stack: gtk::Stack,
     pub(super) peek_refresh_spinner: gtk::Spinner,
@@ -393,7 +393,7 @@ pub(crate) struct AppModel {
     /// stock GNOME colors (see `theme.rs`).
     pub(super) theme: String,
     /// Held so the in-flight collapse/expand width animation isn't dropped.
-    pub(super) sidebar_anim: Option<adw::TimedAnimation>,
+    pub(super) sidebar_anim: Option<ndl::TimedAnimation>,
     pub(super) current: Option<Message>,
     /// Sender addresses allowed to auto-load remote content (lowercased).
     pub(super) allowed_senders: Vec<String>,
@@ -504,7 +504,7 @@ pub(crate) struct AppModel {
     pub(super) list_wide: bool,
     /// The keyboard-shortcut reference, while it is open — so the shortcut that
     /// opens it closes it again.
-    pub(super) shortcuts_win: Option<adw::Window>,
+    pub(super) shortcuts_win: Option<ndl::Window>,
     /// Whether Buzón keeps running with no window. Shared with the window's
     /// close handler, which has to read it without the model.
     pub(super) run_in_background: std::rc::Rc<std::cell::Cell<bool>>,
@@ -512,6 +512,8 @@ pub(crate) struct AppModel {
     pub(super) autostart: bool,
     /// The window opens fullscreen (#511).
     pub(super) start_fullscreen: bool,
+    /// The desktop's window controls instead of NDL's (Linux; next start).
+    pub(super) system_window_controls: bool,
     /// The reader beside the list (#475); off, messages open in windows.
     pub(super) reading_pane: config::ReadingPane,
     /// What AI assistants may reach (Settings → MCP), and the

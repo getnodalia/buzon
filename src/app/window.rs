@@ -1,10 +1,11 @@
 //! The main window: its size and breakpoints, and the app and window actions.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::actions::{AccelsPlus, RelmAction, RelmActionGroup};
 use relm4::prelude::*;
 
 use crate::config;
+use crate::i18n::i18n;
 
 use super::accounts::finish_keyring_writes;
 use super::model::AppModel;
@@ -19,7 +20,7 @@ use super::{
 /// Wayland the compositor owns placement and the monitor. A maximized
 /// window keeps the size saved before it was maximized, and a fullscreen
 /// one leaves the saved state alone: its size is the monitor's.
-pub(super) fn save_window_geometry(w: &adw::ApplicationWindow) {
+pub(super) fn save_window_geometry(w: &ndl::ApplicationWindow) {
     if w.is_fullscreen() {
         return;
     }
@@ -36,9 +37,9 @@ pub(super) fn save_window_geometry(w: &adw::ApplicationWindow) {
 /// Save the geometry a second after it changes, not only on close (#642):
 /// a logout or a restart ends Buzón without a close, and with Run in
 /// Background the window was closed long before, at another size.
-fn save_geometry_on_change(window: &adw::ApplicationWindow) {
+fn save_geometry_on_change(window: &ndl::ApplicationWindow) {
     let due = std::rc::Rc::new(std::cell::Cell::new(false));
-    let changed = move |w: &adw::ApplicationWindow| {
+    let changed = move |w: &ndl::ApplicationWindow| {
         if due.replace(true) {
             return;
         }
@@ -83,12 +84,12 @@ const MIN_HEIGHT: i32 = 360;
 /// folds, Focus Mode hides parts of a header or the gallery opens, and each
 /// of those draws a frame, so the floor is checked after every one: an
 /// unchanged measure comes from GTK's cache.
-fn follow_content_floor(root: &adw::ApplicationWindow, widgets: &AppModelWidgets) {
+fn follow_content_floor(root: &ndl::ApplicationWindow, widgets: &AppModelWidgets) {
     let Some(content) = widgets.content_stack.parent() else {
         return;
     };
     let content = content.downgrade();
-    let fit = move |win: &adw::ApplicationWindow| {
+    let fit = move |win: &ndl::ApplicationWindow| {
         let Some(content) = content.upgrade() else {
             return;
         };
@@ -118,7 +119,7 @@ impl AppModel {
     /// position/monitor).
     pub(super) fn init_window_size(
         &self,
-        root: &adw::ApplicationWindow,
+        root: &ndl::ApplicationWindow,
         widgets: &AppModelWidgets,
         sender: &ComponentSender<Self>,
     ) {
@@ -137,10 +138,10 @@ impl AppModel {
         // no longer derives its minimum size from its content, so it is given
         // one (see follow_content_floor).
         follow_content_floor(root, widgets);
-        let narrow = adw::Breakpoint::new(adw::BreakpointCondition::new_length(
-            adw::BreakpointConditionLengthType::MaxWidth,
+        let narrow = ndl::Breakpoint::new(ndl::BreakpointCondition::new_length(
+            ndl::BreakpointConditionLengthType::MaxWidth,
             1094.0,
-            adw::LengthUnit::Px,
+            ndl::LengthUnit::Px,
         ));
         {
             let s = sender.clone();
@@ -174,7 +175,7 @@ impl AppModel {
     /// within five seconds. Without this the ✕ there would be a hard kill.
     pub(super) fn install_app_actions(
         &self,
-        root: &adw::ApplicationWindow,
+        root: &ndl::ApplicationWindow,
         sender: &ComponentSender<Self>,
     ) {
         let app = relm4::main_application();
@@ -285,7 +286,7 @@ impl AppModel {
 /// ...) and their accelerators. Undo and Redo are handed back for the model
 /// to enable and disable.
 pub(super) fn install_window_actions(
-    root: &adw::ApplicationWindow,
+    root: &ndl::ApplicationWindow,
     sender: &ComponentSender<AppModel>,
 ) -> (RelmAction<UndoAction>, RelmAction<RedoAction>) {
     let mut group = RelmActionGroup::<WindowActionGroup>::new();
@@ -385,5 +386,56 @@ pub(super) fn install_window_actions(
         "<Ctrl><Shift>slash",
         "F1",
     ]);
+    global_menu(root);
     (undo_action, redo_action)
+}
+
+/// The menus the shell shows in its top bar (Linux shells that have one).
+/// The header's own menu stays: not every shell shows an app's menus.
+fn global_menu(root: &ndl::ApplicationWindow) {
+    let about = format!("{} {}", i18n("About"), crate::APP_NAME);
+    let [settings, shortcuts, quit] = [i18n("Settings"), i18n("Keyboard Shortcuts"), i18n("Quit")];
+    let [print_preview, print] = [i18n("Print Preview…"), i18n("Print Message…")];
+    let [undo, redo, find] = [i18n("Undo"), i18n("Redo"), i18n("Find")];
+    let [accounts, focus, fullscreen] = [
+        i18n("Show Accounts"),
+        i18n("Focus Mode"),
+        i18n("Fullscreen"),
+    ];
+    let [file, edit, view, help] = [i18n("File"), i18n("Edit"), i18n("View"), i18n("Help")];
+    let app_menu: [&[ndl::MenuEntry<'_>]; 3] = [
+        &[(about.as_str(), "win.about")],
+        &[
+            (settings.as_str(), "win.accounts"),
+            (shortcuts.as_str(), "win.shortcuts"),
+        ],
+        &[(quit.as_str(), "app.quit")],
+    ];
+    let file_menu: [&[ndl::MenuEntry<'_>]; 1] = [&[
+        (print_preview.as_str(), "win.print-preview"),
+        (print.as_str(), "win.print"),
+    ]];
+    let edit_menu: [&[ndl::MenuEntry<'_>]; 2] = [
+        &[(undo.as_str(), "win.undo"), (redo.as_str(), "win.redo")],
+        &[(find.as_str(), "win.find")],
+    ];
+    let view_menu: [&[ndl::MenuEntry<'_>]; 2] = [
+        &[
+            (accounts.as_str(), "app.show-accounts"),
+            (focus.as_str(), "app.focus-mode"),
+        ],
+        &[(fullscreen.as_str(), "win.fullscreen")],
+    ];
+    let help_menu: [&[ndl::MenuEntry<'_>]; 1] = [&[
+        (shortcuts.as_str(), "win.shortcuts"),
+        (about.as_str(), "win.about"),
+    ]];
+    let menus: [ndl::TopMenu<'_>; 5] = [
+        (crate::APP_NAME, &app_menu),
+        (file.as_str(), &file_menu),
+        (edit.as_str(), &edit_menu),
+        (view.as_str(), &view_menu),
+        (help.as_str(), &help_menu),
+    ];
+    ndl::global_menu(&relm4::main_application(), root.upcast_ref(), &menus);
 }

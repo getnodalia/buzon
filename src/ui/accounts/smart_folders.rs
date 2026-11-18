@@ -7,7 +7,7 @@ use super::*;
 /// condition looks for.
 struct SmartCondRows {
     rows: CondRows,
-    tag: adw::ComboRow,
+    tag: ndl::ComboRow,
 }
 
 impl AsRef<CondRows> for SmartCondRows {
@@ -26,7 +26,7 @@ impl AccountsWindow {
         }
         list.set_visible(!self.smart_folders.is_empty());
         for (i, f) in self.smart_folders.iter().enumerate() {
-            let row = adw::ActionRow::new();
+            let row = ndl::ActionRow::new();
             row.set_activatable(true);
             let s = sender.clone();
             row.connect_activated(move |_| {
@@ -90,7 +90,7 @@ impl AccountsWindow {
     /// `edit` it opens on that folder and saves over it.
     pub(super) fn open_smart_page(
         &self,
-        nav: &adw::NavigationView,
+        nav: &ndl::NavigationView,
         sender: &ComponentSender<Self>,
         edit: Option<(usize, crate::config::SmartFolder)>,
     ) {
@@ -106,11 +106,11 @@ impl AccountsWindow {
 
         let (page_box, scrolled) = form_scaffold();
 
-        let where_group = adw::PreferencesGroup::new();
-        let name_row = adw::EntryRow::new();
+        let where_group = ndl::PreferencesGroup::new();
+        let name_row = ndl::EntryRow::new();
         name_row.set_title(&i18n("Name"));
         where_group.add(&name_row);
-        let account_row = adw::ComboRow::new();
+        let account_row = ndl::ComboRow::new();
         account_row.set_title(&i18n("Account"));
         {
             let all = i18n("All accounts");
@@ -120,7 +120,7 @@ impl AccountsWindow {
         }
         account_row.set_subtitle(&i18n("Those in the unified section."));
         where_group.add(&account_row);
-        let folder_row = adw::ComboRow::new();
+        let folder_row = ndl::ComboRow::new();
         folder_row.set_title(&i18n("Folders"));
         {
             let mut names = vec![i18n("All but Trash and Junk")];
@@ -154,7 +154,7 @@ impl AccountsWindow {
             move |init: Option<&SmartCondition>| -> SmartCondRows {
                 let rows = CondRows::new(&field_names, &match_names);
                 let (field, matcher, value) = (&rows.field, &rows.matcher, &rows.value);
-                let tag = adw::ComboRow::new();
+                let tag = ndl::ComboRow::new();
                 tag.set_title(&i18n("Tag"));
                 let refs: Vec<&str> = tag_names.iter().map(|s| s.as_str()).collect();
                 tag.set_model(Some(&gtk::StringList::new(&refs)));
@@ -178,7 +178,7 @@ impl AccountsWindow {
                 }
                 let explain = {
                     let (matcher, value, tag) = (matcher.clone(), value.clone(), tag.clone());
-                    move |field: &adw::ComboRow| {
+                    move |field: &ndl::ComboRow| {
                         let chosen = SmartField::ALL.get(field.selected() as usize).copied();
                         let text = chosen.is_some_and(|f| f.takes_text());
                         let body = chosen == Some(SmartField::Body);

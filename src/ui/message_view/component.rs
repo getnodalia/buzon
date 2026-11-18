@@ -6,7 +6,7 @@ use super::types::{MessageViewInput, MessageViewOutput};
 use super::webview::new_webview;
 use super::MessageView;
 use crate::i18n::{i18n, i18n_f};
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 #[relm4::component(pub(crate))]
@@ -21,7 +21,7 @@ impl Component for MessageView {
         gtk::Stack {
             set_transition_type: gtk::StackTransitionType::Crossfade,
 
-            add_named[Some("empty")] = &adw::StatusPage {
+            add_named[Some("empty")] = &ndl::StatusPage {
                 // Drafts open in the editor, so the empty pane says so there.
                 #[watch]
                 set_icon_name: Some(if model.checked.0 > 0 {

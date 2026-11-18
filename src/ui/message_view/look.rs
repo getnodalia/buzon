@@ -5,8 +5,7 @@ use super::chrome::wear_class;
 use super::frame::{ground_rgba, theme_grounds_for};
 use super::snippets::paints_own_background;
 use super::MessageView;
-use adw::prelude::*;
-use relm4::prelude::*;
+use gtk::prelude::*;
 use webkit6::prelude::WebViewExt;
 
 impl MessageView {
@@ -30,7 +29,7 @@ impl MessageView {
         let Some(color) = &self.account_color else {
             return;
         };
-        let dark = adw::StyleManager::default().is_dark();
+        let dark = ndl::StyleManager::default().is_dark();
         let (_, _, chrome) = self.theme_grounds(dark);
         let text = crate::color::tinted_text(color, 0.18, &chrome, 4.5);
         let class = format!(
@@ -56,7 +55,7 @@ impl MessageView {
     /// system's when it follows the system.
     pub(super) fn theme_dark(&self) -> bool {
         self.content_dark
-            .unwrap_or_else(|| adw::StyleManager::default().is_dark())
+            .unwrap_or_else(|| ndl::StyleManager::default().is_dark())
     }
 
     /// Whether the message on screen is drawn dark: the scheme the user

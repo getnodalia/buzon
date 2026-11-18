@@ -39,7 +39,7 @@ pub(crate) const DEFAULT_ID: &str = "default";
 /// choice once: the first start on such a release resets
 /// the stored choice to the default, and records the generation so a
 /// choice made afterwards stands.
-const ICON_GENERATION: u32 = 3;
+const ICON_GENERATION: u32 = 4;
 
 /// The icon this build installs under its app ID.
 #[cfg(not(feature = "beta"))]
@@ -401,7 +401,7 @@ pub(crate) fn texture(id: &str, px: i32) -> Option<gtk::gdk::Texture> {
     loader.set_size(px, px);
     loader.write(png_for(id)).ok()?;
     loader.close().ok()?;
-    let texture = gtk::gdk::Texture::for_pixbuf(&loader.pixbuf()?);
+    let texture = crate::ui::texture::from_pixbuf(&loader.pixbuf()?);
     DECODED.with(|c| c.borrow_mut().insert(key, texture.clone()));
     Some(texture)
 }

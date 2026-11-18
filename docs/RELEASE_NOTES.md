@@ -13,3 +13,4 @@ remote content blocked by default and credentials kept in the system keyring.
 - An Outbox for mail that cannot go out yet, and sending later
 - OpenPGP with the GnuPG already on your computer
 - Filters, tags, conversations and single-key shortcuts
+- Drawn in the Nodalia design: rounded panels, the app menu in the header and in the top bar's global menu, and round window controls on Linux that you can swap for your desktop's own

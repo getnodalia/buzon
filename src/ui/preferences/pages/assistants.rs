@@ -6,7 +6,7 @@
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use super::super::system::hide_edit_icon;
 use super::super::{PrefOutput, Preferences, ViewSender};
@@ -16,8 +16,8 @@ use crate::i18n::i18n;
 /// The page, and the rows on it that the window reaches later.
 #[derive(Debug)]
 pub(in crate::ui::preferences) struct AssistantsPage {
-    pub(in crate::ui::preferences) page: adw::PreferencesPage,
-    activity_row: adw::ActionRow,
+    pub(in crate::ui::preferences) page: ndl::PreferencesPage,
+    activity_row: ndl::ActionRow,
     state: Rc<PageState>,
 }
 
@@ -26,7 +26,7 @@ struct PageState {
     policy: RefCell<AssistantPolicy>,
     sender: ViewSender,
     /// The account rows on the page now.
-    account_rows: RefCell<Vec<adw::ExpanderRow>>,
+    account_rows: RefCell<Vec<ndl::ExpanderRow>>,
     /// What assistants did, newest first: (title, subtitle).
     activity: RefCell<Vec<(String, String)>>,
 }
@@ -90,7 +90,7 @@ fn cap_text(cap: AssistantCap) -> (String, Option<String>) {
 
 impl AssistantsPage {
     pub(in crate::ui::preferences) fn build(model: &Preferences, sender: &ViewSender) -> Self {
-        let page = adw::PreferencesPage::new();
+        let page = ndl::PreferencesPage::new();
         let state = Rc::new(PageState {
             policy: RefCell::new(model.assistant_policy.clone()),
             sender: sender.clone(),
@@ -98,12 +98,12 @@ impl AssistantsPage {
             activity: RefCell::new(model.assistant_activity.clone()),
         });
 
-        let connection = adw::PreferencesGroup::builder()
+        let connection = ndl::PreferencesGroup::builder()
             .description(i18n(
                 "Buzón contains no AI agent of its own but you can allow outside agents to access your mail using MCP (Model Context Protocol)",
             ))
             .build();
-        let enable = adw::SwitchRow::builder()
+        let enable = ndl::SwitchRow::builder()
             .title(i18n("Allow AI agent access"))
             .active(model.assistant_policy.enabled)
             .build();
@@ -117,7 +117,7 @@ impl AssistantsPage {
         connection.add(&enable);
         connection.add(&command_row());
 
-        let activity_row = adw::ActionRow::builder()
+        let activity_row = ndl::ActionRow::builder()
             .title(i18n("Recent Activity"))
             .subtitle(&model.assistant_status)
             .activatable(true)
@@ -130,7 +130,7 @@ impl AssistantsPage {
         connection.add(&activity_row);
         page.add(&connection);
 
-        let accounts = adw::PreferencesGroup::builder()
+        let accounts = ndl::PreferencesGroup::builder()
             .title(i18n("Accounts"))
             .description(i18n(
                 "Nothing is shared until you allow it. Agents can't send mail, erase it permanently (moving to Trash is ok) or read encrypted mail.",
@@ -165,9 +165,9 @@ impl AssistantsPage {
 }
 
 /// The command an assistant's client starts, ready to copy.
-fn command_row() -> adw::EntryRow {
+fn command_row() -> ndl::EntryRow {
     let command = crate::mcp::connect_command();
-    let row = adw::EntryRow::builder()
+    let row = ndl::EntryRow::builder()
         .title(i18n("Command for the agent"))
         .text(&command)
         .editable(false)
@@ -192,13 +192,13 @@ fn command_row() -> adw::EntryRow {
     row
 }
 
-fn contacts_group(state: &Rc<PageState>) -> adw::PreferencesGroup {
-    let group = adw::PreferencesGroup::builder()
+fn contacts_group(state: &Rc<PageState>) -> ndl::PreferencesGroup {
+    let group = ndl::PreferencesGroup::builder()
         .title(i18n("Contacts"))
         .build();
     let policy = state.policy.borrow();
 
-    let books = adw::SwitchRow::builder()
+    let books = ndl::SwitchRow::builder()
         .title(i18n("Address books and directories"))
         .active(policy.address_books)
         .build();
@@ -209,7 +209,7 @@ fn contacts_group(state: &Rc<PageState>) -> adw::PreferencesGroup {
     });
     group.add(&books);
 
-    let people = adw::SwitchRow::builder()
+    let people = ndl::SwitchRow::builder()
         .title(i18n("People in your mail"))
         .subtitle(i18n("From every account, shared or not."))
         .active(policy.mail_people)
@@ -224,7 +224,7 @@ fn contacts_group(state: &Rc<PageState>) -> adw::PreferencesGroup {
 }
 
 /// The accounts' rows, made anew from the accounts as they are now.
-fn rebuild_accounts(group: &adw::PreferencesGroup, state: &Rc<PageState>) {
+fn rebuild_accounts(group: &ndl::PreferencesGroup, state: &Rc<PageState>) {
     for row in state.account_rows.borrow_mut().drain(..) {
         group.remove(&row);
     }
@@ -248,7 +248,7 @@ fn account_row(
     name: &str,
     account_id: u32,
     state: &Rc<PageState>,
-) -> adw::ExpanderRow {
+) -> ndl::ExpanderRow {
     let grant: AccountGrant = state
         .policy
         .borrow()
@@ -256,7 +256,7 @@ fn account_row(
         .get(&address.to_lowercase())
         .cloned()
         .unwrap_or_default();
-    let row = adw::ExpanderRow::builder()
+    let row = ndl::ExpanderRow::builder()
         .title(gtk::glib::markup_escape_text(address).as_str())
         .show_enable_switch(true)
         .enable_expansion(grant.on)
@@ -273,7 +273,7 @@ fn account_row(
         });
     }
 
-    let full_row = adw::SwitchRow::builder()
+    let full_row = ndl::SwitchRow::builder()
         .title(i18n("Full access"))
         .subtitle(i18n(
             "Grant access to entire account (except Trash and Junk)",
@@ -288,7 +288,7 @@ fn account_row(
     let mut cap_rows = Vec::new();
     for cap in AssistantCap::ALL {
         let (title, subtitle) = cap_text(cap);
-        let switch = adw::SwitchRow::builder()
+        let switch = ndl::SwitchRow::builder()
             .title(title)
             .active((grant.full && cap.in_full_access()) || grant.switch(cap))
             .build();
@@ -308,7 +308,7 @@ fn account_row(
         row.add_row(&switch);
         cap_rows.push((cap, switch));
     }
-    let folders = adw::ActionRow::builder()
+    let folders = ndl::ActionRow::builder()
         .title(i18n("Folders"))
         .subtitle(i18n("Junk and Trash are hidden until you allow them."))
         .activatable(true)
@@ -320,7 +320,7 @@ fn account_row(
         folders.connect_activated(move |row| show_folders(row, &address, account_id, &state));
     }
     row.add_row(&folders);
-    let reset_row = adw::ActionRow::builder()
+    let reset_row = ndl::ActionRow::builder()
         .title(i18n("Reset to Defaults"))
         .activatable(true)
         .build();
@@ -358,7 +358,7 @@ fn account_row(
     // the rows this is connected to: they would otherwise never be let go of
     // when the page rebuilds them.
     let follow = {
-        let others: Vec<adw::SwitchRow> = cap_rows
+        let others: Vec<ndl::SwitchRow> = cap_rows
             .iter()
             .filter(|(cap, _)| {
                 cap.in_full_access()
@@ -455,8 +455,8 @@ fn account_row(
 }
 
 /// Ask before an account's choices are lost: nothing brings them back.
-fn confirm_reset(parent: &adw::ActionRow, reset: impl Fn() + 'static) {
-    let dialog = adw::AlertDialog::new(
+fn confirm_reset(parent: &ndl::ActionRow, reset: impl Fn() + 'static) {
+    let dialog = ndl::AlertDialog::new(
         Some(&i18n("Reset permissions?")),
         Some(&i18n(
             "The account stays shared, but only for reading and preparing messages. Junk and Trash are hidden again.",
@@ -464,7 +464,7 @@ fn confirm_reset(parent: &adw::ActionRow, reset: impl Fn() + 'static) {
     );
     dialog.add_response("cancel", &i18n("Cancel"));
     dialog.add_response("reset", &i18n("Reset"));
-    dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
+    dialog.set_response_appearance("reset", ndl::ResponseAppearance::Destructive);
     dialog.set_default_response(Some("cancel"));
     dialog.set_close_response("cancel");
     dialog.connect_response(None, move |_, response| {
@@ -476,7 +476,7 @@ fn confirm_reset(parent: &adw::ActionRow, reset: impl Fn() + 'static) {
 }
 
 /// An account's folders, each with its own switch.
-fn show_folders(parent: &adw::ActionRow, address: &str, account_id: u32, state: &Rc<PageState>) {
+fn show_folders(parent: &ndl::ActionRow, address: &str, account_id: u32, state: &Rc<PageState>) {
     let folders = crate::cache::Cache::open_reader()
         .map(|cache| cache.load_folders(account_id))
         .unwrap_or_default();
@@ -487,9 +487,9 @@ fn show_folders(parent: &adw::ActionRow, address: &str, account_id: u32, state: 
         .get(&address.to_lowercase())
         .cloned()
         .unwrap_or_default();
-    let group = adw::PreferencesGroup::new();
+    let group = ndl::PreferencesGroup::new();
     for folder in folders {
-        let row = adw::SwitchRow::builder()
+        let row = ndl::SwitchRow::builder()
             .title(gtk::glib::markup_escape_text(&folder.path).as_str())
             .active(grant.folder_allowed(&folder.path, folder.kind))
             .sensitive(!grant.full || !AccountGrant::full_covers(folder.kind))
@@ -509,19 +509,19 @@ fn show_folders(parent: &adw::ActionRow, address: &str, account_id: u32, state: 
 }
 
 /// The record of what assistants did.
-fn show_activity(parent: &adw::ActionRow, state: &Rc<PageState>) {
-    let group = adw::PreferencesGroup::new();
+fn show_activity(parent: &ndl::ActionRow, state: &Rc<PageState>) {
+    let group = ndl::PreferencesGroup::new();
     let lines = state.activity.borrow();
     if lines.is_empty() {
         group.add(
-            &adw::ActionRow::builder()
+            &ndl::ActionRow::builder()
                 .title(i18n("No activity yet."))
                 .build(),
         );
     }
     for (title, subtitle) in lines.iter() {
         group.add(
-            &adw::ActionRow::builder()
+            &ndl::ActionRow::builder()
                 .title(gtk::glib::markup_escape_text(title).as_str())
                 .subtitle(gtk::glib::markup_escape_text(subtitle).as_str())
                 .build(),
@@ -531,13 +531,13 @@ fn show_activity(parent: &adw::ActionRow, state: &Rc<PageState>) {
 }
 
 /// A dialog holding one group of rows.
-fn present_list(parent: &impl IsA<gtk::Widget>, title: &str, group: adw::PreferencesGroup) {
-    let page = adw::PreferencesPage::new();
+fn present_list(parent: &impl IsA<gtk::Widget>, title: &str, group: ndl::PreferencesGroup) {
+    let page = ndl::PreferencesPage::new();
     page.add(&group);
-    let toolbar = adw::ToolbarView::new();
-    toolbar.add_top_bar(&adw::HeaderBar::new());
+    let toolbar = ndl::ToolbarView::new();
+    toolbar.add_top_bar(&ndl::HeaderBar::new());
     toolbar.set_content(Some(&page));
-    let dialog = adw::Dialog::builder()
+    let dialog = ndl::Dialog::builder()
         .title(title)
         .content_width(520)
         .content_height(560)

@@ -13,8 +13,8 @@ use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use adw::prelude::*;
 use gtk::{glib, subclass::prelude::*};
+use ndl::prelude::*;
 
 const SPACING: i32 = 6;
 const ANIM_MS: u32 = 180;
@@ -41,7 +41,7 @@ mod imp {
         pub(super) pos: RefCell<HashMap<gtk::Widget, (f64, f64)>>,
         /// The slot each child was last sent towards.
         pub(super) target: RefCell<HashMap<gtk::Widget, (i32, i32)>>,
-        pub(super) anims: RefCell<HashMap<gtk::Widget, adw::TimedAnimation>>,
+        pub(super) anims: RefCell<HashMap<gtk::Widget, ndl::TimedAnimation>>,
         /// The slot index a dragged chip would take (a gap opens there).
         pub(super) gap: Cell<Option<usize>>,
         /// The largest chip seen by any zone (shared), to size an empty
@@ -347,7 +347,7 @@ impl ChipFlow {
         let weak = self.downgrade();
         let c = child.clone();
         let (tx, ty) = (to.0 as f64, to.1 as f64);
-        let target = adw::CallbackAnimationTarget::new(move |v| {
+        let target = ndl::CallbackAnimationTarget::new(move |v| {
             let Some(flow) = weak.upgrade() else {
                 return;
             };
@@ -357,8 +357,8 @@ impl ChipFlow {
             );
             flow.queue_allocate();
         });
-        let anim = adw::TimedAnimation::new(self, 0.0, 1.0, ANIM_MS, target);
-        anim.set_easing(adw::Easing::EaseOutCubic);
+        let anim = ndl::TimedAnimation::new(self, 0.0, 1.0, ANIM_MS, target);
+        anim.set_easing(ndl::Easing::EaseOutCubic);
         imp.anims.borrow_mut().insert(child, anim.clone());
         anim.play();
     }

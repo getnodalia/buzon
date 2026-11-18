@@ -2,7 +2,7 @@
 //! lightbox preview, rebuilding the grid or table, and what a click on an
 //! item does.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::ComponentSender;
 
 use crate::i18n::i18n;

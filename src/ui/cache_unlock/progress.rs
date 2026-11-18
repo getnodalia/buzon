@@ -11,8 +11,8 @@ use std::sync::mpsc::{self, RecvTimeoutError, TryRecvError};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 
 use crate::cache::at_rest::{self, Problem, Protection, Step};
 use crate::i18n::i18n;
@@ -146,13 +146,13 @@ fn show_until_done(
 /// The window's parts that change with the step.
 #[derive(Clone)]
 struct View {
-    window: adw::Window,
+    window: ndl::Window,
     heading: gtk::Label,
     body: gtk::Label,
     /// The spinner while waiting, the bar while converting, in one place
     /// so the window keeps its size.
     busy: gtk::Stack,
-    spinner: adw::Spinner,
+    spinner: ndl::Spinner,
     bar: gtk::ProgressBar,
     quit: gtk::Button,
 }
@@ -174,7 +174,7 @@ impl View {
         body.set_wrap(true);
         body.set_justify(gtk::Justification::Center);
         body.set_max_width_chars(40);
-        let spinner = adw::Spinner::new();
+        let spinner = ndl::Spinner::new();
         spinner.set_size_request(32, 32);
         spinner.set_halign(gtk::Align::Center);
         let bar = gtk::ProgressBar::new();
@@ -200,13 +200,13 @@ impl View {
         content.append(&busy);
         content.append(&quit);
 
-        let toolbar = adw::ToolbarView::new();
-        let header = adw::HeaderBar::new();
+        let toolbar = ndl::ToolbarView::new();
+        let header = ndl::HeaderBar::new();
         header.set_show_title(false);
         toolbar.add_top_bar(&header);
         toolbar.set_content(Some(&content));
 
-        let window = adw::Window::new();
+        let window = ndl::Window::new();
         window.set_title(Some("Buzón"));
         window.set_default_size(440, -1);
         window.set_resizable(false);

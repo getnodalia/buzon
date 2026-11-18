@@ -3,7 +3,7 @@
 
 use std::cell::Cell;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;

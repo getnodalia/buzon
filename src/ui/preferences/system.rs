@@ -43,7 +43,7 @@ pub(super) fn nautilus_status_text(state: &crate::desktop::nautilus_ext::State) 
     }
 }
 
-/// Hide the "editable" pencil an `adw::EntryRow` draws whatever its
+/// Hide the "editable" pencil an `ndl::EntryRow` draws whatever its
 /// `editable` says (the icon carries the `edit-icon` style class).
 pub(super) fn hide_edit_icon(widget: &gtk::Widget) {
     let mut child = widget.first_child();
@@ -73,9 +73,9 @@ pub(super) fn storage_text(storage: Option<(u64, u64, u64)>) -> String {
 }
 
 /// A plain error alert over the settings window.
-#[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
-fn report(parent: &adw::Window, heading: &str, body: &str) {
-    let dialog = adw::MessageDialog::new(Some(parent), Some(heading), Some(body));
+fn report(parent: &ndl::Window, heading: &str, body: &str) {
+    let dialog =
+        crate::ui::message_dialog::MessageDialog::new(Some(parent), Some(heading), Some(body));
     dialog.add_response("ok", &i18n("OK"));
     dialog.set_close_response("ok");
     dialog.present();
@@ -94,7 +94,7 @@ impl Preferences {
         }
     }
 
-    pub(super) fn on_nautilus_install(&mut self, root: &adw::Window) {
+    pub(super) fn on_nautilus_install(&mut self, root: &ndl::Window) {
         if let Err(e) = crate::desktop::nautilus_ext::install() {
             report(root, &i18n("Could not install the extension"), &e);
         }
@@ -128,15 +128,15 @@ impl Preferences {
     pub(super) fn on_remove_downloads(
         &mut self,
         sender: ComponentSender<Self>,
-        root: &adw::Window,
+        root: &ndl::Window,
     ) {
-        let dialog = adw::AlertDialog::new(
+        let dialog = ndl::AlertDialog::new(
             Some(&i18n("Remove downloaded mail?")),
             Some(&i18n("Mail and attachments on this computer are removed and fetched again when opened. Nothing on the server changes.")),
         );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("remove", &i18n("Remove"));
-        dialog.set_response_appearance("remove", adw::ResponseAppearance::Destructive);
+        dialog.set_response_appearance("remove", ndl::ResponseAppearance::Destructive);
         dialog.set_default_response(Some("cancel"));
         dialog.set_close_response("cancel");
         let s = sender.input_sender().clone();
@@ -174,7 +174,7 @@ impl Preferences {
         let _ = sender.output(PrefOutput::SetKeepDownloads(days));
     }
 
-    pub(super) fn on_nautilus_remove(&mut self, root: &adw::Window) {
+    pub(super) fn on_nautilus_remove(&mut self, root: &ndl::Window) {
         if let Err(e) = crate::desktop::nautilus_ext::remove() {
             report(root, &i18n("Could not remove the extension"), &e);
         }
@@ -244,7 +244,7 @@ impl Preferences {
         }
     }
 
-    pub(super) fn on_nautilus_restart_files(&mut self, root: &adw::Window) {
+    pub(super) fn on_nautilus_restart_files(&mut self, root: &ndl::Window) {
         if let Err(e) = crate::desktop::nautilus_ext::quit_files() {
             report(root, &i18n("Could not restart Files"), &e);
         }

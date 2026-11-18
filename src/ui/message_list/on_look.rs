@@ -5,8 +5,8 @@ use super::layout::{schedule_midnight_refresh, BULK_BAR_ROOM};
 use super::sort::{column_sort, SortOrder};
 use super::types::{MessageListInput, MessageListOutput};
 use super::MessageList;
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageList {

@@ -35,7 +35,8 @@ struct Session {
 thread_local! {
     static AVAILABLE: Cell<Option<bool>> = const { Cell::new(None) };
     static SESSION: RefCell<Option<Session>> = const { RefCell::new(None) };
-    static SUBSCRIBED: Cell<bool> = const { Cell::new(false) };
+    /// The previewer's signals, heard for as long as Buzón runs.
+    static SUBSCRIPTIONS: RefCell<Vec<gio::SignalSubscription>> = const { RefCell::new(Vec::new()) };
     /// Sushi 51 added an activation token to `ShowFile`; older ones refuse
     /// the call with it, and are then called without it.
     static WITH_TOKEN: Cell<bool> = const { Cell::new(true) };
@@ -197,10 +198,10 @@ fn call_show_file(
 
 /// Listen for the previewer's arrow keys and for its window going, once.
 fn subscribe(conn: &gio::DBusConnection) {
-    if SUBSCRIBED.replace(true) {
+    if SUBSCRIPTIONS.with_borrow(|s| !s.is_empty()) {
         return;
     }
-    conn.signal_subscribe(
+    let keys = conn.subscribe_to_signal(
         Some(NAME),
         Some(IFACE),
         // Names on the wire, never translated.
@@ -208,21 +209,21 @@ fn subscribe(conn: &gio::DBusConnection) {
         Some(PATH),
         None,
         gio::DBusSignalFlags::NONE,
-        |_, _, _, _, _, params| {
-            if let Some(direction) = params.child_value(0).get::<u32>() {
+        |signal| {
+            if let Some(direction) = signal.parameters.child_value(0).get::<u32>() {
                 step(direction);
             }
         },
     );
-    conn.signal_subscribe(
+    let visibility = conn.subscribe_to_signal(
         Some(NAME),
         Some("org.freedesktop.DBus.Properties"),
         Some("PropertiesChanged"),
         Some(PATH),
         Some(IFACE),
         gio::DBusSignalFlags::NONE,
-        |_, _, _, _, _, params| {
-            let changed = params.child_value(1);
+        |signal| {
+            let changed = signal.parameters.child_value(1);
             let dict = glib::VariantDict::new(Some(&changed));
             let closed = dict
                 .lookup::<bool>("Visible")
@@ -243,6 +244,7 @@ fn subscribe(conn: &gio::DBusConnection) {
             }
         },
     );
+    SUBSCRIPTIONS.with_borrow_mut(|s| s.extend([keys, visibility]));
 }
 
 /// The previewer's arrow keys, a `GtkDirectionType`: back for Up, Left and

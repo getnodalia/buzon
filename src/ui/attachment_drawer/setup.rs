@@ -1,8 +1,8 @@
 //! Steps of the drawer's `init`: the widgets and gestures built around
 //! the view.
 
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::{AttachmentDrawer, AttachmentDrawerInput};

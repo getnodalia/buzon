@@ -36,7 +36,7 @@ pub(super) struct MergeRun {
     last: Option<Instant>,
     /// A wait is running; its end sends the next message.
     waiting_out: bool,
-    toast: adw::Toast,
+    toast: ndl::Toast,
 }
 
 /// The merges under way, shared with the quit paths.
@@ -163,8 +163,8 @@ impl AppModel {
             "mail merge: {total} messages from account {account_id}, one every {:?}",
             interval.unwrap_or_default()
         );
-        let toast = adw::Toast::builder()
-            .priority(adw::ToastPriority::High)
+        let toast = ndl::Toast::builder()
+            .priority(ndl::ToastPriority::High)
             .timeout(0)
             .button_label(i18n("Stop"))
             .build();
@@ -312,7 +312,7 @@ impl AppModel {
             if run.stopped { ", stopped" } else { "" }
         );
         run.toast.dismiss();
-        let toast = adw::Toast::new(&run.result_title());
+        let toast = ndl::Toast::new(&run.result_title());
         if run.failed > 0 {
             toast.set_button_label(Some(&i18n("Show Outbox")));
             let s = sender.clone();

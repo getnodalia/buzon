@@ -1,6 +1,6 @@
 //! Applying reader settings: zoom, Reader View, font and color overrides.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;

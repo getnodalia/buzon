@@ -8,7 +8,7 @@
 //! privacy → personalize → done. Accounts and settings apply through the app's existing
 //! pipelines ([`WelcomeOutput`]), so the wizard owns no persistence of its own.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config::Protocol;
@@ -53,26 +53,26 @@ pub(crate) struct Welcome {
 }
 
 pub(crate) struct WelcomeWidgets {
-    carousel: adw::Carousel,
+    carousel: ndl::Carousel,
     back_btn: gtk::Button,
     wordmark_frame: gtk::Box,
     wordmark_box: gtk::Box,
     // Account page.
-    provider_row: adw::ComboRow,
+    provider_row: ndl::ComboRow,
     hint_lbl: gtk::Label,
-    name_row: adw::EntryRow,
-    email_row: adw::EntryRow,
-    pass_row: adw::PasswordEntryRow,
-    server_exp: adw::ExpanderRow,
-    host_row: adw::EntryRow,
-    port_row: adw::EntryRow,
-    smtp_row: adw::EntryRow,
-    smtp_port_row: adw::EntryRow,
-    oauth_client_id_row: adw::EntryRow,
-    oauth_secret_row: adw::PasswordEntryRow,
-    oauth_auth_url_row: adw::EntryRow,
-    oauth_token_url_row: adw::EntryRow,
-    oauth_scope_row: adw::EntryRow,
+    name_row: ndl::EntryRow,
+    email_row: ndl::EntryRow,
+    pass_row: ndl::PasswordEntryRow,
+    server_exp: ndl::ExpanderRow,
+    host_row: ndl::EntryRow,
+    port_row: ndl::EntryRow,
+    smtp_row: ndl::EntryRow,
+    smtp_port_row: ndl::EntryRow,
+    oauth_client_id_row: ndl::EntryRow,
+    oauth_secret_row: ndl::PasswordEntryRow,
+    oauth_auth_url_row: ndl::EntryRow,
+    oauth_token_url_row: ndl::EntryRow,
+    oauth_scope_row: ndl::EntryRow,
     status_lbl: gtk::Label,
     test_spinner: gtk::Spinner,
     add_btn: gtk::Button,
@@ -85,13 +85,13 @@ pub(crate) struct WelcomeWidgets {
     goa_status: gtk::Label,
     footer_next: gtk::Button,
     // Prefs pages.
-    sw_remote: adw::SwitchRow,
-    sw_gravatar: adw::SwitchRow,
-    sw_logos: adw::SwitchRow,
-    sw_notif: adw::SwitchRow,
-    preview_row: adw::ComboRow,
-    sw_avatars: adw::SwitchRow,
-    sw_threading: adw::SwitchRow,
+    sw_remote: ndl::SwitchRow,
+    sw_gravatar: ndl::SwitchRow,
+    sw_logos: ndl::SwitchRow,
+    sw_notif: ndl::SwitchRow,
+    preview_row: ndl::ComboRow,
+    sw_avatars: ndl::SwitchRow,
+    sw_threading: ndl::SwitchRow,
     /// The gallery's latest pick, read when the wizard finishes.
     icon_choice: std::rc::Rc<std::cell::RefCell<String>>,
 }
@@ -105,11 +105,11 @@ impl Component for Welcome {
     type Input = WelcomeInput;
     type Output = WelcomeOutput;
     type CommandOutput = WelcomeCmd;
-    type Root = adw::Window;
+    type Root = ndl::Window;
     type Widgets = WelcomeWidgets;
 
     fn init_root() -> Self::Root {
-        let win = adw::Window::new();
+        let win = ndl::Window::new();
         win.set_default_size(600, 700);
         win.add_css_class("welcome-window");
         win.set_title(Some(i18n("Welcome to Buzón").as_str()));
@@ -136,7 +136,7 @@ impl Component for Welcome {
             manual_added: false,
         };
 
-        let carousel = adw::Carousel::new();
+        let carousel = ndl::Carousel::new();
         carousel.set_interactive(false); // guided: buttons drive the flow
         carousel.set_hexpand(true);
         carousel.set_vexpand(true);
@@ -159,7 +159,7 @@ impl Component for Welcome {
         acct.append(&acct_title);
 
         let form = card();
-        let provider_row = adw::ComboRow::new();
+        let provider_row = ndl::ComboRow::new();
         provider_row.set_title(&i18n("Provider"));
         let labels: Vec<&str> = wizard_providers().map(|p| p.wizard_label()).collect();
         provider_row.set_model(Some(&gtk::StringList::new(&labels)));
@@ -176,13 +176,13 @@ impl Component for Welcome {
                 s.input_sender().emit(WelcomeInput::ProviderChanged)
             });
         }
-        let name_row = adw::EntryRow::new();
+        let name_row = ndl::EntryRow::new();
         name_row.set_title(&i18n("Your name"));
-        let email_row = adw::EntryRow::new();
+        let email_row = ndl::EntryRow::new();
         email_row.set_title(&i18n("Email address"));
-        let pass_row = adw::PasswordEntryRow::new();
+        let pass_row = ndl::PasswordEntryRow::new();
         pass_row.set_title(&i18n("Password"));
-        let server_exp = adw::ExpanderRow::new();
+        let server_exp = ndl::ExpanderRow::new();
         server_exp.set_title(&i18n("Server details"));
         server_exp.set_subtitle(&i18n("Filled in for known providers"));
         // The default provider is the plain "IMAP/POP3 Account" entry,
@@ -190,14 +190,14 @@ impl Component for Welcome {
         // known provider collapses them (ProviderChanged), picking the
         // generic one re-opens them.
         server_exp.set_expanded(true);
-        let host_row = adw::EntryRow::new();
+        let host_row = ndl::EntryRow::new();
         host_row.set_title(&i18n("IMAP server"));
-        let port_row = adw::EntryRow::new();
+        let port_row = ndl::EntryRow::new();
         port_row.set_title(&i18n("IMAP port"));
         port_row.set_text("993");
-        let smtp_row = adw::EntryRow::new();
+        let smtp_row = ndl::EntryRow::new();
         smtp_row.set_title(&i18n("SMTP server"));
-        let smtp_port_row = adw::EntryRow::new();
+        let smtp_port_row = ndl::EntryRow::new();
         smtp_port_row.set_title(&i18n("SMTP port"));
         smtp_port_row.set_text("587");
         server_exp.add_row(&host_row);
@@ -205,15 +205,15 @@ impl Component for Welcome {
         server_exp.add_row(&smtp_row);
         server_exp.add_row(&smtp_port_row);
         // Custom OAuth's client, the same fields as the account editor's.
-        let oauth_client_id_row = adw::EntryRow::new();
+        let oauth_client_id_row = ndl::EntryRow::new();
         oauth_client_id_row.set_title(&i18n("OAuth Client ID"));
-        let oauth_secret_row = adw::PasswordEntryRow::new();
+        let oauth_secret_row = ndl::PasswordEntryRow::new();
         oauth_secret_row.set_title(&i18n("OAuth Client Secret (optional)"));
-        let oauth_auth_url_row = adw::EntryRow::new();
+        let oauth_auth_url_row = ndl::EntryRow::new();
         oauth_auth_url_row.set_title(&i18n("Authorization URL"));
-        let oauth_token_url_row = adw::EntryRow::new();
+        let oauth_token_url_row = ndl::EntryRow::new();
         oauth_token_url_row.set_title(&i18n("Token URL"));
-        let oauth_scope_row = adw::EntryRow::new();
+        let oauth_scope_row = ndl::EntryRow::new();
         oauth_scope_row.set_title(&i18n("Scopes (space-separated)"));
         form.append(&provider_row);
         form.append(&name_row);
@@ -281,8 +281,8 @@ impl Component for Welcome {
         build_done_page(&carousel);
 
         // ---- Chrome: draggable top strip with Back button ----
-        let tv = adw::ToolbarView::new();
-        let hb = adw::HeaderBar::new();
+        let tv = ndl::ToolbarView::new();
+        let hb = ndl::HeaderBar::new();
         hb.set_show_title(false);
         hb.add_css_class("flat");
         let back_btn = gtk::Button::from_icon_name("go-previous-symbolic");
@@ -309,7 +309,7 @@ impl Component for Welcome {
             footer_next.connect_clicked(move |_| s.input_sender().emit(WelcomeInput::Next));
         }
         content.append(&footer_next);
-        let dots = adw::CarouselIndicatorDots::new();
+        let dots = ndl::CarouselIndicatorDots::new();
         dots.set_carousel(Some(&carousel));
         dots.set_margin_bottom(14);
         content.append(&dots);

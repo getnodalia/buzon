@@ -8140,3 +8140,12 @@ msgstr ""
 
 msgid "Hyprlab"
 msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Desktop window controls"
+msgstr ""
+
+msgid "Use your desktop's buttons instead of Buzón's round ones. Applies after a restart."
+msgstr ""

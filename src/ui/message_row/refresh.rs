@@ -10,7 +10,7 @@ use crate::config::ListColumn;
 use crate::i18n::{i18n, i18n_f};
 use crate::models::{Importance, Message};
 use crate::ui::column_bin::ColumnBin;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl Row {

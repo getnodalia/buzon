@@ -438,7 +438,7 @@ impl Preferences {
             let sender = sender.clone();
             gtk::glib::idle_add_local_full(gtk::glib::Priority::LOW, move || {
                 let dicts = crate::desktop::spell::installed_dictionaries();
-                let system = adw::SwitchRow::builder()
+                let system = ndl::SwitchRow::builder()
                     .title(i18n("System language"))
                     .subtitle(gtk::glib::markup_escape_text(
                         &crate::desktop::spell::spell_language_names(
@@ -449,7 +449,7 @@ impl Preferences {
                 rows.expander.add_row(&system);
                 *rows.system.borrow_mut() = Some(system.clone());
                 for d in &dicts {
-                    let row = adw::SwitchRow::builder()
+                    let row = ndl::SwitchRow::builder()
                         .title(gtk::glib::markup_escape_text(
                             &crate::desktop::spell::language_display_name(d),
                         ))
@@ -487,7 +487,7 @@ impl Preferences {
             // The learned-words list manages itself entirely in widget-land:
             // the rows call the spell module directly and rebuild in place.
             let exp = widgets.composing.spell_words_row.clone();
-            let add = adw::EntryRow::builder().title(i18n("Add a word")).build();
+            let add = ndl::EntryRow::builder().title(i18n("Add a word")).build();
             add.set_show_apply_button(true);
             {
                 let exp = exp.clone();

@@ -11,7 +11,7 @@ use crate::config::ComposeFormat;
 use crate::i18n::{i18n, i18n_f};
 use crate::mail::attachment_reminder::{keywords, mentioned, without_signature};
 use crate::ui::rich_editor::SourceKind;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl Compose {
@@ -66,7 +66,6 @@ impl Compose {
     /// Ask whether to send without an attachment, naming the `word` that
     /// mentions one. Send Anyway sends `fields` as they are; Cancel, the
     /// default, goes back to the message.
-    #[allow(deprecated)] // adw::MessageDialog, as in crate::ui::dialog
     pub(super) fn ask_send_unattached(
         &self,
         word: &str,
@@ -75,7 +74,7 @@ impl Compose {
         sender: &ComponentSender<Self>,
     ) {
         let parent = widgets.to_row.root().and_downcast::<gtk::Window>();
-        let dialog = adw::MessageDialog::new(
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
             parent.as_ref(),
             Some(&i18n("Send without an attachment?")),
             Some(&i18n_f(
@@ -87,7 +86,7 @@ impl Compose {
         dialog.add_response("send", &i18n("Send Anyway"));
         dialog.set_default_response(Some("cancel"));
         dialog.set_close_response("cancel");
-        dialog.set_response_appearance("send", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("send", ndl::ResponseAppearance::Suggested);
         let pending = RefCell::new(Some(fields));
         let s = sender.input_sender().clone();
         dialog.connect_response(None, move |_, resp| {

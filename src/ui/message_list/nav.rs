@@ -6,7 +6,7 @@ use super::threading::thread_slot;
 use super::types::{MessageListInput, MessageListOutput, SelectionProbe};
 use super::MessageList;
 use crate::ui::message_row::Slot;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 impl MessageList {

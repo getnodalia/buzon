@@ -5,8 +5,8 @@ use super::sort::{column_sort, SortOrder};
 use super::types::MessageListInput;
 use super::MessageList;
 use crate::ui::message_row::RowShared;
-use adw::prelude::*;
 use gtk::glib;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use std::rc::Rc;
 

@@ -4,7 +4,7 @@
 use super::snippets::tag_chips_html;
 use super::types::{CardAttachment, MessageViewOutput, SelectMode};
 use super::MessageView;
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 use webkit6::prelude::WebViewExt;
 

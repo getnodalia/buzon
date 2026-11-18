@@ -9,7 +9,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::carddav::{self, Account, Status};
@@ -101,15 +101,15 @@ pub(super) struct ContactSources {
     list: gtk::ListBox,
     add_btn: gtk::Button,
     no_eds: gtk::Label,
-    book_row: adw::ComboRow,
+    book_row: ndl::ComboRow,
     /// Set while the book row's model is replaced, which fires its notify.
     book_guard: Rc<std::cell::Cell<bool>>,
-    placement_row: adw::ComboRow,
+    placement_row: ndl::ComboRow,
     placement_guard: Rc<std::cell::Cell<bool>>,
-    toasts: adw::ToastOverlay,
-    nav: adw::NavigationView,
-    editor_page: adw::NavigationPage,
-    editor_slot: adw::Bin,
+    toasts: ndl::ToastOverlay,
+    nav: ndl::NavigationView,
+    editor_page: ndl::NavigationPage,
+    editor_slot: ndl::Bin,
     save_btn: gtk::Button,
     remove_btn: gtk::Button,
     editing: Option<Editing>,
@@ -217,22 +217,22 @@ impl SimpleComponent for ContactSources {
     type Output = ContactSourcesOutput;
 
     view! {
-        adw::Bin {
+        ndl::Bin {
             #[wrap(Some)]
             #[name = "nav"]
-            set_child = &adw::NavigationView {
-                add = &adw::NavigationPage {
-                    set_title: &i18n("Contacts"),
+            set_child = &ndl::NavigationView {
+                add = &ndl::NavigationPage {
+                    set_title: i18n("Contacts").as_str(),
                     set_tag: Some("list"),
 
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
+                    set_child = &ndl::ToolbarView {
                         #[wrap(Some)]
                         #[name = "toasts"]
-                        set_content = &adw::ToastOverlay {
+                        set_content = &ndl::ToastOverlay {
                             #[wrap(Some)]
-                            set_child = &adw::PreferencesPage {
-                                add = &adw::PreferencesGroup {
+                            set_child = &ndl::PreferencesPage {
+                                add = &ndl::PreferencesGroup {
                                     set_title: &i18n("Address Books"),
                                     set_description: Some(&i18n("Where contacts come from for Contacts, suggestions, sender pictures and filters. Switching one off leaves it out of Buzón.")),
                                     #[wrap(Some)]
@@ -273,10 +273,10 @@ impl SimpleComponent for ContactSources {
                                         set_visible: false,
                                     },
                                 },
-                                add = &adw::PreferencesGroup {
+                                add = &ndl::PreferencesGroup {
                                     set_title: &i18n("New Contacts"),
                                     #[name = "book_row"]
-                                    adw::ComboRow {
+                                    ndl::ComboRow {
                                         set_title: &i18n("Save new contacts in"),
                                         set_subtitle: &i18n("Unless another is picked when the contact is made."),
                                         connect_selected_notify[sender] => move |row| {
@@ -284,11 +284,11 @@ impl SimpleComponent for ContactSources {
                                         },
                                     },
                                 },
-                                add = &adw::PreferencesGroup {
+                                add = &ndl::PreferencesGroup {
                                     set_title: &i18n("In Mail"),
                                     // Thunderbird's "Show only the display
                                     // name for people in my address book".
-                                    adw::SwitchRow {
+                                    ndl::SwitchRow {
                                         set_title: &i18n("Show names from Contacts"),
                                         set_subtitle: &i18n("Saved addresses show the contact's name, not the mail's."),
                                         set_active: init.contact_names,
@@ -297,17 +297,17 @@ impl SimpleComponent for ContactSources {
                                         },
                                     },
                                 },
-                                add = &adw::PreferencesGroup {
+                                add = &ndl::PreferencesGroup {
                                     set_title: &i18n("Layout"),
                                     // The same row as Settings → Sidebar's.
                                     #[name = "placement_row"]
-                                    adw::ComboRow {
+                                    ndl::ComboRow {
                                         set_title: &i18n("Contacts placement"),
                                         set_subtitle: &i18n("'In the footer' disables expand/collapse."),
                                         set_model: Some(&crate::ui::preferences::contacts_placement_model()),
                                         set_selected: crate::ui::preferences::contacts_placement_index(init.placement),
                                     },
-                                    adw::SwitchRow {
+                                    ndl::SwitchRow {
                                         set_title: &i18n("Keep the search field open"),
                                         set_active: init.search_open,
                                         connect_active_notify[sender] => move |row| {
@@ -321,13 +321,13 @@ impl SimpleComponent for ContactSources {
                 },
 
                 #[name = "editor_page"]
-                add = &adw::NavigationPage {
-                    set_title: &i18n("Address Book"),
+                add = &ndl::NavigationPage {
+                    set_title: i18n("Address Book").as_str(),
                     set_tag: Some("editor"),
 
                     #[wrap(Some)]
-                    set_child = &adw::ToolbarView {
-                        add_top_bar = &adw::HeaderBar {
+                    set_child = &ndl::ToolbarView {
+                        add_top_bar = &ndl::HeaderBar {
                             set_show_end_title_buttons: true,
                             #[name = "save_btn"]
                             pack_end = &gtk::Button {
@@ -348,7 +348,7 @@ impl SimpleComponent for ContactSources {
                         set_content = &gtk::ScrolledWindow {
                             set_hscrollbar_policy: gtk::PolicyType::Never,
                             #[wrap(Some)]
-                            set_child = &adw::Clamp {
+                            set_child = &ndl::Clamp {
                                 set_maximum_size: 640,
                                 set_tightening_threshold: 480,
                                 set_margin_top: 24,
@@ -357,7 +357,7 @@ impl SimpleComponent for ContactSources {
                                 set_margin_end: 24,
                                 #[wrap(Some)]
                                 #[name = "editor_slot"]
-                                set_child = &adw::Bin {},
+                                set_child = &ndl::Bin {},
                             },
                         },
                     },

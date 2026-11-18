@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -26,7 +26,7 @@ impl AppModel {
     /// launcher, the app icon set up, the demo cache seeded): the literal
     /// keeps its field order, which is the order those happen in.
     pub(super) fn new(
-        root: &adw::ApplicationWindow,
+        root: &ndl::ApplicationWindow,
         sender: &ComponentSender<Self>,
         boot: Boot,
         children: Children,
@@ -398,6 +398,7 @@ impl AppModel {
             run_in_background: std::rc::Rc::new(std::cell::Cell::new(prefs.run_in_background)),
             autostart: config::load_autostart(),
             start_fullscreen: prefs.start_fullscreen,
+            system_window_controls: prefs.system_window_controls,
             reading_pane: prefs.reading_pane,
             assistant_policy: prefs.assistant.clone(),
             assistant: Default::default(),

@@ -2,7 +2,7 @@
 //! mid: links, .eml files and files to attach. Each is queued until the app
 //! can take it, then sent on as an AppMsg.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::desktop::single_instance::StartView;

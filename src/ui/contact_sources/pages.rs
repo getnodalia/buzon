@@ -3,7 +3,7 @@
 
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::contacts::carddav::{self, Account, Status};
@@ -113,7 +113,7 @@ pub(super) fn save_ldap(
 
 impl ContactSources {
     pub(super) fn toast(&self, text: &str) {
-        let toast = adw::Toast::new(text);
+        let toast = ndl::Toast::new(text);
         toast.set_timeout(6);
         self.toasts.add_toast(toast);
     }
@@ -155,14 +155,14 @@ impl ContactSources {
         };
         self.editing = Some(Editing::Source(source.id.clone()));
         *self.save_action.borrow_mut() = None;
-        self.editor_page.set_title(&source.title);
+        self.editor_page.set_title(source.title.as_str());
         let removable = matches!(source.kind, Kind::CardDav(_) | Kind::Ldap(_));
         self.remove_btn.set_visible(removable);
         let page = gtk::Box::new(gtk::Orientation::Vertical, 24);
         page.append(&source_header(&source));
         page.append(&name_group(&source, sender.input_sender().clone()));
         if let Some(why) = &source.paused {
-            let note = adw::PreferencesGroup::new();
+            let note = ndl::PreferencesGroup::new();
             note.set_description(Some(why));
             page.append(&note);
         }
@@ -215,7 +215,7 @@ impl ContactSources {
     /// The add page, on the kind at `kind` in the dropdown.
     pub(super) fn open_add(&mut self, kind: u32, sender: &ComponentSender<Self>) {
         self.editing = Some(Editing::Add);
-        self.editor_page.set_title(&i18n("Add Address Book"));
+        self.editor_page.set_title(i18n("Add Address Book"));
         self.remove_btn.set_visible(false);
         let what = ADD_KINDS.get(kind as usize).unwrap_or(&ADD_KINDS[0]).what;
         match what {
@@ -269,13 +269,13 @@ impl ContactSources {
     }
 
     /// The Buzón book's own rows: its size, import, export, emptying.
-    fn buzon_group(&self, sender: &ComponentSender<Self>) -> adw::PreferencesGroup {
-        let group = adw::PreferencesGroup::new();
+    fn buzon_group(&self, sender: &ComponentSender<Self>) -> ndl::PreferencesGroup {
+        let group = ndl::PreferencesGroup::new();
         group.set_title(&i18n("Buzón Address Book"));
         group.set_description(Some(&i18n(
             "Kept in Buzón's own data folder. Works without GNOME.",
         )));
-        let count = adw::ActionRow::new();
+        let count = ndl::ActionRow::new();
         count.set_title(&i18n("Contacts in the Buzón book"));
         let n = gtk::Label::new(Some(&self.local_count.to_string()));
         n.add_css_class("dim-label");
@@ -283,7 +283,7 @@ impl ContactSources {
         group.add(&count);
         let action =
             |title: String, subtitle: String, msg: fn() -> ContactSourcesInput, enabled: bool| {
-                let row = adw::ActionRow::new();
+                let row = ndl::ActionRow::new();
                 row.set_title(&title);
                 row.set_subtitle(&subtitle);
                 row.set_activatable(true);

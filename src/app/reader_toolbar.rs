@@ -1,7 +1,7 @@
 //! The reader header's action buttons: their order, folding into the
 //! overflow menu when the window is narrow, and the menu itself.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -31,14 +31,14 @@ pub(super) struct ReaderToolbarWidgets {
     pub(super) spinner: gtk::Widget,
     /// With the reader below the list or off (#475) the buttons move to
     /// this box in the list header.
-    pub(super) list_header: adw::HeaderBar,
+    pub(super) list_header: ndl::HeaderBar,
     pub(super) list_tools: gtk::Box,
-    bin: adw::BreakpointBin,
-    breakpoint: adw::Breakpoint,
+    bin: ndl::BreakpointBin,
+    breakpoint: ndl::Breakpoint,
     /// The second breakpoint: below this the buttons draw narrower, or the
     /// left group, ⋯ and window controls would push past the pane's edge.
     /// The left group itself never folds.
-    compact_breakpoint: adw::Breakpoint,
+    compact_breakpoint: ndl::Breakpoint,
     /// What the folded row (left group, ⋯, window controls) needs at full
     /// size, and whether that was measured rather than estimated.
     compact_need: std::cell::Cell<i32>,
@@ -786,8 +786,8 @@ pub(super) fn detach(w: &gtk::Widget) {
     {
         tools.remove(w);
     } else if let Some(header) = parent
-        .ancestor(adw::HeaderBar::static_type())
-        .and_downcast::<adw::HeaderBar>()
+        .ancestor(ndl::HeaderBar::static_type())
+        .and_downcast::<ndl::HeaderBar>()
     {
         header.remove(w);
     }
@@ -910,11 +910,11 @@ fn remeasure_soon(sender: relm4::Sender<AppMsg>) -> std::rc::Rc<dyn Fn()> {
 }
 
 /// A pane narrower than `px`.
-fn max_width(px: f64) -> adw::BreakpointCondition {
-    adw::BreakpointCondition::new_length(
-        adw::BreakpointConditionLengthType::MaxWidth,
+fn max_width(px: f64) -> ndl::BreakpointCondition {
+    ndl::BreakpointCondition::new_length(
+        ndl::BreakpointConditionLengthType::MaxWidth,
         px,
-        adw::LengthUnit::Px,
+        ndl::LengthUnit::Px,
     )
 }
 
@@ -924,8 +924,8 @@ fn fold_breakpoint(
     sender: &ComponentSender<AppModel>,
     px: f64,
     msg: fn(bool) -> AppMsg,
-) -> adw::Breakpoint {
-    let bp = adw::Breakpoint::new(max_width(px));
+) -> ndl::Breakpoint {
+    let bp = ndl::Breakpoint::new(max_width(px));
     let s = sender.input_sender().clone();
     bp.connect_apply(move |_| {
         let _ = s.send(msg(true));

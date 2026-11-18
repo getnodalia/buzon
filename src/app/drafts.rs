@@ -2,7 +2,7 @@
 
 use std::collections::HashSet;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::i18n::{i18n, i18n_f};
@@ -106,7 +106,7 @@ impl AppModel {
                 ("account", &self.account_label(account_id)),
             ],
         );
-        self.show_toast(&adw::Toast::new(&text));
+        self.show_toast(&ndl::Toast::new(&text));
     }
 
     /// Fetch a picked template's body, then put it into composer `id`.

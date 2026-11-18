@@ -1,6 +1,6 @@
 //! Settings → Filters: the search box, the rules and Apply Now.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::super::{AccountsInput, AccountsWindow};
@@ -9,7 +9,7 @@ use crate::i18n::i18n;
 /// The page, and the widgets on it that the panel reaches later.
 #[derive(Debug)]
 pub(in crate::ui::accounts) struct FiltersPage {
-    pub(in crate::ui::accounts) page: adw::PreferencesPage,
+    pub(in crate::ui::accounts) page: ndl::PreferencesPage,
     pub(in crate::ui::accounts) apply_filters_spinner: gtk::Spinner,
     pub(in crate::ui::accounts) apply_filters_label: gtk::Label,
     pub(in crate::ui::accounts) filters_list: gtk::ListBox,
@@ -18,10 +18,10 @@ pub(in crate::ui::accounts) struct FiltersPage {
 impl FiltersPage {
     pub(in crate::ui::accounts) fn build(sender: &ComponentSender<AccountsWindow>) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
+            page = ndl::PreferencesPage {
                 // A search box over the long lists (#141): rows
                 // that do not match the text are hidden.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     #[name = "filters_search"]
                     gtk::SearchEntry {
                         set_placeholder_text: Some(i18n("Search filters").as_str()),
@@ -33,7 +33,7 @@ impl FiltersPage {
 
                 // Mail hygiene (moved from Settings): filters,
                 // the remote-content allow list, the blocklist.
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Filters"),
                     set_description: Some(
                         i18n("File or tag incoming mail automatically. Filters run on each Inbox as it syncs; Apply Now runs them over the mail already there.").as_str()

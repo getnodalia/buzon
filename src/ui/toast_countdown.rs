@@ -12,8 +12,8 @@
 use std::cell::Cell;
 use std::time::{Duration, Instant};
 
-use adw::prelude::*;
 use gtk::{glib, graphene, gsk, subclass::prelude::*};
+use ndl::prelude::*;
 
 /// Thickness of the line.
 const LINE: f32 = 3.0;
@@ -61,7 +61,7 @@ mod imp {
 
 glib::wrapper! {
     pub(crate) struct ToastCountdown(ObjectSubclass<imp::ToastCountdown>)
-        @extends gtk::Widget;
+        @extends gtk::Widget, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl ToastCountdown {

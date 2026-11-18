@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -151,7 +151,6 @@ impl AppModel {
 
     /// Ask before leaving a list: what will happen depends on the route the
     /// list offers, and a mail sent in the user's name is said so up front.
-    #[allow(deprecated)] // adw::MessageDialog: AlertDialog would change how it looks
     fn confirm_unsubscribe(
         &self,
         message: Message,
@@ -184,12 +183,16 @@ impl AppModel {
         let parent = relm4::main_application()
             .active_window()
             .unwrap_or_else(|| self.window.clone().upcast());
-        let dialog = adw::MessageDialog::new(Some(&parent), Some(&heading), Some(body.as_str()));
+        let dialog = crate::ui::message_dialog::MessageDialog::new(
+            Some(&parent),
+            Some(&heading),
+            Some(body.as_str()),
+        );
         dialog.add_response("cancel", &i18n("Cancel"));
         dialog.add_response("unsub", &i18n("Unsubscribe"));
         dialog.set_default_response(Some("unsub"));
         dialog.set_close_response("cancel");
-        dialog.set_response_appearance("unsub", adw::ResponseAppearance::Suggested);
+        dialog.set_response_appearance("unsub", ndl::ResponseAppearance::Suggested);
         // The mail already received from the list's address can go with it
         // (#407). Off unless ticked: the address may send other mail too.
         let n = self
@@ -230,7 +233,7 @@ impl AppModel {
             if let Ok(path) = std::env::var("BUZON_SHOWCASE") {
                 let d = dialog.clone();
                 gtk::glib::timeout_add_seconds_local_once(1, move || {
-                    showcase_capture(d.upcast_ref::<gtk::Widget>(), &format!("{path}.dialog.png"));
+                    showcase_capture(&d.widget(), &format!("{path}.dialog.png"));
                 });
             }
         }

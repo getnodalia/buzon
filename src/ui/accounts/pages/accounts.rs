@@ -1,7 +1,7 @@
 //! Settings → Accounts: the mail accounts, and the GNOME Online Accounts
 //! ones that can be switched on.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use super::super::{AccountsInput, AccountsWindow};
@@ -10,19 +10,19 @@ use crate::i18n::i18n;
 /// The page, and the widgets on it that the panel reaches later.
 #[derive(Debug)]
 pub(in crate::ui::accounts) struct AccountsPage {
-    pub(in crate::ui::accounts) page: adw::PreferencesPage,
+    pub(in crate::ui::accounts) page: ndl::PreferencesPage,
     pub(in crate::ui::accounts) goa_refresh_btn: gtk::Button,
     pub(in crate::ui::accounts) accounts_list: gtk::ListBox,
-    pub(in crate::ui::accounts) goa_group: adw::PreferencesGroup,
-    pub(in crate::ui::accounts) local_group: adw::PreferencesGroup,
+    pub(in crate::ui::accounts) goa_group: ndl::PreferencesGroup,
+    pub(in crate::ui::accounts) local_group: ndl::PreferencesGroup,
     pub(in crate::ui::accounts) goa_list: gtk::ListBox,
 }
 
 impl AccountsPage {
     pub(in crate::ui::accounts) fn build(sender: &ComponentSender<AccountsWindow>) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
-                add = &adw::PreferencesGroup {
+            page = ndl::PreferencesPage {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Mail Accounts"),
                     set_description: Some(
                         i18n("Drag to reorder them in the sidebar.").as_str()
@@ -65,7 +65,7 @@ impl AccountsPage {
                 // On This Computer (#552): folders on this computer
                 // rather than a server, offered until there is one.
                 #[name = "local_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("On This Computer"),
                     set_description: Some(
                         i18n("Store mail in folders that live on this computer. Move or copy mail from any account to here.").as_str()
@@ -80,7 +80,7 @@ impl AccountsPage {
                 },
 
                 #[name = "goa_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("GNOME Online Accounts"),
                     set_description: Some(
                         i18n("Mail accounts from GNOME Settings. Switch one on to use it.").as_str()

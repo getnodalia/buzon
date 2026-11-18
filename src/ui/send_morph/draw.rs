@@ -3,9 +3,9 @@
 
 use super::capture::sample;
 use super::{After, Before, Card, Cut, Scene, SendMorph, CARD_RADIUS, EDITOR_RADIUS};
-use adw::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gdk, graphene, gsk};
+use ndl::prelude::*;
 
 /// Draw the whole still, shifted by (dx, dy); callers clip to the part they
 /// want. Shifts are snapped to device pixels so text stays sharp in motion.

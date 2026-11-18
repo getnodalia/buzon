@@ -4,7 +4,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 
 use super::super::{PrefInput, PrefOutput, ViewSender};
 use crate::i18n::i18n;
@@ -13,49 +13,49 @@ use crate::mail::attachment_reminder::{normalized, DEFAULT_KEYWORDS};
 /// The page, and the rows on it that the window reaches later.
 #[derive(Debug)]
 pub(in crate::ui::preferences) struct ComposingPage {
-    pub(in crate::ui::preferences) page: adw::PreferencesPage,
-    pub(in crate::ui::preferences) compose_inline_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) reply_inline_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) reply_fields_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) default_from_row: adw::ComboRow,
-    pub(in crate::ui::preferences) paste_plain_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) return_paragraph_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) toolbar_row: adw::ComboRow,
-    pub(in crate::ui::preferences) compose_format_row: adw::ComboRow,
-    pub(in crate::ui::preferences) compose_font_row: adw::ComboRow,
-    pub(in crate::ui::preferences) compose_size_row: adw::ComboRow,
-    pub(in crate::ui::preferences) compose_zoom_row: adw::ComboRow,
-    pub(in crate::ui::preferences) follow_plain_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) ask_plain_switch_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) signature_position_row: adw::ComboRow,
-    pub(in crate::ui::preferences) signature_dashes_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) fold_quote_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) undo_send_row: adw::ComboRow,
-    pub(in crate::ui::preferences) request_receipts_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) returned_receipts_row: adw::ComboRow,
-    pub(in crate::ui::preferences) reply_header_row: adw::EntryRow,
+    pub(in crate::ui::preferences) page: ndl::PreferencesPage,
+    pub(in crate::ui::preferences) compose_inline_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) reply_inline_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) reply_fields_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) default_from_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) paste_plain_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) return_paragraph_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) toolbar_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) compose_format_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) compose_font_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) compose_size_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) compose_zoom_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) follow_plain_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) ask_plain_switch_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) signature_position_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) signature_dashes_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) fold_quote_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) undo_send_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) request_receipts_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) returned_receipts_row: ndl::ComboRow,
+    pub(in crate::ui::preferences) reply_header_row: ndl::EntryRow,
     /// The reply header as last saved, as the row shows it: the apply
     /// button is up only while the text differs from it.
     reply_header_saved: Rc<RefCell<String>>,
-    pub(in crate::ui::preferences) attachment_keywords_row: adw::EntryRow,
+    pub(in crate::ui::preferences) attachment_keywords_row: ndl::EntryRow,
     /// The attachment reminder's words as last saved: the apply button is
     /// up only while the text differs from them.
     attachment_keywords_saved: Rc<RefCell<String>>,
-    pub(in crate::ui::preferences) spelling_group: adw::PreferencesGroup,
-    pub(in crate::ui::preferences) spellcheck_row: adw::SwitchRow,
-    pub(in crate::ui::preferences) spell_lang_row: adw::ExpanderRow,
-    pub(in crate::ui::preferences) spell_words_row: adw::ExpanderRow,
+    pub(in crate::ui::preferences) spelling_group: ndl::PreferencesGroup,
+    pub(in crate::ui::preferences) spellcheck_row: ndl::SwitchRow,
+    pub(in crate::ui::preferences) spell_lang_row: ndl::ExpanderRow,
+    pub(in crate::ui::preferences) spell_words_row: ndl::ExpanderRow,
 }
 
 impl ComposingPage {
     pub(in crate::ui::preferences) fn build(sender: &ViewSender) -> Self {
         relm4::view! {
-            page = adw::PreferencesPage {
-                add = &adw::PreferencesGroup {
+            page = ndl::PreferencesPage {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Composing"),
 
                     #[name = "compose_inline_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Compose in the main window"),
                         set_subtitle: &i18n("Off opens new messages in their own window."),
                         connect_active_notify[sender] => move |row| {
@@ -64,7 +64,7 @@ impl ComposingPage {
                     },
 
                     #[name = "reply_inline_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Reply and forward in the main window"),
                         connect_active_notify[sender] => move |row| {
                             let _ = sender.output(PrefOutput::SetReplyInline(row.is_active()));
@@ -72,7 +72,7 @@ impl ComposingPage {
                     },
 
                     #[name = "reply_fields_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Show From, To and Subject in the reply panel"),
                         set_subtitle: &i18n("Off folds them behind a button."),
                         connect_active_notify[sender] => move |row| {
@@ -81,7 +81,7 @@ impl ComposingPage {
                     },
 
                     #[name = "default_from_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Send new messages from"),
                         set_subtitle: &i18n("Replies answer from the address they were sent to."),
                         connect_selected_notify[sender] => move |row| {
@@ -90,7 +90,7 @@ impl ComposingPage {
                     },
 
                     #[name = "paste_plain_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Paste as plain text"),
                         set_subtitle: &i18n("Right-clicking the editor offers both either way."),
                         connect_active_notify[sender] => move |row| {
@@ -99,7 +99,7 @@ impl ComposingPage {
                     },
 
                     #[name = "return_paragraph_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Return starts a new paragraph"),
                         set_subtitle: &i18n("Shift+Return does the other."),
                         connect_active_notify[sender] => move |row| {
@@ -108,7 +108,7 @@ impl ComposingPage {
                     },
 
                     #[name = "toolbar_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Formatting toolbar"),
                         set_subtitle: &i18n("For new messages. The toolbar's chevron toggles it."),
                         set_model: Some(&gtk::StringList::new(&[
@@ -121,7 +121,7 @@ impl ComposingPage {
                     },
 
                     #[name = "compose_format_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Start new messages in"),
                         connect_selected_notify[sender] => move |row| {
                             sender.input(PrefInput::ChangeComposeFormat(row.selected()));
@@ -132,24 +132,24 @@ impl ComposingPage {
                     // list grows with the fonts picked
                     // through Other Font….
                     #[name = "compose_font_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Font"),
                         set_subtitle: &i18n("For rich text. Default leaves it to the recipient's own font."),
                     },
 
                     #[name = "compose_size_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Font size"),
                         set_subtitle: &i18n("For rich text, in points."),
                     },
 
                     #[name = "compose_zoom_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Default zoom"),
                     },
 
                     #[name = "follow_plain_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Reply in the original's format"),
                         set_subtitle: &i18n("Plain-text mail is answered in plain text."),
                         connect_active_notify[sender] => move |row| {
@@ -158,7 +158,7 @@ impl ComposingPage {
                     },
 
                     #[name = "ask_plain_switch_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Ask before switching to plain text"),
                         set_subtitle: &i18n("Only when formatting, images or links would be removed."),
                         connect_active_notify[sender] => move |row| {
@@ -167,7 +167,7 @@ impl ComposingPage {
                     },
 
                     #[name = "signature_position_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Signature in replies"),
                         connect_selected_notify[sender] => move |row| {
                             sender.input(PrefInput::ChangeSignaturePosition(row.selected()));
@@ -175,7 +175,7 @@ impl ComposingPage {
                     },
 
                     #[name = "signature_dashes_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Separator line above the signature"),
                         set_subtitle: &i18n("The standard “-- ” line, which other mail apps recognize."),
                         connect_active_notify[sender] => move |row| {
@@ -184,7 +184,7 @@ impl ComposingPage {
                     },
 
                     #[name = "fold_quote_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Fold quoted text"),
                         set_subtitle: &i18n("Replies and forwards open with the original behind •••."),
                         connect_active_notify[sender] => move |row| {
@@ -193,7 +193,7 @@ impl ComposingPage {
                     },
 
                     #[name = "undo_send_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Undo Send"),
                         set_subtitle: &i18n("How long Undo is offered after sending."),
                         connect_selected_notify[sender] => move |row| {
@@ -202,7 +202,7 @@ impl ComposingPage {
                     },
 
                     #[name = "request_receipts_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Request read receipts"),
                         set_subtitle: &i18n("Not every mail app sends one."),
                         connect_active_notify[sender] => move |row| {
@@ -211,7 +211,7 @@ impl ComposingPage {
                     },
 
                     #[name = "returned_receipts_row"]
-                    adw::ComboRow {
+                    ndl::ComboRow {
                         set_title: &i18n("Returned receipts"),
                         set_subtitle: &i18n("Sent mail shows who read it; the receipt goes here."),
                         set_model: Some(&gtk::StringList::new(&[
@@ -227,14 +227,14 @@ impl ComposingPage {
                     },
                 },
 
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Reply Header"),
                     set_description: Some(&i18n("{name}, {address}, {date} and {time} are filled in from the original.")),
 
                     // Saved on Apply; the text is set and wired in build
                     // below, beside the button that restores the default.
                     #[name = "reply_header_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Line above the quoted message"),
                         set_show_apply_button: true,
                         add_suffix: reply_header_reset = &gtk::Button {
@@ -246,14 +246,14 @@ impl ComposingPage {
                     },
                 },
 
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Attachment Reminder"),
                     set_description: Some(&i18n("Send asks first when the message mentions one of these words and nothing is attached.")),
 
                     // Saved on Apply; the text is set and wired in build
                     // below, beside the button that restores the default.
                     #[name = "attachment_keywords_row"]
-                    adw::EntryRow {
+                    ndl::EntryRow {
                         set_title: &i18n("Words, separated by commas"),
                         set_show_apply_button: true,
                         add_suffix: attachment_keywords_reset = &gtk::Button {
@@ -266,7 +266,7 @@ impl ComposingPage {
                 },
 
                 #[name = "spelling_group"]
-                add = &adw::PreferencesGroup {
+                add = &ndl::PreferencesGroup {
                     set_title: &i18n("Spelling"),
                     // The description is filled in at init with the
                     // dictionaries the app can actually see — checking a
@@ -274,7 +274,7 @@ impl ComposingPage {
                     // honesty about what is installed beats silence.
 
                     #[name = "spellcheck_row"]
-                    adw::SwitchRow {
+                    ndl::SwitchRow {
                         set_title: &i18n("Check spelling as you type"),
                         set_subtitle: &i18n("Right-click a word for corrections."),
                         connect_active_notify[sender] => move |row| {
@@ -286,7 +286,7 @@ impl ComposingPage {
                     // in at init (#365); the subtitle names the
                     // languages in use.
                     #[name = "spell_lang_row"]
-                    adw::ExpanderRow {
+                    ndl::ExpanderRow {
                         set_title: &i18n("Languages"),
                     },
 
@@ -294,7 +294,7 @@ impl ComposingPage {
                     // in the composer, or added right here). Populated
                     // and maintained imperatively in init.
                     #[name = "spell_words_row"]
-                    adw::ExpanderRow {
+                    ndl::ExpanderRow {
                         set_title: &i18n("Added words"),
                         set_subtitle: &i18n("Changes apply after a restart."),
                     },
@@ -378,7 +378,7 @@ fn shown_template(stored: &str) -> String {
 /// raises for any change made while the row has focus, the app's own
 /// included: the text put back after Apply looked like an edit not yet
 /// saved.
-fn set_quietly(row: &adw::EntryRow, text: &str) {
+fn set_quietly(row: &ndl::EntryRow, text: &str) {
     row.set_show_apply_button(false);
     if row.text() != text {
         row.set_text(text);
@@ -390,7 +390,7 @@ fn set_quietly(row: &adw::EntryRow, text: &str) {
 /// to the default, shown only while the text is something else. The apply
 /// button goes down again when the text is edited back to what is saved.
 fn wire_reply_header(
-    row: &adw::EntryRow,
+    row: &ndl::EntryRow,
     reset: &gtk::Button,
     saved: &Rc<RefCell<String>>,
     sender: &ViewSender,
@@ -438,7 +438,7 @@ fn wire_reply_header(
 /// else. The apply button goes down again when the text is edited back to
 /// what is saved.
 fn wire_attachment_keywords(
-    row: &adw::EntryRow,
+    row: &ndl::EntryRow,
     reset: &gtk::Button,
     saved: &Rc<RefCell<String>>,
     sender: &ViewSender,

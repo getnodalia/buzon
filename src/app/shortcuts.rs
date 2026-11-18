@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -542,7 +542,7 @@ impl AppModel {
     /// which handles keys without consuming them.
     pub(super) fn install_key_controller(
         &self,
-        root: &adw::ApplicationWindow,
+        root: &ndl::ApplicationWindow,
         sender: &ComponentSender<Self>,
     ) {
         let keys = gtk::EventControllerKey::new();
@@ -593,7 +593,7 @@ impl AppModel {
 /// the next checks.
 fn modifier_key(
     s: &ComponentSender<AppModel>,
-    window: &adw::ApplicationWindow,
+    window: &ndl::ApplicationWindow,
     keyval: gtk::gdk::Key,
     ctrl: bool,
     shift: bool,
@@ -653,7 +653,7 @@ fn modifier_key(
 /// when the key is neither, or a text field or composer keeps it.
 fn always_on_key(
     s: &ComponentSender<AppModel>,
-    window: &adw::ApplicationWindow,
+    window: &ndl::ApplicationWindow,
     keyval: gtk::gdk::Key,
     shift: bool,
     shortcut: &impl Fn(Shortcut) -> AppMsg,

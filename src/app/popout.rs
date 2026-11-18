@@ -1,6 +1,6 @@
 //! Messages opened in their own window.
 
-use adw::prelude::*;
+use ndl::prelude::*;
 use relm4::prelude::*;
 
 use crate::config;
@@ -19,7 +19,7 @@ use super::uri_queue::FILE_FOLDER;
 
 /// A message displayed in its own top-level window (double-click to pop out).
 pub(super) struct PopOut {
-    pub(super) window: adw::Window,
+    pub(super) window: ndl::Window,
     pub(super) controller: Controller<MessageWindow>,
     /// The popped-out message, where it lives (see [`body_key`]), for the
     /// events that arrive about it by folder and UID.
@@ -136,11 +136,11 @@ impl AppModel {
             .child(&view)
             .build();
 
-        let toolbar = adw::ToolbarView::new();
-        toolbar.add_top_bar(&adw::HeaderBar::new());
+        let toolbar = ndl::ToolbarView::new();
+        toolbar.add_top_bar(&ndl::HeaderBar::new());
         toolbar.set_content(Some(&scroller));
 
-        let window = adw::Window::builder()
+        let window = ndl::Window::builder()
             .transient_for(&self.window)
             .title(i18n("Message Source"))
             .default_width(720)

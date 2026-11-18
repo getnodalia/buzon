@@ -13,10 +13,10 @@
 #
 # Each package wraps a release binary built against its own distribution's
 # libraries. The RPM's comes from the host. The Debian package's comes from a
-# Debian 13 container (podman), because a binary built on Fedora links against
-# a newer C library than Debian has; Debian 13 is the oldest release with the
-# libadwaita 1.7 the app needs, and what builds there runs on the Ubuntu
-# releases that have it too. Run on a Debian host with the build dependencies
+# Ubuntu 26.04 container (podman), because a binary built on Fedora links
+# against a newer C library than Ubuntu has; Ubuntu 26.04 is the oldest LTS
+# with the GTK 4.20 the app needs (Debian 13 has 4.18), and what builds there
+# runs on the Debian-based releases that have it too. Run on a Debian host with the build dependencies
 # from docs/BUILDING.md and dpkg-dev, the deb is built in place.
 set -euo pipefail
 
@@ -29,7 +29,7 @@ VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' "$ROOT/Cargo.toml" | head -1)"
 # stable release replaces the beta.
 PKG_VERSION="${VERSION//-/\~}"
 WHAT="${1:-all}"
-DEB_IMAGE="${BUZON_DEB_IMAGE:-docker.io/library/rust:1-trixie}"
+DEB_IMAGE="${BUZON_DEB_IMAGE:-docker.io/library/ubuntu:26.04}"
 
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 # /out is the host's packaging/out when the deb build re-ran this script in
@@ -114,8 +114,15 @@ build_deb() {
         apt-get update -qq
         DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
             build-essential pkg-config dpkg-dev gettext \
-            libgtk-4-dev libadwaita-1-dev libwebkitgtk-6.0-dev libpoppler-glib-dev \
-            libssl-dev libwayland-dev >/dev/null
+            libgtk-4-dev libwebkitgtk-6.0-dev libpoppler-glib-dev \
+            libssl-dev libwayland-dev curl ca-certificates >/dev/null
+        # Ubuntu's image has no Rust: the stable toolchain, where the cargo
+        # registry volume above expects it.
+        if ! command -v cargo >/dev/null; then
+            export CARGO_HOME=/usr/local/cargo RUSTUP_HOME=/usr/local/rustup
+            curl -sSf https://sh.rustup.rs | sh -s -- -y -q --profile minimal --no-modify-path
+            export PATH="$CARGO_HOME/bin:$PATH"
+        fi
     fi
 
     echo "==> Building release binary ($(. /etc/os-release && echo "$PRETTY_NAME"))"

@@ -9,8 +9,8 @@
 
 use std::cell::{Cell, RefCell};
 
-use adw::prelude::*;
 use gtk::{gdk, glib, graphene, gsk, subclass::prelude::*};
+use ndl::prelude::*;
 
 /// Width of the fade at a cut edge.
 const FADE: f32 = 24.0;
@@ -26,7 +26,7 @@ mod imp {
         /// The natural width asked of the parent at most: past it the text
         /// fades rather than widening its row.
         pub(super) max_natural: Cell<i32>,
-        pub(super) anim: RefCell<Option<adw::TimedAnimation>>,
+        pub(super) anim: RefCell<Option<ndl::TimedAnimation>>,
     }
 
     #[glib::object_subclass]
@@ -120,7 +120,7 @@ mod imp {
 
 glib::wrapper! {
     pub(crate) struct FadeLabel(ObjectSubclass<imp::FadeLabel>)
-        @extends gtk::Widget;
+        @extends gtk::Widget, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl FadeLabel {
@@ -166,15 +166,15 @@ impl FadeLabel {
             (to - from).abs() * 5.0
         };
         let weak = self.downgrade();
-        let target = adw::CallbackAnimationTarget::new(move |v| {
+        let target = ndl::CallbackAnimationTarget::new(move |v| {
             if let Some(obj) = weak.upgrade() {
                 obj.imp().offset.set(v);
                 obj.queue_allocate();
                 obj.queue_draw();
             }
         });
-        let anim = adw::TimedAnimation::new(self, from, to, ms.clamp(250.0, 4000.0) as u32, target);
-        anim.set_easing(adw::Easing::EaseInOutCubic);
+        let anim = ndl::TimedAnimation::new(self, from, to, ms.clamp(250.0, 4000.0) as u32, target);
+        anim.set_easing(ndl::Easing::EaseInOutCubic);
         // Hold the start for a moment, so a pointer passing over does not set
         // every name it crosses sliding.
         if on {

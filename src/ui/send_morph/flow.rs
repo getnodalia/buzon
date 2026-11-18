@@ -4,9 +4,9 @@
 use super::capture::{capture, ground_behind};
 use super::measure::{parse_text, Measured, CARDS_JS, EDITOR_TEXT_JS};
 use super::{After, Before, SendMorph, READY_TIMEOUT_MS, SETTLE_MS};
-use adw::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gdk, glib};
+use ndl::prelude::*;
 use std::cell::{Cell, RefCell};
 
 /// What the send morph is made from: the pane (`root`, which the stage
