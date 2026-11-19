@@ -2529,7 +2529,7 @@ msgid "Server saves its own copy of sent mail"
 msgstr "Server speichert selbst eine Kopie gesendeter Nachrichten"
 
 msgid "Only when this server files sent mail in this account."
-msgstr ""
+msgstr "Nur, wenn dieser Server gesendete Nachrichten in diesem Konto ablegt."
 
 msgid "Test SMTP"
 msgstr "SMTP testen"
@@ -3656,8 +3656,8 @@ msgid ""
 "1. At dropbox.com/developers/apps, press Create app.\n"
 "2. Choose Scoped access, then App folder or Full Dropbox.\n"
 "3. Give it a name no one else has used and press Create app.\n"
-"4. On Permissions, tick account_info.read, files.content.write and "
-"sharing.write, then press Submit.\n"
+"4. On Permissions, tick account_info.read, files.content.write and sharing."
+"write, then press Submit.\n"
 "5. On Settings, under OAuth 2, add the redirect URI {uri} and press Add.\n"
 "6. Copy the App key into the field above.\n"
 "Development status is enough. Leave the field empty to use this build's own "
@@ -3670,8 +3670,8 @@ msgstr ""
 "2. »Scoped access« und anschließend »App folder« oder »Full Dropbox« \n"
 "3. Einen eindeutigen App-Namen vergeben (z. B. Buzón für [Name]) und auf "
 "»Create app« klicken.\n"
-"4. Auf dem Reiter »Permissions« die Berechtigungen account_info.read, "
-"files.content.write und sharing.write aktivieren und auf »Submit« klicken.\n"
+"4. Auf dem Reiter »Permissions« die Berechtigungen account_info.read, files."
+"content.write und sharing.write aktivieren und auf »Submit« klicken.\n"
 "5. Auf dem Reiter »Settings« unter »OAuth 2« die Weiterleitungs-URI {uri} "
 "eingeben und auf »Add« klicken.\n"
 "6. Den App-Schlüssel (»App key«) oben vom Reiter »Settings« in das obere "
@@ -5231,10 +5231,8 @@ msgstr "Alle als gelesen markieren"
 msgid "Mark All as Unread"
 msgstr "Alle als ungelesen markieren"
 
-#, fuzzy
 msgid "This Account (Except Trash & Junk)"
-msgstr ""
-"Zugriff auf das gesamte Konto gewähren (ausgenommen Papierkorb und Spam)"
+msgstr "Dieses Konto (außer Papierkorb und Spam)"
 
 msgid "All folders (except trash & junk)"
 msgstr "Alle Ordner (außer Papierkorb und Spam)"
@@ -5245,20 +5243,18 @@ msgstr "Alle Ordner"
 msgid "This folder"
 msgstr "Dieser Ordner"
 
-#, fuzzy
 msgid "This Account"
-msgstr "E-Mail-Konto"
+msgstr "Dieses Konto"
 
 msgid "All folders"
 msgstr "Alle Ordner"
 
-#, fuzzy
 msgid ""
 "Every folder of this account, except Trash and Junk. A search started in "
 "Trash or Junk looks there too."
 msgstr ""
-"Alle Ordner aller Konten, ausgenommen Papierkorb und Spam. Wird die Suche im "
-"Papierkorb oder Spam gestartet, werden diese ebenfalls durchsucht."
+"Alle Ordner dieses Kontos außer Papierkorb und Spam. Eine Suche, die im "
+"Papierkorb oder in Spam startet, durchsucht auch diesen Ordner."
 
 msgid ""
 "Every folder of every account, except Trash and Junk. A search started in "
@@ -5273,9 +5269,8 @@ msgstr "Alle Ordner aller Konten, inklusive Papierkorb und Spam."
 msgid "Only the folder or view the list is showing."
 msgstr "Nur der aktuell angezeigte Ordner oder die aktuelle Ansicht"
 
-#, fuzzy
 msgid "Every folder of this account, Trash and Junk included."
-msgstr "Alle Ordner aller Konten, inklusive Papierkorb und Spam.)"
+msgstr "Alle Ordner dieses Kontos, einschließlich Papierkorb und Spam."
 
 msgid "What this searches"
 msgstr "Durchsuchte Ordner"
@@ -6740,10 +6735,11 @@ msgstr ""
 "»Automatisch« verwendet in breiten Fenstern die einzeilige Darstellung."
 
 msgid "Resize the list with the window"
-msgstr ""
+msgstr "Die Listenbreite an das Fenster anpassen"
 
 msgid "Off, it keeps its width and the reader resizes."
 msgstr ""
+"Ausgeschaltet behält die Liste ihre Breite und der Lesebereich passt sich an."
 
 msgid "Off also stops downloading previews."
 msgstr "Bei Deaktivierung werden keine Vorschauen mehr heruntergeladen."
@@ -7688,9 +7684,8 @@ msgstr ""
 msgid "Could not load {path}: {e}"
 msgstr "{path} konnte nicht geladen werden: {e}"
 
-#, fuzzy
 msgid "This message was moved or deleted on the server."
-msgstr "Die Nachricht ist zu lang für den Server."
+msgstr "Diese Nachricht wurde auf dem Server verschoben oder gelöscht."
 
 msgid "Could not load conversation: {e}"
 msgstr "Konnte die Unterhaltung nicht laden: {e}"
@@ -8392,13 +8387,11 @@ msgstr "Im ursprünglichen Format antworten"
 msgid "Plain-text mail is answered in plain text."
 msgstr "Text-E-Mails werden als reiner Text beantwortet."
 
-#, fuzzy
 msgid "Ask before switching to plain text"
-msgstr "Zu reinem Text wechseln?"
+msgstr "Vor dem Wechsel zu reinem Text nachfragen"
 
-#, fuzzy
 msgid "Only when formatting, images or links would be removed."
-msgstr "Formatierungen, Bilder und Links werden entfernt"
+msgstr "Nur, wenn Formatierung, Bilder oder Links entfernt würden."
 
 msgid "Signature in replies"
 msgstr "Signatur in Antworten"

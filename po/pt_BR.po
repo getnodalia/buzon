@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: buzon\n"
 "Report-Msgid-Bugs-To: https://github.com/getnodalia/buzon/issues\n"
-"POT-Creation-Date:\n"
+"POT-Creation-Date: \n"
 "PO-Revision-Date: 2026-11-10 16:00+0000\n"
 "Last-Translator: Paulo Fino <somepaulo@duck.com>\n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -2509,7 +2509,7 @@ msgid "Server saves its own copy of sent mail"
 msgstr "O servidor salva sua própria cópia das mensagens enviadas"
 
 msgid "Only when this server files sent mail in this account."
-msgstr ""
+msgstr "Somente quando este servidor guarda os e-mails enviados nesta conta."
 
 msgid "Test SMTP"
 msgstr "Testar SMTP"
@@ -3626,8 +3626,8 @@ msgid ""
 "1. At dropbox.com/developers/apps, press Create app.\n"
 "2. Choose Scoped access, then App folder or Full Dropbox.\n"
 "3. Give it a name no one else has used and press Create app.\n"
-"4. On Permissions, tick account_info.read, files.content.write and "
-"sharing.write, then press Submit.\n"
+"4. On Permissions, tick account_info.read, files.content.write and sharing."
+"write, then press Submit.\n"
 "5. On Settings, under OAuth 2, add the redirect URI {uri} and press Add.\n"
 "6. Copy the App key into the field above.\n"
 "Development status is enough. Leave the field empty to use this build's own "
@@ -5181,9 +5181,8 @@ msgstr "Marcar tudo como lido"
 msgid "Mark All as Unread"
 msgstr "Marcar tudo como não lido"
 
-#, fuzzy
 msgid "This Account (Except Trash & Junk)"
-msgstr "Dar acesso a toda a conta (exceto à Lixeira e ao spam)"
+msgstr "Esta conta (exceto Lixeira e Spam)"
 
 msgid "All folders (except trash & junk)"
 msgstr "Todas as pastas (exceto lixeira e spam)"
@@ -5194,20 +5193,18 @@ msgstr "Em todos os lugares"
 msgid "This folder"
 msgstr "Esta pasta"
 
-#, fuzzy
 msgid "This Account"
-msgstr "Conta de email"
+msgstr "Esta conta"
 
 msgid "All folders"
 msgstr "Todas as pastas"
 
-#, fuzzy
 msgid ""
 "Every folder of this account, except Trash and Junk. A search started in "
 "Trash or Junk looks there too."
 msgstr ""
-"Todas as pastas de todas as contas, exceto Lixeira e Spam. Uma pesquisa "
-"iniciada na Lixeira ou no Spam também pesquisa nessas pastas."
+"Todas as pastas desta conta, exceto Lixeira e Spam. Uma busca iniciada na "
+"Lixeira ou no Spam também procura ali."
 
 msgid ""
 "Every folder of every account, except Trash and Junk. A search started in "
@@ -5222,9 +5219,8 @@ msgstr "Todas as pastas de todas as contas, incluindo Lixeira e Spam."
 msgid "Only the folder or view the list is showing."
 msgstr "Apenas a pasta ou visualização exibida na lista."
 
-#, fuzzy
 msgid "Every folder of this account, Trash and Junk included."
-msgstr "Todas as pastas de todas as contas, incluindo Lixeira e Spam."
+msgstr "Todas as pastas desta conta, incluindo Lixeira e Spam."
 
 msgid "What this searches"
 msgstr "Escopo desta pesquisa"
@@ -6672,10 +6668,10 @@ msgid "Automatic uses single lines in wide windows."
 msgstr "O modo Automático usa linhas únicas em janelas largas."
 
 msgid "Resize the list with the window"
-msgstr ""
+msgstr "Ajustar a largura da lista à da janela"
 
 msgid "Off, it keeps its width and the reader resizes."
-msgstr ""
+msgstr "Desativado, a lista mantém a largura e o leitor se ajusta."
 
 msgid "Off also stops downloading previews."
 msgstr "Desativado, também deixa de baixar visualizações."
@@ -7605,9 +7601,8 @@ msgstr ""
 msgid "Could not load {path}: {e}"
 msgstr "Não foi possível carregar {path}: {e}"
 
-#, fuzzy
 msgid "This message was moved or deleted on the server."
-msgstr "A mensagem é longa demais para o servidor."
+msgstr "Esta mensagem foi movida ou excluída no servidor."
 
 msgid "Could not load conversation: {e}"
 msgstr "Não foi possível carregar a conversa: {e}"
@@ -8301,13 +8296,11 @@ msgid "Plain-text mail is answered in plain text."
 msgstr ""
 "As mensagens em texto sem formatação são respondidas em texto sem formatação."
 
-#, fuzzy
 msgid "Ask before switching to plain text"
-msgstr "Mudar para texto sem formatação?"
+msgstr "Perguntar antes de mudar para texto simples"
 
-#, fuzzy
 msgid "Only when formatting, images or links would be removed."
-msgstr "A formatação, as imagens e os links são removidos."
+msgstr "Somente quando a formatação, as imagens ou os links seriam removidos."
 
 msgid "Signature in replies"
 msgstr "Assinatura nas respostas"
