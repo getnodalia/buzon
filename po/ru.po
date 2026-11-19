@@ -477,20 +477,17 @@ msgstr "Новое сообщение будет создано на основ�
 msgid "Insert Template"
 msgstr "Вставить шаблон"
 
-#, fuzzy
 msgid "The template goes in where the cursor is."
-msgstr "Поместить изображение в место указателя"
+msgstr "Шаблон вставляется там, где находится курсор."
 
 msgid "Templates"
 msgstr "Шаблоны"
 
-#, fuzzy
 msgid "Template saved to {folder} in {account}"
-msgstr "Создать новую папку для этого аккаунта."
+msgstr "Шаблон сохранён в папку «{folder}» учётной записи {account}"
 
-#, fuzzy
 msgid "Could not load the template."
-msgstr "Не удалось сохранить шаблон: {e}"
+msgstr "Не удалось загрузить шаблон."
 
 msgid "Continue a Draft"
 msgstr "Продолжить черновик"
@@ -1074,9 +1071,8 @@ msgstr "Полужирный, курсив, подчёркнутый"
 msgid "Preview the highlighted attachment"
 msgstr "Предпросмотр выделенного вложения"
 
-#, fuzzy
 msgid "Open the highlighted attachment"
-msgstr "Предпросмотр выделенного вложения"
+msgstr "Открыть выделенное вложение"
 
 msgid "Previous or next in the gallery's preview"
 msgstr "Предыдущее или следующее в окне предпросмотра галереи"
@@ -1488,8 +1484,14 @@ msgid_plural ""
 "All {n} messages in this conversation will be deleted. You can turn this "
 "warning off in Settings."
 msgstr[0] ""
+"{n} сообщение в этой беседе будет удалено. Это предупреждение можно "
+"отключить в настройках."
 msgstr[1] ""
+"{n} сообщения в этой беседе будут удалены. Это предупреждение можно "
+"отключить в настройках."
 msgstr[2] ""
+"{n} сообщений в этой беседе будут удалены. Это предупреждение можно "
+"отключить в настройках."
 
 msgid "Delete Conversation"
 msgstr "Удалить переписку"
@@ -1924,6 +1926,8 @@ msgid ""
 "The signing key is not for {addr}, the address this message is from, so the "
 "signature does not show who sent it."
 msgstr ""
+"Ключ подписи не принадлежит адресу {addr}, с которого отправлено это "
+"сообщение, поэтому подпись не показывает, кто его отправил."
 
 msgid "GnuPG (gpg) is not installed, so this message cannot be read."
 msgstr "GnuPG (gpg) не установлен, поэтому это сообщение нельзя прочитать."
@@ -2176,11 +2180,12 @@ msgstr "Зашифровано с помощью OpenPGP; не удалось р
 msgid "Encrypted with OpenPGP"
 msgstr "Зашифровано с помощью OpenPGP"
 
-#, fuzzy
 msgid ""
 "Encrypted, and signed by {signer}, whose key is not for the sender's address "
 "{addr}"
-msgstr "Зашифровано и подписано {signer}; срок действия подписи истёк"
+msgstr ""
+"Зашифровано и подписано {signer}, чей ключ не принадлежит адресу отправителя "
+"{addr}"
 
 msgid "Encrypted, and signed by {signer}"
 msgstr "Зашифровано и подписано {signer}"
@@ -2484,6 +2489,8 @@ msgid ""
 "Will appear in the composer's From menu. Replies to mail sent here will come "
 "from this address."
 msgstr ""
+"Появится в меню «От» в окне создания письма. Ответы на письма, отправленные "
+"сюда, будут приходить с этого адреса."
 
 msgid "Display name (optional)"
 msgstr "Необязательно. Отображается вместо инициалов."
@@ -2500,6 +2507,8 @@ msgstr "Собственный сервер SMTP"
 msgid ""
 "Needed when this account's provider, such as Gmail, rewrites the sender."
 msgstr ""
+"Нужно, если поставщик этой учётной записи, например Gmail, подменяет "
+"отправителя."
 
 msgid "SMTP server"
 msgstr "Сервер SMTP"
@@ -2518,12 +2527,14 @@ msgstr "Сервер сам сохраняет копию отправленны
 
 msgid "Only when this server files sent mail in this account."
 msgstr ""
+"Только если этот сервер сохраняет отправленную почту в этой учётной записи."
 
 msgid "Test SMTP"
 msgstr "Проверить SMTP"
 
 msgid "Names that share an address send through this account's server."
 msgstr ""
+"Имена с общим адресом отправляют почту через сервер этой учётной записи."
 
 msgid "Testing…"
 msgstr "Проверка…"
@@ -3113,15 +3124,18 @@ msgid "Save Attachment"
 msgstr "Сохранить вложение"
 
 msgid "Open “{name}”?"
-msgstr ""
+msgstr "Открыть «{name}»?"
 
 msgid ""
 "This attachment is a program or a script. Opening it can run it with your "
 "permissions. Open it only if you expected it and trust where it came from."
 msgstr ""
+"Это вложение — программа или скрипт. Открыв его, вы можете запустить его с "
+"вашими правами. Открывайте его, только если вы его ожидали и доверяете "
+"источнику."
 
 msgid "Open Anyway"
-msgstr ""
+msgstr "Всё равно открыть"
 
 msgid "The file could not be opened"
 msgstr "Не удалось открыть файл"
@@ -3129,7 +3143,6 @@ msgstr "Не удалось открыть файл"
 #. No Flatseal toggle can help here: portal access is not a
 #. permission, and the failure is inside the portal's own launcher.
 #. Offer the steps that actually work.
-#, fuzzy
 msgid ""
 "The desktop portal reported: {error}\n"
 "\n"
@@ -3138,10 +3151,9 @@ msgid ""
 msgstr ""
 "Системный портал сообщил: {error}\n"
 "\n"
-"• Нажмите правой кнопкой мыши по ссылке, скопируйте её и откройте в "
-"браузере\n"
+"• Скачайте файл и откройте его из приложения «Файлы»\n"
 "• Обновление пакета «xdg-desktop-portal» и повторный вход в систему могут "
-"исправить прямое открытие ссылок"
+"исправить прямое открытие"
 
 msgid "Go to Message"
 msgstr "Перейти к сообщению"
@@ -3278,7 +3290,6 @@ msgstr "Вперёд"
 msgid "Open in the default app"
 msgstr "Открыть в приложении по умолчанию"
 
-#, fuzzy
 msgid "Waiting for the Keyring"
 msgstr "Ожидание связки ключей"
 
@@ -3286,89 +3297,101 @@ msgid ""
 "Mail stored on this computer is encrypted with a key stored in the keyring. "
 "Unlock the keyring if it asks."
 msgstr ""
+"Почта, хранящаяся на этом компьютере, зашифрована ключом из связки ключей. "
+"Разблокируйте связку ключей, если она это запросит."
 
 msgid ""
 "This happens once and can take a few minutes. If you quit, your mail is left "
 "as it was."
 msgstr ""
+"Это происходит один раз и может занять несколько минут. Если вы выйдете, "
+"почта останется как была."
 
-#, fuzzy
 msgid "Checking the copy"
-msgstr "Проверка соединения…"
+msgstr "Проверка копии"
 
 msgid "Encrypting Stored Mail"
-msgstr ""
+msgstr "Шифрование сохранённой почты"
 
-#, fuzzy
 msgid "Decrypting Stored Mail"
-msgstr "Проверка новой почты"
+msgstr "Расшифровка сохранённой почты"
 
-#, fuzzy
 msgid "Store Unencrypted…"
-msgstr "Не расшифровано"
+msgstr "Хранить без шифрования…"
 
 msgid "Reset Cache…"
-msgstr ""
+msgstr "Сбросить кэш…"
 
 msgid "Try Again"
 msgstr "Повторить попытку"
 
-#, fuzzy
 msgid "Keyring Unavailable"
-msgstr "Предварительный просмотр недоступен"
+msgstr "Связка ключей недоступна"
 
 msgid ""
 "Mail kept on this computer is encrypted with a key stored in the keyring, "
 "and the keyring is locked or did not answer. Unlock it, then try again."
 msgstr ""
+"Почта на этом компьютере зашифрована ключом из связки ключей, а связка "
+"ключей заблокирована или не ответила. Разблокируйте её и повторите попытку."
 
 msgid "Mail Cache Key Missing"
-msgstr ""
+msgstr "Ключ кэша почты отсутствует"
 
 msgid ""
 "Mail kept on this computer is encrypted, and the keyring no longer holds its "
 "key. If the keyring was replaced, restore the old one and try again. "
 "Otherwise reset the cache to download your mail again."
 msgstr ""
+"Почта на этом компьютере зашифрована, а ключа к ней в связке ключей больше "
+"нет. Если связку ключей заменили, восстановите прежнюю и повторите попытку. "
+"Иначе сбросьте кэш, чтобы скачать почту заново."
 
 msgid "Mail Cache Cannot Be Unlocked"
-msgstr ""
+msgstr "Не удаётся разблокировать кэш почты"
 
 msgid ""
 "The key in the keyring does not open the mail kept on this computer. If the "
 "keyring was replaced, restore the old one and try again. Otherwise reset the "
 "cache to download your mail again."
 msgstr ""
+"Ключ из связки ключей не подходит к почте на этом компьютере. Если связку "
+"ключей заменили, восстановите прежнюю и повторите попытку. Иначе сбросьте "
+"кэш, чтобы скачать почту заново."
 
 msgid "Mail Cache Not Converted"
-msgstr ""
+msgstr "Кэш почты не преобразован"
 
 msgid ""
 "The mail kept on this computer could not be converted, and was left as it "
 "was. Check that the disk has free space, then try again."
 msgstr ""
+"Почту на этом компьютере не удалось преобразовать, она осталась без "
+"изменений. Убедитесь, что на диске есть свободное место, и повторите попытку."
 
-#, fuzzy
 msgid "Mail Cache Unreadable"
-msgstr "Отметить как непрочитанное"
+msgstr "Кэш почты нечитаем"
 
 msgid ""
 "The mail kept on this computer could not be read. Try again, or reset the "
 "cache to download your mail again."
 msgstr ""
+"Не удалось прочитать почту на этом компьютере. Повторите попытку или "
+"сбросьте кэш, чтобы скачать почту заново."
 
 msgid ""
 "Mail that exists only on this computer is lost: a POP3 account's mail, and "
 "unsent mail in the Outbox."
 msgstr ""
+"Будет потеряна почта, существующая только на этом компьютере: почта учётной "
+"записи POP3 и неотправленные письма из папки «Исходящие»."
 
-#, fuzzy
 msgid ""
 "Mail kept on this computer is deleted and downloaded again from the server."
-msgstr "Почта на этом компьютере не отправляется и не имеет черновиков."
+msgstr "Почта на этом компьютере будет удалена и скачана с сервера заново."
 
 msgid "Reset the Mail Cache?"
-msgstr ""
+msgstr "Сбросить кэш почты?"
 
 msgid "Reset"
 msgstr "Сбросить"
@@ -3378,21 +3401,26 @@ msgid ""
 "kept on this computer, including mail that is end-to-end encrypted on the "
 "server."
 msgstr ""
+"Любой, кто может прочитать ваши файлы или их резервную копию, сможет "
+"прочитать и почту на этом компьютере, в том числе почту со сквозным "
+"шифрованием на сервере."
 
 msgid "Encryption can be turned back on in Settings → Privacy."
 msgstr ""
+"Шифрование можно снова включить в разделе «Настройки → Конфиденциальность»."
 
 msgid ""
 "The encrypted cache cannot be opened without the keyring, so it is deleted "
 "and your mail is downloaded again."
 msgstr ""
+"Зашифрованный кэш нельзя открыть без связки ключей, поэтому он удаляется, а "
+"почта скачивается заново."
 
 msgid "Store Mail Unencrypted?"
-msgstr ""
+msgstr "Хранить почту без шифрования?"
 
-#, fuzzy
 msgid "Store Unencrypted"
-msgstr "Не расшифровано"
+msgstr "Хранить без шифрования"
 
 msgid "New Event"
 msgstr "Новое событие"
@@ -3618,8 +3646,8 @@ msgid ""
 "1. At dropbox.com/developers/apps, press Create app.\n"
 "2. Choose Scoped access, then App folder or Full Dropbox.\n"
 "3. Give it a name no one else has used and press Create app.\n"
-"4. On Permissions, tick account_info.read, files.content.write and "
-"sharing.write, then press Submit.\n"
+"4. On Permissions, tick account_info.read, files.content.write and sharing."
+"write, then press Submit.\n"
 "5. On Settings, under OAuth 2, add the redirect URI {uri} and press Add.\n"
 "6. Copy the App key into the field above.\n"
 "Development status is enough. Leave the field empty to use this build's own "
@@ -3629,12 +3657,12 @@ msgstr ""
 "dropbox.com/developers/apps нажмите «Создать приложение». 2. Выберите "
 "«Ограниченный доступ», затем «Папка приложения» или «Полный Dropbox». 3. "
 "Дайте ему имя, которое никто больше не использовал, и нажмите «Создать "
-"приложение». 4. В разделе «Разрешения» отметьте «account_info.read», "
-"«files.content.write» и «sharing.write», затем нажмите «Отправить». 5. В "
-"разделе «Настройки» в разделе «OAuth 2» добавьте URI перенаправления {uri} и "
-"нажмите «Добавить». 6. Скопируйте ключ приложения в поле выше. Статуса "
-"разработки достаточно. Оставьте поле пустым, чтобы использовать собственный "
-"ключ этой сборки, если он есть."
+"приложение». 4. В разделе «Разрешения» отметьте «account_info.read», «files."
+"content.write» и «sharing.write», затем нажмите «Отправить». 5. В разделе "
+"«Настройки» в разделе «OAuth 2» добавьте URI перенаправления {uri} и нажмите "
+"«Добавить». 6. Скопируйте ключ приложения в поле выше. Статуса разработки "
+"достаточно. Оставьте поле пустым, чтобы использовать собственный ключ этой "
+"сборки, если он есть."
 
 msgid "Connected as {who}."
 msgstr "Подключено как {who}."
@@ -4019,6 +4047,11 @@ msgid ""
 "To check a key, compare its fingerprint with its owner and trust it under "
 "Settings, OpenPGP. Send Anyway does not ask about these keys again."
 msgstr ""
+"Ничто не подтверждает, что ключи для {addresses} принадлежат этим адресам. "
+"Если один из них чужой, этот человек сможет прочитать сообщение, а "
+"получатель — нет. Чтобы проверить ключ, сравните его отпечаток с владельцем "
+"и отметьте его как доверенный в разделе «Настройки → OpenPGP». «Отправить в "
+"любом случае» больше не спрашивает об этих ключах."
 
 msgid "Send later"
 msgstr "Отправить позже"
@@ -4028,8 +4061,8 @@ msgstr "Запланировать"
 
 msgid "The From has to be one address, such as Ann <ann@example.com>."
 msgstr ""
-"В поле «От кого» должен быть указан один адрес, например, Ann "
-"<ann@example.com>."
+"В поле «От кого» должен быть указан один адрес, например, Ann <ann@example."
+"com>."
 
 msgid "“{address}” is not an email address."
 msgstr "«{address}» не является адресом электронной почты."
@@ -5174,11 +5207,8 @@ msgstr "Отметить все как прочитанные"
 msgid "Mark All as Unread"
 msgstr "Отметить все как непрочитанные"
 
-#, fuzzy
 msgid "This Account (Except Trash & Junk)"
-msgstr ""
-"Предоставить доступ ко всей учётной записи (кроме корзины и нежелательной "
-"почты)"
+msgstr "Эта учётная запись (кроме корзины и спама)"
 
 msgid "All folders (except trash & junk)"
 msgstr "Все папки (кроме корзины и нежелательной почты)"
@@ -5189,20 +5219,18 @@ msgstr "Везде"
 msgid "This folder"
 msgstr "Эта папка"
 
-#, fuzzy
 msgid "This Account"
-msgstr "Почтовая учётная запись"
+msgstr "Эта учётная запись"
 
 msgid "All folders"
 msgstr "Все папки"
 
-#, fuzzy
 msgid ""
 "Every folder of this account, except Trash and Junk. A search started in "
 "Trash or Junk looks there too."
 msgstr ""
-"Все папки всех учётных записей, кроме «Корзины» и «Нежелательной почты». "
-"Поиск, начатый в «Корзине» или «Нежелательной почте», также отображается там."
+"Все папки этой учётной записи, кроме «Корзины» и «Спама». Поиск, начатый в "
+"«Корзине» или «Спаме», ищет и там."
 
 msgid ""
 "Every folder of every account, except Trash and Junk. A search started in "
@@ -5219,11 +5247,8 @@ msgstr ""
 msgid "Only the folder or view the list is showing."
 msgstr "Отображается только папка или просмотр списка."
 
-#, fuzzy
 msgid "Every folder of this account, Trash and Junk included."
-msgstr ""
-"Каждая папка каждой учётной записи, включая «Корзину» и «Нежелательную "
-"почту»."
+msgstr "Все папки этой учётной записи, включая «Корзину» и «Спам»."
 
 msgid "What this searches"
 msgstr "Что это ищет"
@@ -6449,6 +6474,8 @@ msgid ""
 "Accounts, preferences, filters, tags and layout, in one file. Passwords, "
 "OAuth client secrets and OpenPGP keys are not included."
 msgstr ""
+"Учётные записи, настройки, фильтры, теги и расположение элементов в одном "
+"файле. Пароли, секреты клиентов OAuth и ключи OpenPGP не включаются."
 
 msgid "Export settings"
 msgstr "Экспортировать настройки"
@@ -6677,10 +6704,11 @@ msgid "Automatic uses single lines in wide windows."
 msgstr "Автоматически использует одиночные линии в широких окнах."
 
 msgid "Resize the list with the window"
-msgstr ""
+msgstr "Менять ширину списка вместе с окном"
 
 msgid "Off, it keeps its width and the reader resizes."
 msgstr ""
+"Если выключено, список сохраняет ширину, а размер меняется у области чтения."
 
 msgid "Off also stops downloading previews."
 msgstr "Выкл. также останавливает загрузку превью."
@@ -6753,7 +6781,7 @@ msgid "Pre-load remote content for the next messages"
 msgstr "Предварительная загрузка удаленного контента для следующих сообщений"
 
 msgid "Remove trackers from links"
-msgstr ""
+msgstr "Удалять отслеживающие параметры из ссылок"
 
 msgid "Warn when remote content is blocked"
 msgstr "Предупреждать о блокировке удалённого содержимого"
@@ -6777,27 +6805,27 @@ msgid "Send read receipts"
 msgstr "Отправлять уведомления о прочтении"
 
 #. Not "On This Computer": that names an account kind.
-#, fuzzy
 msgid "Stored Mail"
-msgstr "Proton Mail"
+msgstr "Сохранённая почта"
 
-#, fuzzy
 msgid "Encrypt stored mail"
-msgstr "Зашифрованное сообщение"
+msgstr "Шифровать сохранённую почту"
 
-#, fuzzy
 msgid "Encrypt Stored Mail?"
-msgstr "Зашифровано"
+msgstr "Шифровать сохранённую почту?"
 
 msgid ""
 "Mail stored on this computer will be encrypted at the next start which can "
 "take a few minutes. Earlier versions of the app cannot open it. Turn this "
 "setting off and restart before going back to an older version."
 msgstr ""
+"Почта на этом компьютере будет зашифрована при следующем запуске, что может "
+"занять несколько минут. Более ранние версии приложения не смогут её открыть. "
+"Прежде чем вернуться к старой версии, выключите этот параметр и "
+"перезапустите приложение."
 
-#, fuzzy
 msgid "Encrypt"
-msgstr "Зашифровано"
+msgstr "Зашифровать"
 
 msgid "Open at startup"
 msgstr "Открывать при запуске"
@@ -7558,11 +7586,15 @@ msgid ""
 "GNOME Online Accounts could not provide a sign-in token for {email}. Open "
 "Settings → Online Accounts and sign in again."
 msgstr ""
+"«Сетевые учётные записи GNOME» не смогли предоставить токен входа для "
+"{email}. Откройте «Параметры → Сетевые учётные записи» и войдите снова."
 
 msgid ""
 "Microsoft did not accept the saved sign-in for {email}. Open Buzón's "
 "Settings → Mail Accounts and sign in to it again."
 msgstr ""
+"Microsoft не принял сохранённый вход для {email}. Откройте «Настройки → "
+"Почтовые учётные записи» в Buzón и войдите снова."
 
 msgid "The attachment is no longer in the message on the server"
 msgstr "Вложение больше не содержится в сообщении на сервере"
@@ -7606,9 +7638,8 @@ msgstr "не удалось прочитать ответ сервера (он �
 msgid "Could not load {path}: {e}"
 msgstr "Не удалось загрузить {path}: {e}"
 
-#, fuzzy
 msgid "This message was moved or deleted on the server."
-msgstr "Сообщение слишком длинное для сервера."
+msgstr "Это сообщение было перемещено или удалено на сервере."
 
 msgid "Could not load conversation: {e}"
 msgstr "Не удалось загрузить обсуждение: {e}"
@@ -7973,9 +8004,10 @@ msgstr "Использовать инициалы"
 msgid "Send-as aliases"
 msgstr "Псевдонимы для отправки"
 
-#, fuzzy
 msgid "Extra names and addresses this account can send as."
-msgstr "Дополнительные адреса, от которых может отправлять эта учётная запись."
+msgstr ""
+"Дополнительные имена и адреса, от которых может отправлять эта учётная "
+"запись."
 
 msgid "Add Alias…"
 msgstr "Добавить псевдоним…"
@@ -7999,12 +8031,12 @@ msgstr "Импортировать файл…"
 msgid "Delete Signature"
 msgstr "Удалить подпись"
 
-#, fuzzy
 msgid "Sender name"
-msgstr "Название папки"
+msgstr "Имя отправителя"
 
 msgid "Replaces the account's name in From. Aliases keep their own."
 msgstr ""
+"Заменяет имя учётной записи в поле «От». У псевдонимов остаются свои имена."
 
 msgid "Start messages with this signature"
 msgstr "Начинать сообщения с этой подписью"
@@ -8294,13 +8326,11 @@ msgstr "Ответ в формате оригинала"
 msgid "Plain-text mail is answered in plain text."
 msgstr "На письмо с открытым текстом отвечают в виде обычного текста."
 
-#, fuzzy
 msgid "Ask before switching to plain text"
-msgstr "Переключиться на обычный текст?"
+msgstr "Спрашивать перед переключением на обычный текст"
 
-#, fuzzy
 msgid "Only when formatting, images or links would be removed."
-msgstr "Форматирование, изображения и ссылки удалены."
+msgstr "Только если будут удалены форматирование, изображения или ссылки."
 
 msgid "Signature in replies"
 msgstr "Подпись в ответах"

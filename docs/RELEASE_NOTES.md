@@ -3,6 +3,10 @@
 Buzón is the email client of the Nodalia suite: native, written in Rust, with no telemetry,
 remote content blocked by default and credentials kept in the system keyring.
 
+## What's new in 0.1.4
+
+- Every language is now fully translated: Catalan, French, German, Greek, Hungarian, Italian, Polish, Portuguese (Brazil and Portugal), Russian and Spanish, including settings, address books, mail merge, calendar invitations and AI agent access
+
 ## What's new in 0.1.3
 
 - A new app icon: a sharper portrait of Rowland Hill with a clean cut-out

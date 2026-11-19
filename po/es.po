@@ -1051,7 +1051,7 @@ msgid "Preview the highlighted attachment"
 msgstr "Vista previa del archivo adjunto resaltado"
 
 msgid "Open the highlighted attachment"
-msgstr ""
+msgstr "Abrir el adjunto resaltado"
 
 msgid "Previous or next in the gallery's preview"
 msgstr "Anterior o siguiente en la vista previa de la galería"
@@ -2513,7 +2513,7 @@ msgid "Server saves its own copy of sent mail"
 msgstr "El servidor guarda su propia copia del correo enviado"
 
 msgid "Only when this server files sent mail in this account."
-msgstr ""
+msgstr "Solo cuando este servidor guarda el correo enviado en esta cuenta."
 
 msgid "Test SMTP"
 msgstr "Probar SMTP"
@@ -3632,8 +3632,8 @@ msgid ""
 "1. At dropbox.com/developers/apps, press Create app.\n"
 "2. Choose Scoped access, then App folder or Full Dropbox.\n"
 "3. Give it a name no one else has used and press Create app.\n"
-"4. On Permissions, tick account_info.read, files.content.write and "
-"sharing.write, then press Submit.\n"
+"4. On Permissions, tick account_info.read, files.content.write and sharing."
+"write, then press Submit.\n"
 "5. On Settings, under OAuth 2, add the redirect URI {uri} and press Add.\n"
 "6. Copy the App key into the field above.\n"
 "Development status is enough. Leave the field empty to use this build's own "
@@ -3644,8 +3644,8 @@ msgstr ""
 "2. Elige Acceso con ámbitos y después Carpeta de aplicación o Dropbox "
 "completo.\n"
 "3. Asígnale un nombre que nadie haya utilizado y pulsa Crear aplicación.\n"
-"4. En Permisos, marca account_info.read, files.content.write y "
-"sharing.write; pulsa Enviar.\n"
+"4. En Permisos, marca account_info.read, files.content.write y sharing."
+"write; pulsa Enviar.\n"
 "5. En Ajustes, dentro de OAuth 2, añade la URI de redirección {uri} y pulsa "
 "Añadir.\n"
 "6. Copia la clave de la aplicación en el campo anterior.\n"
@@ -5195,10 +5195,8 @@ msgstr "Marcar todo como leído"
 msgid "Mark All as Unread"
 msgstr "Marcar todo como no leído"
 
-#, fuzzy
 msgid "This Account (Except Trash & Junk)"
-msgstr ""
-"Conceder acceso a toda la cuenta (excepto Papelera y Correo no deseado)"
+msgstr "Esta cuenta (excepto Papelera y Correo no deseado)"
 
 msgid "All folders (except trash & junk)"
 msgstr "Todas las carpetas (excepto Papelera y Correo no deseado)"
@@ -5209,21 +5207,18 @@ msgstr "En todas partes"
 msgid "This folder"
 msgstr "Esta carpeta"
 
-#, fuzzy
 msgid "This Account"
-msgstr "Cuenta de correo"
+msgstr "Esta cuenta"
 
 msgid "All folders"
 msgstr "Todas las carpetas"
 
-#, fuzzy
 msgid ""
 "Every folder of this account, except Trash and Junk. A search started in "
 "Trash or Junk looks there too."
 msgstr ""
-"Busca en todas las carpetas de todas las cuentas, excepto Papelera y Correo "
-"no deseado. Si inicias la búsqueda desde una de esas carpetas, también se "
-"buscará en ella."
+"Todas las carpetas de esta cuenta, excepto Papelera y Correo no deseado. Si "
+"inicias la búsqueda desde una de esas carpetas, también se busca en ella."
 
 msgid ""
 "Every folder of every account, except Trash and Junk. A search started in "
@@ -5241,11 +5236,9 @@ msgstr ""
 msgid "Only the folder or view the list is showing."
 msgstr "Solo en la carpeta o vista que se muestra en la lista."
 
-#, fuzzy
 msgid "Every folder of this account, Trash and Junk included."
 msgstr ""
-"Busca en todas las carpetas de todas las cuentas, incluidas Papelera y "
-"Correo no deseado."
+"Todas las carpetas de esta cuenta, incluidas Papelera y Correo no deseado."
 
 msgid "What this searches"
 msgstr "Ámbito de búsqueda"
@@ -6699,10 +6692,10 @@ msgid "Automatic uses single lines in wide windows."
 msgstr "El modo automático utiliza una sola línea en ventanas anchas."
 
 msgid "Resize the list with the window"
-msgstr ""
+msgstr "Ajustar el ancho de la lista al de la ventana"
 
 msgid "Off, it keeps its width and the reader resizes."
-msgstr ""
+msgstr "Desactivado, mantiene su ancho y es el lector el que se ajusta."
 
 msgid "Off also stops downloading previews."
 msgstr "Al desactivarlo, también deja de descargar vistas previas."
@@ -7634,9 +7627,8 @@ msgstr "no se pudo leer la respuesta del servidor (comenzaba por: {reply})"
 msgid "Could not load {path}: {e}"
 msgstr "No se pudo cargar {path}: {e}"
 
-#, fuzzy
 msgid "This message was moved or deleted on the server."
-msgstr "El mensaje es demasiado largo para el servidor."
+msgstr "Este mensaje se movió o se eliminó en el servidor."
 
 msgid "Could not load conversation: {e}"
 msgstr "No se pudo cargar la conversación: {e}"
@@ -8331,13 +8323,11 @@ msgstr "Responder en el formato original"
 msgid "Plain-text mail is answered in plain text."
 msgstr "Los mensajes de texto sin formato se responden también sin formato."
 
-#, fuzzy
 msgid "Ask before switching to plain text"
-msgstr "¿Cambiar a texto sin formato?"
+msgstr "Preguntar antes de cambiar a texto sin formato"
 
-#, fuzzy
 msgid "Only when formatting, images or links would be removed."
-msgstr "Se eliminarán el formato, las imágenes y los enlaces."
+msgstr "Solo cuando se eliminarían el formato, las imágenes o los enlaces."
 
 msgid "Signature in replies"
 msgstr "Firma en las respuestas"
@@ -8838,6 +8828,50 @@ msgstr "La bandeja de entrada unificada en modo claro"
 
 msgid "Hyprlab"
 msgstr "Hyprlab"
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Desktop window controls"
+msgstr "Controles de ventana del escritorio"
+
+msgid ""
+"Use your desktop's buttons instead of Buzón's round ones. Applies after a "
+"restart."
+msgstr ""
+"Usa los botones de tu escritorio en vez de los redondos de Buzón. Se aplica "
+"al reiniciar."
+
+msgid "Check for Updates…"
+msgstr "Buscar actualizaciones…"
+
+msgid "The check for updates stopped."
+msgstr "La búsqueda de actualizaciones se ha detenido."
+
+msgid "Buzón {version} is the latest version"
+msgstr "Buzón {version} es la versión más reciente"
+
+msgid "Buzón {version} is available"
+msgstr "Buzón {version} está disponible"
+
+msgid "Install and Restart"
+msgstr "Instalar y reiniciar"
+
+msgid "Open Download Page"
+msgstr "Abrir la página de descarga"
+
+msgid "Downloading Buzón {version}…"
+msgstr "Descargando Buzón {version}…"
+
+msgid "The update stopped."
+msgstr "La actualización se ha detenido."
+
+msgid ""
+"Update Buzón the way you installed it: with your software center, your "
+"package manager or the new release's package."
+msgstr ""
+"Actualiza Buzón como lo instalaste: con tu centro de software, tu gestor de "
+"paquetes o el paquete de la versión nueva."
 
 #~ msgid "Remote content can tell a sender when and where you read."
 #~ msgstr ""
@@ -10554,39 +10588,3 @@ msgstr "Hyprlab"
 #~ msgstr ""
 #~ "Las cuentas de Google y Microsoft inician sesión mediante Ajustes de "
 #~ "GNOME → Cuentas en línea y después aparecen arriba."
-
-msgid "Help"
-msgstr "Ayuda"
-
-msgid "Desktop window controls"
-msgstr "Controles de ventana del escritorio"
-
-msgid "Use your desktop's buttons instead of Buzón's round ones. Applies after a restart."
-msgstr "Usa los botones de tu escritorio en vez de los redondos de Buzón. Se aplica al reiniciar."
-
-msgid "Check for Updates…"
-msgstr "Buscar actualizaciones…"
-
-msgid "The check for updates stopped."
-msgstr "La búsqueda de actualizaciones se ha detenido."
-
-msgid "Buzón {version} is the latest version"
-msgstr "Buzón {version} es la versión más reciente"
-
-msgid "Buzón {version} is available"
-msgstr "Buzón {version} está disponible"
-
-msgid "Install and Restart"
-msgstr "Instalar y reiniciar"
-
-msgid "Open Download Page"
-msgstr "Abrir la página de descarga"
-
-msgid "Downloading Buzón {version}…"
-msgstr "Descargando Buzón {version}…"
-
-msgid "The update stopped."
-msgstr "La actualización se ha detenido."
-
-msgid "Update Buzón the way you installed it: with your software center, your package manager or the new release's package."
-msgstr "Actualiza Buzón como lo instalaste: con tu centro de software, tu gestor de paquetes o el paquete de la versión nueva."
