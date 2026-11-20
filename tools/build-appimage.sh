@@ -124,6 +124,11 @@ chmod +x /usr/bin/quick-sharun /usr/bin/get-debloated-pkgs
 # WebKit bundle weighs beyond WebKit itself.
 get-debloated-pkgs --add-common --prefer-nano
 
+echo "==> Checking desktop identity (#18)"
+# HERE is the script's checkout: identity files and this helper live there
+# even when ROOT is another tree being built.
+"$HERE/tools/check-desktop-identity.sh"
+
 echo "==> Building the release binary ($APP_ID $VERSION)"
 cd "$ROOT"
 cargo build --release "${FEATURES[@]}"
@@ -136,6 +141,13 @@ install -Dm755 target/release/buzon /usr/bin/buzon
 install -d /usr/share/applications /usr/share/metainfo
 msgfmt --desktop --template="data/$APP_ID.desktop" -d po -o "/usr/share/applications/$APP_ID.desktop"
 msgfmt --xml --template="data/$APP_ID.metainfo.xml" -d po -o "/usr/share/metainfo/$APP_ID.metainfo.xml"
+# msgfmt must not drop StartupWMClass; Gear Lever and GNOME match the window
+# to this value when the integrated .desktop basename differs from APP_ID (#18).
+grep -q "^StartupWMClass=$APP_ID$" "/usr/share/applications/$APP_ID.desktop" \
+    || { echo "msgfmt dropped or altered StartupWMClass" >&2; exit 1; }
+grep -q "^Icon=$APP_ID$" "/usr/share/applications/$APP_ID.desktop" \
+    || { echo "msgfmt dropped or altered Icon=" >&2; exit 1; }
+chmod 644 "/usr/share/applications/$APP_ID.desktop"
 for po in po/*.po; do
     [ -e "$po" ] || continue
     lang="$(basename "$po" .po)"
@@ -148,6 +160,8 @@ for size in 256x256 512x512; do
 done
 install -Dm644 "data/icons/hicolor/scalable/apps/$APP_ID.svg" \
     "/usr/share/icons/hicolor/scalable/apps/$APP_ID.svg"
+install -Dm644 "data/icons/hicolor/symbolic/apps/dev.danielmiguelt.Buzon-symbolic.svg" \
+    "/usr/share/icons/hicolor/symbolic/apps/$APP_ID-symbolic.svg"
 desktop-file-validate "/usr/share/applications/$APP_ID.desktop"
 
 echo "==> Collecting the dependencies"
@@ -279,8 +293,45 @@ echo 'BUZON_FONT_FALLBACK_CONF=${SHARUN_DIR}/share/buzon/fontconfig/fallback.con
 # app monolingual.
 echo 'BUZON_LOCALEDIR=${SHARUN_DIR}/share/locale' >> "$APPDIR/.env"
 
+echo "==> Verifying AppDir desktop identity (#18)"
+# quick-sharun copies the desktop into AppDir; keep its basename as APP_ID
+# (GNOME Wayland matches windows to $application_id.desktop first) and make
+# sure every icon size Gear Lever looks for is present — without writing a
+# second launcher on the user's machine.
+if [ ! -f "$APPDIR/$APP_ID.desktop" ]; then
+    # Some collectors rename; force the canonical basename.
+    set -- "$APPDIR"/*.desktop
+    [ -f "$1" ] || { echo "no .desktop in AppDir" >&2; exit 1; }
+    mv "$1" "$APPDIR/$APP_ID.desktop"
+fi
+# Ensure StartupWMClass survived the collector (GTK_CLASS_FIX / window class).
+if ! grep -q "^StartupWMClass=$APP_ID$" "$APPDIR/$APP_ID.desktop"; then
+    if grep -q '^StartupWMClass=' "$APPDIR/$APP_ID.desktop"; then
+        sed -i "s/^StartupWMClass=.*/StartupWMClass=$APP_ID/" "$APPDIR/$APP_ID.desktop"
+    else
+        sed -i "/^\[Desktop Entry\]/a StartupWMClass=$APP_ID" "$APPDIR/$APP_ID.desktop"
+    fi
+fi
+# Re-install icons into the AppDir tree in case the collector pruned hicolor.
+for size in 256x256 512x512; do
+    install -Dm644 "/usr/share/icons/hicolor/$size/apps/$APP_ID.png" \
+        "$APPDIR/share/icons/hicolor/$size/apps/$APP_ID.png"
+done
+install -Dm644 "/usr/share/icons/hicolor/scalable/apps/$APP_ID.svg" \
+    "$APPDIR/share/icons/hicolor/scalable/apps/$APP_ID.svg"
+install -Dm644 "/usr/share/icons/hicolor/symbolic/apps/$APP_ID-symbolic.svg" \
+    "$APPDIR/share/icons/hicolor/symbolic/apps/$APP_ID-symbolic.svg"
+chmod 644 "$APPDIR/$APP_ID.desktop"
+APPDIR="$APPDIR" "$HERE/tools/check-desktop-identity.sh"
+
 echo "==> Packing"
 quick-sharun --make-appimage
+
+# Downloads and some desktops strip the execute bit; pin it so integrating
+# and launching the bundle does not need a manual chmod (#18).
+chmod 755 "$OUT/$NAME-$ARCH.AppImage"
+[ -x "$OUT/$NAME-$ARCH.AppImage" ] \
+    || { echo "AppImage is not executable after chmod" >&2; exit 1; }
 
 # The .zsync quick-sharun writes goes on the release beside the AppImage.
 
