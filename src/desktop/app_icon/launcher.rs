@@ -475,7 +475,8 @@ fn desktop_mime_types(text: &str) -> Vec<String> {
 }
 
 /// Repair an AppImage integrator's `.desktop` in place: copy the bundle's
-/// hicolor icons into the user's icon theme, set `Icon=` and
+/// hicolor icons into the user's icon theme, set `Icon=` to an absolute
+/// PNG path (GNOME loads file paths without waiting on the icon cache) and
 /// `StartupWMClass` to the app id, and leave the file's basename alone
 /// (Gear Lever may have named it `dev.nodalia.Buzon.desktop`).
 pub(super) fn repair_appimage_integrator(path: &std::path::Path) {
@@ -484,13 +485,23 @@ pub(super) fn repair_appimage_integrator(path: &std::path::Path) {
     };
     let icon = desktop_value(&text, "Icon").unwrap_or_default();
     let wm = desktop_value(&text, "StartupWMClass").unwrap_or_default();
-    let icon_bad = icon.is_empty() || integrator_fallback_icon(&icon);
     let wm_bad = wm != crate::APP_ID;
-    if !icon_bad && !wm_bad {
+    let needs_icons = icon.is_empty()
+        || integrator_fallback_icon(&icon)
+        || icon == crate::APP_ID
+        || !icon_is_ours(&icon);
+    if !needs_icons && !wm_bad {
         return;
     }
     install_appimage_hicolor_icons();
-    let Some(out) = repaired_desktop_text(&text) else {
+    // Absolute PNG: GNOME Shell loads file paths without an icon-cache wait.
+    let icon_value = installed_app_icon_png()
+        .map(|p| p.to_string_lossy().into_owned())
+        .unwrap_or_else(|| crate::APP_ID.to_string());
+    if icon == icon_value && !wm_bad {
+        return;
+    }
+    let Some(out) = repaired_desktop_text(&text, &icon_value) else {
         return;
     };
     if out == text {
@@ -499,18 +510,42 @@ pub(super) fn repair_appimage_integrator(path: &std::path::Path) {
     match std::fs::write(path, out) {
         Ok(()) => {
             tracing::info!(
-                "repaired AppImage launcher {} (Icon={}, StartupWMClass={})",
+                "repaired AppImage launcher {} (Icon={icon_value}, StartupWMClass={})",
                 path.display(),
-                crate::APP_ID,
                 crate::APP_ID
             );
             note_launcher_written();
             if let Some(dir) = path.parent() {
                 sync_mime_cache(dir);
             }
+            // Best-effort: help GNOME pick up hicolor without a session restart.
+            let _ = std::process::Command::new("gtk-update-icon-cache")
+                .args(["-f", "-t"])
+                .arg(
+                    host_data_home()
+                        .map(|d| d.join("icons/hicolor"))
+                        .unwrap_or_default(),
+                )
+                .stdout(std::process::Stdio::null())
+                .stderr(std::process::Stdio::null())
+                .status();
         }
         Err(e) => tracing::warn!("could not repair {}: {e}", path.display()),
     }
+}
+
+/// Absolute path of the shipped app icon under the user's hicolor tree, if
+/// present (after [`install_appimage_hicolor_icons`] or a previous run).
+fn installed_app_icon_png() -> Option<std::path::PathBuf> {
+    let root = host_data_home()?.join("icons/hicolor");
+    let id = crate::APP_ID;
+    for size in ["512x512", "256x256"] {
+        let path = root.join(size).join("apps").join(format!("{id}.png"));
+        if path.is_file() {
+            return Some(path);
+        }
+    }
+    None
 }
 
 /// Copy `$APPDIR/share/icons/hicolor/.../dev.danielmiguelt.Buzon*` into the
@@ -587,9 +622,10 @@ fn touch_dir(dir: &std::path::Path) {
     }
 }
 
-/// Rewrite `Icon=` and `StartupWMClass` to the app id; add the repaired
-/// marker. Returns `None` when the text has no main desktop group.
-fn repaired_desktop_text(text: &str) -> Option<String> {
+/// Rewrite `Icon=` to `icon` (absolute PNG preferred) and `StartupWMClass`
+/// to the app id; add the repaired marker. Returns `None` when the text has
+/// no main desktop group.
+fn repaired_desktop_text(text: &str, icon: &str) -> Option<String> {
     if !text.contains("[Desktop Entry]") {
         return None;
     }
@@ -603,7 +639,7 @@ fn repaired_desktop_text(text: &str) -> Option<String> {
         if line.starts_with('[') {
             if main {
                 if !saw_icon {
-                    out.push_str(&format!("Icon={id}\n"));
+                    out.push_str(&format!("Icon={icon}\n"));
                     saw_icon = true;
                 }
                 if !saw_wm {
@@ -621,7 +657,7 @@ fn repaired_desktop_text(text: &str) -> Option<String> {
             continue;
         }
         if main && line.starts_with("Icon=") {
-            out.push_str(&format!("Icon={id}\n"));
+            out.push_str(&format!("Icon={icon}\n"));
             saw_icon = true;
         } else if main && line.starts_with("StartupWMClass=") {
             out.push_str(&format!("StartupWMClass={id}\n"));
@@ -636,7 +672,7 @@ fn repaired_desktop_text(text: &str) -> Option<String> {
     }
     if main {
         if !saw_icon {
-            out.push_str(&format!("Icon={id}\n"));
+            out.push_str(&format!("Icon={icon}\n"));
         }
         if !saw_wm {
             out.push_str(&format!("StartupWMClass={id}\n"));
@@ -821,6 +857,7 @@ mod tests {
     #[test]
     fn repaired_desktop_sets_icon_and_wmclass() {
         let id = crate::APP_ID;
+        let png = format!("/home/u/.local/share/icons/hicolor/512x512/apps/{id}.png");
         let bad = "\
 [Desktop Entry]
 Name=Buzón
@@ -828,15 +865,14 @@ Exec=/home/daniel/Applications/Buzon.AppImage
 Icon=/usr/share/icons/Nodalix-Icons/apps/scalable/mail-client.svg
 StartupWMClass=Buzon
 ";
-        let out = repaired_desktop_text(bad).unwrap();
-        assert!(out.contains(&format!("Icon={id}\n")));
+        let out = repaired_desktop_text(bad, &png).unwrap();
+        assert!(out.contains(&format!("Icon={png}\n")));
         assert!(out.contains(&format!("StartupWMClass={id}\n")));
         assert!(out.contains(&format!("{INTEGRATOR_REPAIRED}=1\n")));
         assert!(!out.contains("mail-client"));
-        // Already correct: only the marker is added.
         let good = format!("[Desktop Entry]\nName=Buzón\nIcon={id}\nStartupWMClass={id}\n");
-        let out = repaired_desktop_text(&good).unwrap();
-        assert!(out.contains(&format!("Icon={id}\n")));
+        let out = repaired_desktop_text(&good, &png).unwrap();
+        assert!(out.contains(&format!("Icon={png}\n")));
         assert!(out.contains(&format!("{INTEGRATOR_REPAIRED}=1\n")));
     }
 
