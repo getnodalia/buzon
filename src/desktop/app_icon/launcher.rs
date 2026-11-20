@@ -4,11 +4,15 @@
 
 use std::path::PathBuf;
 
-use super::{host_data_home, icon_is_ours};
+use super::{host_data_home, icon_is_ours, integrator_fallback_icon};
 
 /// Marker key in a launcher Buzón wrote, so only its own files are ever
 /// removed or regenerated.
 const LAUNCHER_MARK: &str = "X-Buzón-Icon-Launcher";
+
+/// Marker left after repairing an integrator's AppImage `.desktop` in place
+/// (Icon + StartupWMClass). Not a claim that Buzón owns the whole file.
+const INTEGRATOR_REPAIRED: &str = "X-Buzón-Integrator-Repaired";
 
 /// When the launcher was last written by this process.
 static LAST_LAUNCHER_WRITE: std::sync::Mutex<Option<std::time::Instant>> =
@@ -138,7 +142,8 @@ impl Launcher {
 
     /// The launcher's `Icon=` value, when Buzón did not write it. A menu
     /// editor keeps our mark when it edits our copy, so the value is what
-    /// is judged, not the mark.
+    /// is judged, not the mark. Integrator category fallbacks are excluded:
+    /// they are repaired on AppImage start, not treated as a user choice.
     pub(super) fn custom_icon(&self) -> Option<String> {
         let path = match self {
             Launcher::Shadow { user_path, .. } => user_path,
@@ -147,7 +152,10 @@ impl Launcher {
         };
         let text = std::fs::read_to_string(path).ok()?;
         let icon = desktop_value(&text, "Icon")?;
-        (!icon.is_empty() && !icon_is_ours(&icon)).then_some(icon)
+        if icon.is_empty() || icon_is_ours(&icon) || integrator_fallback_icon(&icon) {
+            return None;
+        }
+        Some(icon)
     }
 
     /// Point the launcher at `icon` (an absolute path); `restore` instead
@@ -466,6 +474,180 @@ fn desktop_mime_types(text: &str) -> Vec<String> {
         .unwrap_or_default()
 }
 
+/// Repair an AppImage integrator's `.desktop` in place: copy the bundle's
+/// hicolor icons into the user's icon theme, set `Icon=` and
+/// `StartupWMClass` to the app id, and leave the file's basename alone
+/// (Gear Lever may have named it `dev.nodalia.Buzon.desktop`).
+pub(super) fn repair_appimage_integrator(path: &std::path::Path) {
+    let Ok(text) = std::fs::read_to_string(path) else {
+        return;
+    };
+    let icon = desktop_value(&text, "Icon").unwrap_or_default();
+    let wm = desktop_value(&text, "StartupWMClass").unwrap_or_default();
+    let icon_bad = icon.is_empty() || integrator_fallback_icon(&icon);
+    let wm_bad = wm != crate::APP_ID;
+    if !icon_bad && !wm_bad {
+        return;
+    }
+    install_appimage_hicolor_icons();
+    let Some(out) = repaired_desktop_text(&text) else {
+        return;
+    };
+    if out == text {
+        return;
+    }
+    match std::fs::write(path, out) {
+        Ok(()) => {
+            tracing::info!(
+                "repaired AppImage launcher {} (Icon={}, StartupWMClass={})",
+                path.display(),
+                crate::APP_ID,
+                crate::APP_ID
+            );
+            note_launcher_written();
+            if let Some(dir) = path.parent() {
+                sync_mime_cache(dir);
+            }
+        }
+        Err(e) => tracing::warn!("could not repair {}: {e}", path.display()),
+    }
+}
+
+/// Copy `$APPDIR/share/icons/hicolor/.../dev.danielmiguelt.Buzon*` into the
+/// user's hicolor tree so `Icon=APP_ID` resolves after the AppImage unmounts
+/// from the integrator's point of view (the icons stay on disk).
+fn install_appimage_hicolor_icons() {
+    let Some(appdir) = std::env::var_os("APPDIR").map(std::path::PathBuf::from) else {
+        return;
+    };
+    let Some(dest_root) = host_data_home().map(|d| d.join("icons/hicolor")) else {
+        return;
+    };
+    let src_root = appdir.join("share/icons/hicolor");
+    if !src_root.is_dir() {
+        return;
+    }
+    let id = crate::APP_ID;
+    let mut changed = false;
+    let Ok(entries) = std::fs::read_dir(&src_root) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let size_name = entry.file_name();
+        let apps = entry.path().join("apps");
+        if !apps.is_dir() {
+            continue;
+        }
+        let Ok(icons) = std::fs::read_dir(&apps) else {
+            continue;
+        };
+        for icon in icons.flatten() {
+            let name = icon.file_name();
+            let name_str = name.to_string_lossy();
+            if !(name_str == format!("{id}.png")
+                || name_str == format!("{id}.svg")
+                || name_str == format!("{id}-symbolic.svg"))
+            {
+                continue;
+            }
+            let dest_dir = dest_root.join(&size_name).join("apps");
+            let dest = dest_dir.join(&name);
+            let src = icon.path();
+            let same = std::fs::read(&src)
+                .ok()
+                .zip(std::fs::read(&dest).ok())
+                .is_some_and(|(a, b)| a == b);
+            if same {
+                continue;
+            }
+            if let Err(e) = std::fs::create_dir_all(&dest_dir)
+                .and_then(|()| std::fs::copy(&src, &dest).map(|_| ()))
+            {
+                tracing::warn!(
+                    "could not install icon {} → {}: {e}",
+                    src.display(),
+                    dest.display()
+                );
+                continue;
+            }
+            changed = true;
+        }
+    }
+    if changed {
+        touch_dir(&dest_root);
+        if let Some(parent) = dest_root.parent() {
+            touch_dir(parent);
+        }
+    }
+}
+
+fn touch_dir(dir: &std::path::Path) {
+    if let Ok(f) = std::fs::File::open(dir) {
+        let _ = f.set_modified(std::time::SystemTime::now());
+    }
+}
+
+/// Rewrite `Icon=` and `StartupWMClass` to the app id; add the repaired
+/// marker. Returns `None` when the text has no main desktop group.
+fn repaired_desktop_text(text: &str) -> Option<String> {
+    if !text.contains("[Desktop Entry]") {
+        return None;
+    }
+    let id = crate::APP_ID;
+    let mut out = String::new();
+    let mut main = false;
+    let mut saw_icon = false;
+    let mut saw_wm = false;
+    let mut saw_mark = false;
+    for line in text.lines() {
+        if line.starts_with('[') {
+            if main {
+                if !saw_icon {
+                    out.push_str(&format!("Icon={id}\n"));
+                    saw_icon = true;
+                }
+                if !saw_wm {
+                    out.push_str(&format!("StartupWMClass={id}\n"));
+                    saw_wm = true;
+                }
+                if !saw_mark {
+                    out.push_str(&format!("{INTEGRATOR_REPAIRED}=1\n"));
+                    saw_mark = true;
+                }
+            }
+            main = line.trim() == "[Desktop Entry]";
+            out.push_str(line);
+            out.push('\n');
+            continue;
+        }
+        if main && line.starts_with("Icon=") {
+            out.push_str(&format!("Icon={id}\n"));
+            saw_icon = true;
+        } else if main && line.starts_with("StartupWMClass=") {
+            out.push_str(&format!("StartupWMClass={id}\n"));
+            saw_wm = true;
+        } else if main && line.starts_with(INTEGRATOR_REPAIRED) {
+            out.push_str(&format!("{INTEGRATOR_REPAIRED}=1\n"));
+            saw_mark = true;
+        } else {
+            out.push_str(line);
+            out.push('\n');
+        }
+    }
+    if main {
+        if !saw_icon {
+            out.push_str(&format!("Icon={id}\n"));
+        }
+        if !saw_wm {
+            out.push_str(&format!("StartupWMClass={id}\n"));
+        }
+        if !saw_mark {
+            out.push_str(&format!("{INTEGRATOR_REPAIRED}=1\n"));
+        }
+    }
+    Some(out)
+}
+
 /// Replace the `Icon=` line of a launcher the user's own install owns.
 fn edit_icon_line(path: &std::path::Path, icon: &str) {
     let Ok(text) = std::fs::read_to_string(path) else {
@@ -629,8 +811,33 @@ mod tests {
         )
         .unwrap();
         assert_eq!(Launcher::Owned(path.clone()).custom_icon(), None);
+        // Integrator category fallbacks are not user choices.
+        std::fs::write(&path, "[Desktop Entry]\nName=Buzón\nIcon=mail-client\n").unwrap();
+        assert_eq!(Launcher::Owned(path.clone()).custom_icon(), None);
         assert_eq!(Launcher::None.custom_icon(), None);
         let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn repaired_desktop_sets_icon_and_wmclass() {
+        let id = crate::APP_ID;
+        let bad = "\
+[Desktop Entry]
+Name=Buzón
+Exec=/home/daniel/Applications/Buzon.AppImage
+Icon=/usr/share/icons/Nodalix-Icons/apps/scalable/mail-client.svg
+StartupWMClass=Buzon
+";
+        let out = repaired_desktop_text(bad).unwrap();
+        assert!(out.contains(&format!("Icon={id}\n")));
+        assert!(out.contains(&format!("StartupWMClass={id}\n")));
+        assert!(out.contains(&format!("{INTEGRATOR_REPAIRED}=1\n")));
+        assert!(!out.contains("mail-client"));
+        // Already correct: only the marker is added.
+        let good = format!("[Desktop Entry]\nName=Buzón\nIcon={id}\nStartupWMClass={id}\n");
+        let out = repaired_desktop_text(&good).unwrap();
+        assert!(out.contains(&format!("Icon={id}\n")));
+        assert!(out.contains(&format!("{INTEGRATOR_REPAIRED}=1\n")));
     }
 
     /// The whole launcher copy, byte for byte: the keys Buzón adds go at

@@ -9,13 +9,13 @@ use super::types::CardAttachment;
 use ndl::prelude::*;
 use relm4::prelude::*;
 
-/// The three grounds for `dark`, resolved from the live libadwaita theme
+/// The three grounds for `dark`, resolved from the live Nodalia / GTK theme
 /// instead of hard-coded values (issue #62): GROUND is the theme's own view
 /// background, PAGE shades it a step deeper so conversation cards (and the
 /// composer, #148) keep reading as a layer under any theme variant, and
 /// CHROME is the window's own ground. `widget` is only where the theme is
 /// read from. When the caller asks for a scheme the app isn't currently in,
-/// the theme can't answer for that mode, so the stock GNOME values stand in.
+/// the theme can't answer for that mode, so the stock values stand in.
 #[allow(deprecated)] // lookup_color: named theme colors have no successor yet
 pub(crate) fn theme_grounds_for(
     widget: &impl IsA<gtk::Widget>,
@@ -71,8 +71,8 @@ pub(crate) struct StatusColors {
     pub success: String,
 }
 
-/// Stock libadwaita `error_color`, `warning_color` and `success_color`, light
-/// and dark, for a scheme the app isn't in (and for the tests).
+/// Stock `error_color`, `warning_color` and `success_color`, light and dark,
+/// for a scheme the app isn't in (and for the tests).
 const STATUS: [(&str, &str, &str); 2] = [
     ("#c30000", "#905400", "#007c3d"),
     ("#ff938c", "#ffc252", "#78e9ab"),
@@ -115,15 +115,15 @@ pub(crate) fn theme_status_for(widget: &impl IsA<gtk::Widget>, dark: bool) -> St
 type TranslationsShown = std::collections::HashMap<(u32, u32), (String, Option<(String, bool)>)>;
 
 thread_local! {
-    /// The grounds as resolved from the live libadwaita theme, refreshed by
+    /// The grounds as resolved from the live theme, refreshed by
     /// `document_html` just before each build (issue #62). The document
     /// builder is a static fn so tests can exercise it without a display —
     /// this hands it the theme without widening that signature. `None` (as in
-    /// tests) falls back to the stock GNOME values above.
+    /// tests) falls back to the stock values above.
     pub(super) static LIVE_GROUNDS: std::cell::RefCell<Option<(String, String, String)>> =
         const { std::cell::RefCell::new(None) };
     /// The theme's status colors (#619), handed over as the grounds are.
-    /// `None` (as in tests) falls back to the stock libadwaita ones.
+    /// `None` (as in tests) falls back to the stock ones.
     pub(super) static LIVE_STATUS: std::cell::RefCell<Option<StatusColors>> =
         const { std::cell::RefCell::new(None) };
     /// The tags (#71), handed to the document builder the same way, for the

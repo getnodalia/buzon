@@ -10,15 +10,16 @@
 //!
 //! The palettes themselves are T3 Code's theme library (MIT), converted to
 //! sRGB by `tools/gen-themes.py` into [`crate::desktop::theme_palettes`]. This module
-//! maps their product roles (canvas, surface, sidebar…) onto libadwaita's
-//! named colors and keeps a single CSS provider up to date with the active
-//! palette.
+//! maps their product roles (canvas, surface, sidebar…) onto Nodalia
+//! (`--ndl-*`) CSS variables — and the GTK named colors nodalia-gtk still
+//! derives for a few chrome pieces — and keeps a single CSS provider up to
+//! date with the active palette.
 //!
-//! Everything downstream follows from those named colors: the static
-//! stylesheet references them (`@window_bg_color` and friends), and the
-//! reader, the composer and the scheme-dependent CSS all read them back off
-//! the live theme (`message_view::theme_grounds_for`), so a theme reaches
-//! message content too.
+//! Everything downstream follows from those tokens: the static stylesheet
+//! uses `var(--ndl-*)`, and the reader, the composer and the
+//! scheme-dependent CSS all read them back off the live theme
+//! (`message_view::theme_grounds_for`), so a theme reaches message content
+//! too.
 
 use std::cell::RefCell;
 
@@ -205,47 +206,58 @@ fn repaint() {
     });
 }
 
-/// A palette as libadwaita's named colors, plus the one rule that needs
-/// writing out.
-///
-/// Only the backgrounds and foregrounds are set: `accent_color`,
-/// `destructive_color` and the other "on a normal background" variants are
-/// derived by libadwaita from the ones below, which keeps text legible on
-/// palettes whose accent is very light or very dark.
+/// A palette as Nodalia `--ndl-*` variables (what Buzón's stylesheet and
+/// nodalia-gtk widgets read), plus GTK named-color aliases for chrome that
+/// still resolves through those names, and the one rule that needs writing
+/// out.
 ///
 /// The divider between the message list and the reading pane is the
-/// exception: a GtkPaned separator takes no named color, so it is painted
-/// here by class. (The sidebar's own divider needs nothing — it is an
-/// Adwaita split view, and already follows `sidebar_border_color`.) The
-/// border and shadow resets are load-bearing: libadwaita draws the
-/// separator's hairline as a shadow, which would otherwise sit over the
+/// exception: a GtkPaned separator takes no token, so it is painted here by
+/// class. The border and shadow resets are load-bearing: the toolkit draws
+/// the separator's hairline as a shadow, which would otherwise sit over the
 /// palette color and lighten it. It is painted a fifth darker than the
-/// palette's border role, which every theme pitches brighter than the list
-/// and the reader on either side of it. Because this string is empty under
-/// the stock look, none of it reaches an unthemed window.
+/// palette's border role. Because this string is empty under the stock look,
+/// none of it reaches an unthemed window — stock Nodalia tokens stay in
+/// charge.
 ///
-/// The sidebar's divider keeps libadwaita's own values rather than the
-/// palette's `sidebar_border`: every theme's tint is lighter than the
+/// The sidebar's divider keeps the toolkit's own shade values rather than
+/// the palette's `sidebar_border`: every theme's tint is lighter than the
 /// sidebar behind it, which drew a bright line down the window beside the
 /// rail. Black at the stock opacity reads as a shadow, the way the system
 /// look does.
-///
-/// `shade_color` is black at libadwaita's own opacity for the same reason,
-/// and it is not optional: it is not a line color at all but the color
-/// libadwaita dims and shadows *with*. It paints the scrim behind the
-/// hovering sidebar (`overlay-split-view > dimming`) and that panel's drop
-/// shadow, so a palette's opaque `border` there slid a solid sheet over the
-/// whole window instead of letting it show through.
 fn css(p: &Palette, dark: bool) -> String {
-    // libadwaita's sidebar-border and shade colors, light and dark. The
-    // sidebar's shade and the general one happen to share a value.
     let (sidebar_border, shade) = if dark {
         ("rgba(0, 0, 0, 0.36)", "rgba(0, 0, 0, 0.25)")
     } else {
         ("rgba(0, 0, 0, 0.07)", "rgba(0, 0, 0, 0.07)")
     };
+    let on_error = crate::color::readable_text(p.error);
+    let on_warning = crate::color::readable_text(p.warning);
+    let separator = crate::color::darken(p.border, 0.2);
     format!(
         "\
+:root {{\
+--ndl-color-surface-window: {chrome};\
+--ndl-color-surface-panel: {sidebar};\
+--ndl-color-surface-sunken: {surface};\
+--ndl-color-surface-raised: {raised};\
+--ndl-color-text-primary: {text};\
+--ndl-color-text-secondary: {muted};\
+--ndl-color-text-on-accent: {accent_fg};\
+--ndl-color-accent-default: {accent};\
+--ndl-color-accent-text: {accent};\
+--ndl-color-accent-hover: {accent};\
+--ndl-color-accent-pressed: {accent};\
+--ndl-color-border-subtle: {border};\
+--ndl-color-border-strong: {border};\
+--ndl-color-selection-bg: {accent};\
+--ndl-color-status-danger-bg: {error};\
+--ndl-color-status-danger-fg: {on_error};\
+--ndl-color-status-warning-bg: {warning};\
+--ndl-color-status-warning-fg: {on_warning};\
+--ndl-color-control-bg: {surface};\
+--ndl-color-control-bg-hover: {raised};\
+}}\
 @define-color window_bg_color {chrome};\
 @define-color window_fg_color {text};\
 @define-color view_bg_color {surface};\
@@ -294,16 +306,14 @@ border: none;box-shadow: none;outline: none;}}",
         toolbar = p.toolbar,
         toolbar_fg = p.toolbar_foreground,
         border = p.border,
-        separator = crate::color::darken(p.border, 0.2),
         sidebar = p.sidebar,
         sidebar_fg = p.sidebar_foreground,
         raised = p.surface_raised,
         overlay = p.surface_overlay,
         accent = p.accent,
         accent_fg = p.accent_foreground,
+        muted = p.text_muted,
         error = p.error,
-        on_error = crate::color::readable_text(p.error),
         warning = p.warning,
-        on_warning = crate::color::readable_text(p.warning),
     )
 }
