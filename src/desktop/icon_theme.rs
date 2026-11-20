@@ -251,7 +251,9 @@ mod tests {
             .join(format!("data/icons/hicolor/scalable/apps/{id}.svg"))
             .is_file());
         assert!(root
-            .join(format!("data/icons/hicolor/symbolic/apps/{id}-symbolic.svg"))
+            .join(format!(
+                "data/icons/hicolor/symbolic/apps/{id}-symbolic.svg"
+            ))
             .is_file());
     }
 }
