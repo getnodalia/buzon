@@ -180,6 +180,31 @@ fn icon_is_ours(value: &str) -> bool {
             .is_some_and(|n| n.starts_with(&prefix) && n.ends_with(".png"))
 }
 
+/// An `Icon=` value that came from an AppImage integrator (Gear Lever,
+/// Nodalix) rather than from the user picking art in Buzón or a menu
+/// editor (#252). Those must be repaired on AppImage start; leaving them
+/// is what made 0.1.5 look unchanged on Nodalix.
+pub(crate) fn integrator_fallback_icon(value: &str) -> bool {
+    if value.is_empty() || icon_is_ours(value) {
+        return false;
+    }
+    match value {
+        "mail-client" | "internet-mail" | "emblem-mail" => return true,
+        _ => {}
+    }
+    let path = std::path::Path::new(value);
+    if !path.is_absolute() {
+        // A theme name the user (or Papirus) chose — not an integrator
+        // category fallback.
+        return false;
+    }
+    if value.contains("Nodalix-Icons") {
+        return true;
+    }
+    // Absolute path that is not one of our gallery files.
+    true
+}
+
 /// The icon name a choice is written under: `<APP_ID>-<choice>`, the
 /// default included. A fresh name per choice is deliberate — GNOME Shell
 /// caches app icons by name for the life of the session and never re-reads
@@ -256,10 +281,17 @@ const SIZES: [i32; 2] = [512, 256];
 /// counts as a changed launcher, so the dock rebuilds the icon at once.
 ///
 /// At startup (`replace_custom` false) a launcher whose icon the user set
-/// themselves is left as it is, file and all.
+/// themselves is left as it is, file and all. Integrator fallbacks
+/// (`mail-client`, Nodalix stock art) are not user choices: on AppImage
+/// they are repaired in place before the gallery is applied.
 fn apply(id: &str, replace_custom: bool) {
     let name = icon_name(id);
     let Some(hicolor) = hicolor_dir() else { return };
+    if !replace_custom && crate::desktop::platform::is_appimage() {
+        if let Launcher::Owned(path) = Launcher::find() {
+            launcher::repair_appimage_integrator(&path);
+        }
+    }
     let launcher = Launcher::find();
     if !replace_custom {
         if let Some(icon) = launcher.custom_icon() {
@@ -431,5 +463,22 @@ mod tests {
         assert!(!icon_is_ours(&format!("{id}-symbolic")));
         assert!(!icon_is_ours("/home/u/icons/buzon-square.svg"));
         assert!(!icon_is_ours(&format!("{id}-default.png")));
+    }
+
+    #[test]
+    fn integrator_fallbacks_are_not_user_icon_choices() {
+        let id = crate::APP_ID;
+        assert!(integrator_fallback_icon("mail-client"));
+        assert!(integrator_fallback_icon("internet-mail"));
+        assert!(integrator_fallback_icon("emblem-mail"));
+        assert!(integrator_fallback_icon(
+            "/usr/share/icons/Nodalix-Icons/apps/scalable/mail-client.svg"
+        ));
+        assert!(integrator_fallback_icon("/home/u/Pictures/other.png"));
+        assert!(!integrator_fallback_icon(id));
+        assert!(!integrator_fallback_icon(&format!(
+            "/home/u/.local/share/icons/hicolor/512x512/apps/{id}-default.png"
+        )));
+        assert!(!integrator_fallback_icon("Papirus-mail"));
     }
 }

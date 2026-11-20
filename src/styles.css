@@ -1,4 +1,4 @@
-/* Buzón — clean, calm styling layered on top of libadwaita defaults. */
+/* Buzón — clean, calm styling layered on Nodalia (NDL) tokens. */
 
 .app-title {
   font-weight: 700;
@@ -29,8 +29,8 @@ switch > image {
    shared .folder-row padding, so the accent button stands taller than a
    plain row without changing its width alignment. */
 row.compose-row {
-  background-color: @accent_bg_color;
-  color: @accent_fg_color;
+  background-color: var(--ndl-color-accent-default);
+  color: var(--ndl-color-text-on-accent);
   padding-top: 5px;
   padding-bottom: 5px;
 }
@@ -51,7 +51,7 @@ row.compose-row:active {
 
 row.compose-row .folder-icon,
 row.compose-row .account-name {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
   opacity: 1;
 }
 
@@ -67,7 +67,7 @@ row.compose-row .compose-split:dir(rtl) {
   padding-right: 8px;
 }
 row.compose-row .compose-split > separator {
-  background-color: alpha(@accent_fg_color, 0.55);
+  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent 55%, transparent);
   min-width: 1px;
   margin: 3px 4px 3px 8px;
 }
@@ -75,7 +75,7 @@ row.compose-row .compose-split > separator:dir(rtl) {
   margin: 3px 8px 3px 4px;
 }
 row.compose-row .compose-caret {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
   min-height: 0;
   min-width: 0;
   padding: 2px 6px;
@@ -88,10 +88,10 @@ row.compose-row .compose-caret:dir(rtl) {
   margin-left: -3px;
 }
 row.compose-row .compose-caret:hover {
-  background-color: alpha(@accent_fg_color, 0.15);
+  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent 15%, transparent);
 }
 row.compose-row .compose-caret:active {
-  background-color: alpha(@accent_fg_color, 0.28);
+  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent 28%, transparent);
 }
 
 .account-header {
@@ -131,6 +131,23 @@ headerbar.rail-header {
   min-height: 0;
 }
 
+/* Icon-only Add controls must fit the 80px rail: suggested-action pills
+   keep a GTK min-width that otherwise clips past the split view. */
+.rail-collapsed button.suggested-action,
+.rail-collapsed button.add-folder-btn,
+.rail-collapsed .add-folder-btn {
+  min-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.rail-collapsed button.suggested-action label {
+  /* Expanded empty-state shows text; rail is icon-only via set_label(""). */
+  padding: 0;
+}
+
 .account-avatar {
   min-width: 36px;
   min-height: 36px;
@@ -141,8 +158,8 @@ headerbar.rail-header {
 
 /* Version pill on the About window. */
 .about-version-chip {
-  background-color: alpha(@accent_color, 0.15);
-  color: @accent_color;
+  background-color: color-mix(in srgb, var(--ndl-color-accent-text 15%, transparent);
+  color: var(--ndl-color-accent-text);
   border-radius: 999px;
   padding: 1px 12px;
   font-weight: 600;
@@ -363,8 +380,8 @@ headerbar.rail-header {
 }
 
 .account-source-badge.goa {
-  background-color: alpha(@accent_bg_color, 0.18);
-  color: @accent_color;
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 18%, transparent);
+  color: var(--ndl-color-accent-text);
   opacity: 1;
 }
 
@@ -379,29 +396,29 @@ headerbar.rail-header {
 }
 
 .autocomplete row:selected {
-  background-color: @accent_bg_color;
+  background-color: var(--ndl-color-accent-default);
 }
 
 .autocomplete row:selected label {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
 }
 
 /* The group form's people to add: the one the arrow keys are on, as in
    the composer's suggestions. */
 .member-matches row:selected {
-  background-color: @accent_bg_color;
-  color: @accent_fg_color;
+  background-color: var(--ndl-color-accent-default);
+  color: var(--ndl-color-text-on-accent);
 }
 
 .member-matches row:selected label,
 .member-matches row:selected image {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
 }
 
 /* The inline composer's ground: opaque, so sliding down over the reader
    actually hides it rather than blending with it. */
 .inline-compose-surface {
-  background-color: @window_bg_color;
+  background-color: var(--ndl-color-surface-window);
 }
 
 /* A set star (reader toolbar, list palette, popout): the flagged state is
@@ -413,13 +430,13 @@ button.star-active {
 /* The account page's storage bar (#298): the accent until the mailbox is
    nearly full, then the warning and error colors. */
 levelbar block.quota-ok {
-  background-color: @accent_bg_color;
+  background-color: var(--ndl-color-accent-default);
 }
 levelbar block.quota-warn {
-  background-color: @warning_bg_color;
+  background-color: var(--ndl-color-status-warning-bg);
 }
 levelbar block.quota-full {
-  background-color: @error_bg_color;
+  background-color: var(--ndl-color-status-danger-bg);
 }
 
 /* Compose attachment chips. */
@@ -436,8 +453,8 @@ levelbar block.quota-full {
 }
 /* A file moved or deleted since it was attached (#340). */
 .attach-chip.missing {
-  background: alpha(@error_color, 0.14);
-  color: @error_color;
+  background: color-mix(in srgb, var(--ndl-color-status-danger-fg 14%, transparent);
+  color: var(--ndl-color-status-danger-fg);
 }
 /* The chips' grid cells stay out of sight: the chip is the target, and a
    cell's own hover square would show around its rounded ends. */
@@ -455,7 +472,7 @@ flowbox.attach-flow > flowboxchild {
    can go. The card under the pointer is the one GTK marks :drop(active); it
    fills with the accent and lifts, so the choice reads before the drop. */
 .drop-layer {
-  background-color: alpha(@window_bg_color, 0.95);
+  background-color: color-mix(in srgb, var(--ndl-color-surface-window 95%, transparent);
   padding: 18px;
 }
 /* The composer takes every file drop itself and lights the card under the
@@ -472,10 +489,10 @@ flowbox.attach-flow > flowboxchild {
 .drop-zone {
   padding: 20px 16px;
   border-radius: 20px;
-  border: 2px dashed alpha(@accent_color, 0.35);
+  border: 2px dashed color-mix(in srgb, var(--ndl-color-accent-text 35%, transparent);
   /* Opaque, unlike the veil around it: the message beneath shows through
      only at the margins, never behind a card's words. */
-  background-color: mix(@window_bg_color, @accent_bg_color, 0.05);
+  background-color: mix(var(--ndl-color-surface-window), var(--ndl-color-accent-default), 0.05);
   transition: background-color 180ms ease-out, border-color 180ms ease-out,
               box-shadow 180ms ease-out;
 }
@@ -483,8 +500,8 @@ flowbox.attach-flow > flowboxchild {
   min-width: 68px;
   min-height: 68px;
   border-radius: 34px;
-  color: @accent_color;
-  background-color: alpha(@accent_bg_color, 0.12);
+  color: var(--ndl-color-accent-text);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 12%, transparent);
   transition: background-color 180ms ease-out, color 180ms ease-out,
               -gtk-icon-transform 180ms ease-out;
 }
@@ -501,13 +518,13 @@ flowbox.attach-flow > flowboxchild {
 }
 .drop-zone:drop(active) {
   border-style: solid;
-  border-color: alpha(@accent_bg_color, 0.9);
-  background-color: mix(@window_bg_color, @accent_bg_color, 0.14);
-  box-shadow: 0 10px 28px -8px alpha(@accent_bg_color, 0.45);
+  border-color: color-mix(in srgb, var(--ndl-color-accent-default 90%, transparent);
+  background-color: mix(var(--ndl-color-surface-window), var(--ndl-color-accent-default), 0.14);
+  box-shadow: 0 10px 28px -8px color-mix(in srgb, var(--ndl-color-accent-default 45%, transparent);
 }
 .drop-zone:drop(active) .drop-badge {
-  color: @accent_fg_color;
-  background-color: @accent_bg_color;
+  color: var(--ndl-color-text-on-accent);
+  background-color: var(--ndl-color-accent-default);
   -gtk-icon-transform: scale(1.12);
 }
 
@@ -530,11 +547,11 @@ flowbox.attach-flow > flowboxchild {
 }
 /* The entry a menu is currently set to. `color` is inherited, so one class
    on the row carries both the label and the symbolic icon beside it, and
-   `@accent_color` is libadwaita's legible-on-a-normal-background accent —
+   `var(--ndl-color-accent-text)` is libadwaita's legible-on-a-normal-background accent —
    the desktop's under the stock look, the palette's under a Buzón theme. */
 .context-menu-selected,
 .context-menu-selected label {
-  color: @accent_color;
+  color: var(--ndl-color-accent-text);
 }
 
 /* A switch the menu shows as on (Sign, Encrypt): the grey of a toggled flat
@@ -552,7 +569,7 @@ flowbox.attach-flow > flowboxchild {
    see. */
 .context-menu-item:checked image,
 .pgp-toggle:checked image {
-  color: @accent_color;
+  color: var(--ndl-color-accent-text);
 }
 
 /* Popout-window attachment popover rows. */
@@ -566,7 +583,7 @@ flowbox.attach-flow > flowboxchild {
 
 /* Tint the attachments button with the GNOME accent when present. */
 .attach-present {
-  color: @accent_color;
+  color: var(--ndl-color-accent-text);
 }
 
 /* Account chip in the reader header (colors set at runtime). */
@@ -616,7 +633,7 @@ flowbox.attach-flow > flowboxchild {
 .contacts-listbox > row:selected,
 .contacts-listbox > row:selected:hover,
 .contacts-listbox > row:selected:active {
-  background-color: @accent_bg_color;
+  background-color: var(--ndl-color-accent-default);
 }
 
 /* A dragged message: its circle, subject and sender on a card. The margin
@@ -625,8 +642,8 @@ flowbox.attach-flow > flowboxchild {
   margin: 6px 12px 12px 6px;
   padding: 8px 14px 8px 8px;
   border-radius: 12px;
-  background-color: @view_bg_color;
-  color: @view_fg_color;
+  background-color: var(--ndl-color-surface-sunken);
+  color: var(--ndl-color-text-primary);
   box-shadow: var(--ndl-elevation-overlay);
 }
 
@@ -634,8 +651,8 @@ flowbox.attach-flow > flowboxchild {
   min-width: 14px;
   padding: 1px 6px;
   border-radius: 9999px;
-  background-color: @accent_bg_color;
-  color: @accent_fg_color;
+  background-color: var(--ndl-color-accent-default);
+  color: var(--ndl-color-text-on-accent);
   font-weight: bold;
   font-size: 0.85em;
 }
@@ -649,7 +666,7 @@ flowbox.attach-flow > flowboxchild {
    row is also its descendant, and a bare `label` selector painted the menu's
    text white-on-white. */
 .contacts-listbox > row:selected box.header label {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
   opacity: 1;
 }
 
@@ -729,7 +746,7 @@ flowbox.attach-flow > flowboxchild {
 .filter-mark {
   margin-top: -4px;
   margin-right: -6px;
-  background: @sidebar_bg_color;
+  background: var(--ndl-color-surface-panel);
   border-radius: 9999px;
   padding: 1px;
 }
@@ -739,8 +756,8 @@ flowbox.attach-flow > flowboxchild {
 }
 
 .unread-badge {
-  background: @accent_bg_color;
-  color: @accent_fg_color;
+  background: var(--ndl-color-accent-default);
+  color: var(--ndl-color-text-on-accent);
   border-radius: 9999px;
   min-width: 18px;
   /* At the default font size the count's 15px line sits high in the 18px
@@ -769,7 +786,7 @@ flowbox.attach-flow > flowboxchild {
   font-size: 0.6em;
   margin-top: -4px;
   margin-right: -14px;
-  box-shadow: 0 0 0 2px @sidebar_bg_color;
+  box-shadow: 0 0 0 2px var(--ndl-color-surface-panel);
 }
 .unread-badge-mini:dir(rtl) {
   margin-right: 0;
@@ -923,13 +940,13 @@ flowbox.attach-flow > flowboxchild {
    focus moves to the reader. The hover/active variants are overridden too so
    the highlight stays uniform when the cursor passes over the selected row. */
 .message-list > row:selected > .message-item:not(.swiping) .message-row {
-  background-color: alpha(@accent_bg_color, 0.3);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 30%, transparent);
 }
 
 .message-list:focus-within > row:selected > .message-item:not(.swiping) .message-row,
 .message-list > row:selected:hover > .message-item:not(.swiping) .message-row,
 .message-list > row:selected:active > .message-item:not(.swiping) .message-row {
-  background-color: alpha(@accent_bg_color, 0.5);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 50%, transparent);
 }
 
 /* Gmail's j/k cursor (#392): an accent outline inside the pill, while the
@@ -938,15 +955,15 @@ flowbox.attach-flow > flowboxchild {
    selected row, whose pill is already the accent, it is the accent's
    foreground. */
 .message-list:focus-within > row > .message-item.kbd-cursor:not(.swiping) .message-row {
-  box-shadow: inset 0 0 0 2px alpha(@accent_color, 0.85);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ndl-color-accent-text 85%, transparent);
 }
 
 .message-list:focus-within > row:not(:selected) > .message-item.kbd-cursor:not(.swiping) .message-row {
-  background-color: alpha(@accent_bg_color, 0.1);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 10%, transparent);
 }
 
 .message-list:focus-within > row:selected > .message-item.kbd-cursor:not(.swiping) .message-row {
-  box-shadow: inset 0 0 0 2px alpha(@accent_fg_color, 0.8);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ndl-color-text-on-accent 80%, transparent);
 }
 
 .message-row {
@@ -964,27 +981,27 @@ flowbox.attach-flow > flowboxchild {
    strength, in both schemes — the accent ground (see install_scheme_css)
    carries the contrast, so nothing on it is dimmed. */
 .message-list > row:selected .message-row label {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
   opacity: 1;
 }
 
 /* The unread dot inverts on the accent ground too — accent-on-accent would
    vanish, and a selected thread head must still show its unread mark. */
 .message-list > row:selected .message-row .unread-dot {
-  background: @accent_fg_color;
+  background: var(--ndl-color-text-on-accent);
 }
 
 /* The thread chip inverts on the accent ground: a pill in the accent's
    foreground, accent text and caret — a grey chip would sink into the
    highlight. */
 .message-list > row:selected .message-row .thread-chip {
-  background: @accent_fg_color;
+  background: var(--ndl-color-text-on-accent);
   opacity: 1;
 }
 
 .message-list > row:selected .message-row .thread-chip label,
 .message-list > row:selected .message-row .thread-chip image {
-  color: @accent_bg_color;
+  color: var(--ndl-color-accent-default);
 }
 
 /* Avatars off (#29): read rows collapse the dot's slot entirely (see the row
@@ -1046,12 +1063,12 @@ flowbox.attach-flow > flowboxchild {
 }
 
 .message-row.single-line .message-date.overdue {
-  color: @error_color;
+  color: var(--ndl-color-status-danger-fg);
   opacity: 1;
 }
 
 .message-row .importance-high {
-  color: @error_color;
+  color: var(--ndl-color-status-danger-fg);
 }
 
 .message-row .importance-low {
@@ -1079,13 +1096,13 @@ flowbox.attach-flow > flowboxchild {
    only under the pointer. A divider at rest on every column's edge read as
    marks on the headings' names (#443). */
 .column-resize-handle:hover {
-  background: linear-gradient(to right, transparent 2px, @accent_color 2px,
-                              @accent_color 5px, transparent 5px);
+  background: linear-gradient(to right, transparent 2px, var(--ndl-color-accent-text) 2px,
+                              var(--ndl-color-accent-text) 5px, transparent 5px);
 }
 
 .list-headings .sorted .list-heading,
 .list-headings .list-heading.sorted {
-  color: @accent_color;
+  color: var(--ndl-color-accent-text);
   opacity: 1;
 }
 
@@ -1093,7 +1110,7 @@ flowbox.attach-flow > flowboxchild {
    foreground, as the rest of the row does. */
 .message-list > row:selected .message-row.single-line .message-date.overdue,
 .message-list > row:selected .message-row .importance-high {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
 }
 
 /* Conversation threading: count chip + compact expand/collapse chevron on the
@@ -1167,15 +1184,15 @@ flowbox.attach-flow > flowboxchild {
    touches the list edges. */
 .message-item.thread-child {
   margin-left: 10px;
-  /* @window_fg_color, not currentColor: a selected row's currentColor is the
+  /* var(--ndl-color-text-primary), not currentColor: a selected row's currentColor is the
      selection foreground, which made the rail vanish under selection. */
-  border-left: 2px dotted alpha(@window_fg_color, 0.3);
+  border-left: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
 }
 .message-item.thread-child:dir(rtl) {
   margin-left: 0;
   margin-right: 10px;
   border-left: none;
-  border-right: 2px dotted alpha(@window_fg_color, 0.3);
+  border-right: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
 }
 
 /* The LAST reply: its rail stops at the node dot (row centre) instead of
@@ -1192,13 +1209,13 @@ flowbox.attach-flow > flowboxchild {
 /* Identical stroke to the sibling rows' rails; the negative margin moves it
    from the row's content box back onto the border's own axis. */
 .thread-rail-stub {
-  border-left: 2px dotted alpha(@window_fg_color, 0.3);
+  border-left: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
   margin-left: -2px;
 }
 .thread-rail-stub:dir(rtl) {
   border-left: none;
   margin-left: 0;
-  border-right: 2px dotted alpha(@window_fg_color, 0.3);
+  border-right: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
   margin-right: -2px;
 }
 
@@ -1245,8 +1262,8 @@ flowbox.attach-flow > flowboxchild {
   margin-left: -5px;
   /* Opaque: the same 50% grey, but mixed over the window ground instead of
      alpha — a translucent dot let the rail line strike through it. */
-  background-color: mix(@window_bg_color, currentColor, 0.5);
-  box-shadow: 0 0 0 2px @window_bg_color;
+  background-color: mix(var(--ndl-color-surface-window), currentColor, 0.5);
+  box-shadow: 0 0 0 2px var(--ndl-color-surface-window);
 }
 .thread-node:dir(rtl) {
   margin-left: 0;
@@ -1258,11 +1275,11 @@ flowbox.attach-flow > flowboxchild {
 }
 
 .message-list > row:selected > .message-item.thread-child:not(.swiping) .message-row {
-  background-color: alpha(@accent_bg_color, 0.3);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 30%, transparent);
 }
 
 .message-list:focus-within > row:selected > .message-item.thread-child:not(.swiping) .message-row {
-  background-color: alpha(@accent_bg_color, 0.5);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 50%, transparent);
 }
 
 /* Mid-swipe (.swiping, held from the first drag until the snap-back lands):
@@ -1303,15 +1320,15 @@ flowbox.attach-flow > flowboxchild {
 }
 
 .swipe-indicator.swipe-delete {
-  background: @destructive_bg_color;
-  color: @destructive_fg_color;
+  background: var(--ndl-color-status-danger-bg);
+  color: var(--ndl-color-text-on-accent);
 }
 
 .swipe-indicator.swipe-archive {
   /* The traditional archive green — libadwaita's "success" tokens, not
      accent, so it stays green regardless of the user's accent color. */
-  background: @success_bg_color;
-  color: @success_fg_color;
+  background: var(--ndl-color-status-success-bg);
+  color: var(--ndl-color-status-success-fg);
 }
 
 .swipe-indicator image {
@@ -1326,7 +1343,7 @@ flowbox.attach-flow > flowboxchild {
   min-width: 10px;
   min-height: 10px;
   border-radius: 5px;
-  background: @accent_bg_color;
+  background: var(--ndl-color-accent-default);
 }
 
 .message-sender {
@@ -1369,12 +1386,12 @@ flowbox.attach-flow > flowboxchild {
 /* Snoozed mail (#527): when it comes back, in the accent, where the date
    would be. */
 .message-date.snoozed {
-  color: @accent_color;
+  color: var(--ndl-color-accent-text);
   opacity: 1;
 }
 
 .message-list > row:selected .message-date.snoozed {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
 }
 
 .dim-icon,
@@ -1395,12 +1412,12 @@ flowbox.attach-flow > flowboxchild {
 }
 
 .read-receipt.read {
-  color: @success_color;
+  color: var(--ndl-color-status-success-fg);
   opacity: 1;
 }
 
 .message-list > row:selected .read-receipt.read {
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
 }
 
 /* ---- Reader ---- */
@@ -1482,7 +1499,7 @@ headerbar box.list-tools.compact button {
 /* The reading pane's still while a message opens (ReaderSwap): opaque, on
    the ground the pane sits on. */
 .reader-swap-still {
-  background-color: @window_bg_color;
+  background-color: var(--ndl-color-surface-window);
 }
 
 .reader-subject {
@@ -1647,7 +1664,7 @@ headerbar box.list-tools.compact button {
    libadwaita's named colors, not fixed hex: they shift per color scheme, so
    the green (and the others) read correctly in dark mode too (issue #62). */
 .trust-pass {
-  color: @success_color;
+  color: var(--ndl-color-status-success-fg);
 }
 
 .trust-unverified {
@@ -1655,11 +1672,11 @@ headerbar box.list-tools.compact button {
 }
 
 .trust-suspicious {
-  color: @warning_color;
+  color: var(--ndl-color-status-warning-fg);
 }
 
 .trust-fail {
-  color: @error_color;
+  color: var(--ndl-color-status-danger-fg);
 }
 
 .sender-detail {
@@ -1723,23 +1740,23 @@ headerbar box.list-tools.compact button {
 }
 
 .recipient-pill.invalid {
-  background-color: alpha(@error_color, 0.14);
-  color: @error_color;
+  background-color: color-mix(in srgb, var(--ndl-color-status-danger-fg 14%, transparent);
+  color: var(--ndl-color-status-danger-fg);
 }
 
 /* Selected pills (#492), and the one with the keyboard focus. */
 .recipient-pill.selected {
-  background-color: @accent_bg_color;
-  color: @accent_fg_color;
+  background-color: var(--ndl-color-accent-default);
+  color: var(--ndl-color-text-on-accent);
 }
 
 .recipient-pill.invalid.selected {
-  background-color: @error_bg_color;
-  color: @error_fg_color;
+  background-color: var(--ndl-color-status-danger-bg);
+  color: var(--ndl-color-status-danger-fg);
 }
 
 .recipient-pill:focus-visible {
-  outline: 2px solid alpha(@accent_color, 0.5);
+  outline: 2px solid color-mix(in srgb, var(--ndl-color-accent-text 50%, transparent);
   outline-offset: 1px;
 }
 
@@ -1752,7 +1769,7 @@ headerbar box.list-tools.compact button {
 .pill-drop-marker {
   min-width: 2px;
   border-radius: 1px;
-  background-color: @accent_color;
+  background-color: var(--ndl-color-accent-text);
 }
 
 .compose-body {
@@ -1848,7 +1865,7 @@ headerbar box.list-tools.compact button {
   background: alpha(currentColor, 0.06);
 }
 .gallery-flow > flowboxchild:focus:focus-visible {
-  outline: 2px solid @accent_color;
+  outline: 2px solid var(--ndl-color-accent-text);
   outline-offset: -2px;
 }
 .gallery-thumb {
@@ -1999,7 +2016,7 @@ headerbar box.list-tools.compact button {
   background: alpha(currentColor, 0.06);
 }
 .attachment-drawer-flow > flowboxchild:focus:focus-visible {
-  outline: 2px solid @accent_color;
+  outline: 2px solid var(--ndl-color-accent-text);
   outline-offset: -2px;
 }
 .drawer-thumb {
@@ -2034,17 +2051,17 @@ headerbar box.list-tools.compact button {
 .gallery-flow > flowboxchild .gallery-cell.attachment-deleting,
 .attachment-drawer-flow > flowboxchild.attachment-deleting,
 .gallery-table row.attachment-deleting {
-  background: alpha(@error_color, 0.12);
+  background: color-mix(in srgb, var(--ndl-color-status-danger-fg 12%, transparent);
 }
 .attachment-deleting-label {
-  color: @error_color;
+  color: var(--ndl-color-status-danger-fg);
   font-weight: 600;
 }
 .attachment-deleting-veil {
-  background: alpha(@error_color, 0.22);
+  background: color-mix(in srgb, var(--ndl-color-status-danger-fg 22%, transparent);
 }
 .attachment-deleting-veil .attachment-deleting-label {
-  background: alpha(@window_bg_color, 0.9);
+  background: color-mix(in srgb, var(--ndl-color-surface-window 90%, transparent);
   border-radius: 999px;
   padding: 2px 10px;
 }
@@ -2054,7 +2071,7 @@ headerbar box.list-tools.compact button {
    as a whole, so it drops the outline GTK draws around a drop target; a
    folder being moved into, or taking mail, is outlined on its own. */
 .folder-drop-line {
-  background-color: @accent_color;
+  background-color: var(--ndl-color-accent-text);
   border-radius: 1px;
   min-height: 2px;
 }
@@ -2062,7 +2079,7 @@ headerbar box.list-tools.compact button {
   box-shadow: none;
 }
 .navigation-sidebar > row.drop-into {
-  box-shadow: inset 0 0 0 1px @accent_bg_color;
+  box-shadow: inset 0 0 0 1px var(--ndl-color-accent-default);
 }
 
 /* Folder-tree expander (#51): a chevron sized to exactly the leaf spacer's
@@ -2086,7 +2103,7 @@ headerbar box.list-tools.compact button {
    issue #37): a soft accent wash that keeps the thumbnail legible, rounded to
    match the cells. */
 .attachment-drawer-flow flowboxchild:selected {
-  background-color: alpha(@accent_bg_color, 0.18);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 18%, transparent);
   border-radius: 10px;
 }
 
@@ -2234,8 +2251,8 @@ window.welcome-window,
   background-color: alpha(currentColor, 0.06);
 }
 .icon-gallery flowboxchild:selected {
-  background-color: alpha(@accent_bg_color, 0.14);
-  box-shadow: inset 0 0 0 2px @accent_bg_color;
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 14%, transparent);
+  box-shadow: inset 0 0 0 2px var(--ndl-color-accent-default);
 }
 .icon-gallery flowboxchild:focus-visible {
   outline: none;
@@ -2255,24 +2272,24 @@ window.welcome-window,
    color at the edge, in both schemes. */
 .icon-strip-fade.left {
   background:
-    linear-gradient(to right, @card_bg_color, alpha(@card_bg_color, 0)),
-    linear-gradient(to right, @window_bg_color, alpha(@window_bg_color, 0));
+    linear-gradient(to right, var(--ndl-color-surface-raised), color-mix(in srgb, var(--ndl-color-surface-raised 0%, transparent)),
+    linear-gradient(to right, var(--ndl-color-surface-window), color-mix(in srgb, var(--ndl-color-surface-window 0%, transparent));
 }
 .icon-strip-fade.right {
   background:
-    linear-gradient(to left, @card_bg_color, alpha(@card_bg_color, 0)),
-    linear-gradient(to left, @window_bg_color, alpha(@window_bg_color, 0));
+    linear-gradient(to left, var(--ndl-color-surface-raised), color-mix(in srgb, var(--ndl-color-surface-raised 0%, transparent)),
+    linear-gradient(to left, var(--ndl-color-surface-window), color-mix(in srgb, var(--ndl-color-surface-window 0%, transparent));
 }
 /* In the wizard the selection ring wears the accent. */
 .welcome-window .icon-gallery flowboxchild:hover {
-  background-color: alpha(@window_fg_color, 0.06);
+  background-color: color-mix(in srgb, var(--ndl-color-text-primary 6%, transparent);
 }
 .welcome-window .icon-gallery flowboxchild:selected {
-  background-color: alpha(@window_fg_color, 0.08);
+  background-color: color-mix(in srgb, var(--ndl-color-text-primary 8%, transparent);
   box-shadow: inset 0 0 0 2px var(--ndl-color-accent-default);
 }
 .welcome-window .icon-gallery-label {
-  color: alpha(@window_fg_color, 0.75);
+  color: color-mix(in srgb, var(--ndl-color-text-primary 75%, transparent);
 }
 
 /* ---- Console mode (notifications.rs): NDL's sunken surface, monospace ---- */
@@ -2353,7 +2370,7 @@ textview.console-view text selection {
 }
 /* A row or group a settings search jumped to (#260), marked for a moment. */
 .settings-search-hit {
-  background-color: alpha(@accent_bg_color, 0.18);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 18%, transparent);
   border-radius: 12px;
   transition: background-color 400ms ease-out;
 }
@@ -2387,9 +2404,9 @@ textview.console-view text selection {
 /* The dropdown's inner button paints the same accent as Send: a
    menubutton's child button otherwise takes its own, lighter, fill. */
 .send-split > menubutton > button {
-  background-color: @accent_bg_color;
+  background-color: var(--ndl-color-accent-default);
   background-image: none;
-  color: @accent_fg_color;
+  color: var(--ndl-color-text-on-accent);
   box-shadow: none;
 }
 .send-split > menubutton > button:hover {
@@ -2402,8 +2419,8 @@ textview.console-view text selection {
 /* The separator fills the gap between the buttons with the accent, and
    draws the short line over its middle half. */
 .send-split > separator {
-  background-color: @accent_bg_color;
-  background-image: image(alpha(@accent_fg_color, 0.55));
+  background-color: var(--ndl-color-accent-default);
+  background-image: image(color-mix(in srgb, var(--ndl-color-text-on-accent 55%, transparent));
   background-size: 100% 50%;
   background-position: center;
   background-repeat: no-repeat;
@@ -2433,8 +2450,8 @@ textview.console-view text selection {
   padding: 6px;
 }
 .toolbar-zone.drop-active {
-  border-color: @accent_color;
-  background: alpha(@accent_bg_color, 0.08);
+  border-color: var(--ndl-color-accent-text);
+  background: color-mix(in srgb, var(--ndl-color-accent-default 8%, transparent);
 }
 .toolbar-chip {
   padding: 6px 10px;
@@ -2469,11 +2486,11 @@ textview.console-view text selection {
   transition: background 150ms ease-out, color 150ms ease-out;
 }
 .buzon-zoom-chip:hover {
-  background: alpha(@accent_bg_color, 0.2);
-  color: @accent_color;
+  background: color-mix(in srgb, var(--ndl-color-accent-default 20%, transparent);
+  color: var(--ndl-color-accent-text);
 }
 .buzon-zoom-chip:active {
-  background: alpha(@accent_bg_color, 0.35);
+  background: color-mix(in srgb, var(--ndl-color-accent-default 35%, transparent);
 }
 
 /* The highlight button's "A" on the color last chosen (#358): dark,
@@ -2495,7 +2512,7 @@ textview.console-view text selection {
 /* The list header's sort and filter button while any quick filter is on,
    and its popover's two columns (#441). */
 .list-filter-active {
-  color: @accent_color;
+  color: var(--ndl-color-accent-text);
 }
 .sort-filter-column {
   padding: 6px 4px;
@@ -2540,8 +2557,8 @@ textview.console-view text selection {
 .list-scrub-date {
   padding: 6px 12px;
   border-radius: 999px;
-  background-color: alpha(@window_bg_color, 0.92);
-  color: @window_fg_color;
+  background-color: color-mix(in srgb, var(--ndl-color-surface-window 92%, transparent);
+  color: var(--ndl-color-text-primary);
   box-shadow: 0 1px 4px alpha(black, 0.25);
   font-weight: bold;
   opacity: 0;
@@ -2553,7 +2570,7 @@ textview.console-view text selection {
 
 /* Undo Send countdown (#534): the line along the toast's bottom edge. */
 toast-countdown {
-  color: @accent_bg_color;
+  color: var(--ndl-color-accent-default);
 }
 
 /* The Mail Merge dialog's scrolled content (#447) keeps 8px of margin for
@@ -2568,7 +2585,7 @@ scrolledwindow.merge-dialog-scroll {
 .assistant-banner {
   padding: 8px 10px;
   border-radius: 8px;
-  background-color: alpha(@accent_bg_color, 0.12);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default 12%, transparent);
 }
 
 /* An assistant's edit waiting for the user: one slim row with Reject and
@@ -2578,8 +2595,8 @@ scrolledwindow.merge-dialog-scroll {
   padding: 4px 6px 4px 10px;
 }
 .assistant-edit-bar .assistant-added {
-  color: @success_color;
+  color: var(--ndl-color-status-success-fg);
 }
 .assistant-edit-bar .assistant-removed {
-  color: @error_color;
+  color: var(--ndl-color-status-danger-fg);
 }
