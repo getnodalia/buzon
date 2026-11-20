@@ -37,6 +37,8 @@ jobs:
             target
           key: cargo-${{ hashFiles('Cargo.lock') }}
           restore-keys: cargo-
+      - name: Desktop identity (#18)
+        run: tools/check-desktop-identity.sh
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy

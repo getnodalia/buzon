@@ -76,6 +76,10 @@ jobs:
         with:
           persist-credentials: false
       - name: Build the AppImage
+        env:
+          # get-debloated-pkgs hits api.github.com; without a token the unauthenticated
+          # rate limit aborts the AppImage build on busy runners.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: tools/build-appimage.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

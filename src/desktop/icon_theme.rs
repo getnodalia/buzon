@@ -81,7 +81,10 @@ pub(crate) fn apply_icon_theme(desktop: bool) {
     if let Some(own) = crate::desktop::app_icon::private_icons_root() {
         paths.push(own);
     }
-    // Running from the source tree: the app's icons as the install has them.
+    // Dev tree only when it actually exists beside this build. A release
+    // binary compiled in CI still embeds CARGO_MANIFEST_DIR as the build
+    // container path (`/build/...`); searching it on the user's machine is
+    // useless and used to look like a missing-icon UI failure (#18).
     let dev = std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/data/icons"));
     if dev.is_dir() {
         paths.push(dev.to_path_buf());
@@ -154,11 +157,15 @@ fn check_icon_sources(theme: &gtk::IconTheme) {
     );
 }
 
-/// Buzón's icon theme: a name no theme on disk carries, so the user's icon
-/// theme is never consulted and the app looks the same on every desktop.
-/// Lookups fall through to hicolor, which holds the bundle below and GTK's
-/// and libadwaita's built-in icons.
-const ICON_THEME: &str = "Buzón";
+/// Theme name used when "use the desktop's icons" is off.
+///
+/// This is Nodalia's theme (`ndl::ICON_THEME`), not a made-up name. An earlier
+/// fake `"Buzón"` theme fought `ndl::init`'s notify handler (which keeps the
+/// name on Nodalia) and, once the search path was narrowed for AppImage or
+/// packaged installs, left windows with missing glyphs (#18). Search-path
+/// narrowing below is what blocks foreign icons; the name must stay one GTK
+/// can actually resolve.
+const ICON_THEME: &str = ndl::ICON_THEME;
 
 /// Where the bundled icons sit in the app's GResource (registered in `main`).
 const ICON_RESOURCE: &str = "/dev/danielmiguelt/Buzon/icons";
@@ -213,5 +220,40 @@ mod tests {
             missing.is_empty(),
             "not in the icon bundle, run tools/gen-icon-gresource.sh: {missing:?}"
         );
+    }
+
+    /// The shipped .desktop, the binary's APP_ID and the app icon files stay
+    /// aligned so GNOME can group the window under the launcher (#18).
+    #[test]
+    fn desktop_identity_matches_app_id() {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+        let desktop = std::fs::read_to_string(root.join("data/dev.danielmiguelt.Buzon.desktop"))
+            .expect("desktop file");
+        let id = crate::APP_ID;
+        assert_eq!(id, "dev.danielmiguelt.Buzon");
+        assert!(
+            desktop.lines().any(|l| l == format!("StartupWMClass={id}")),
+            "StartupWMClass must equal APP_ID"
+        );
+        assert!(
+            desktop.lines().any(|l| l == format!("Icon={id}")),
+            "Icon= must equal APP_ID (theme name, not a path)"
+        );
+        assert!(
+            !desktop.lines().any(|l| l.starts_with("Icon=/")),
+            "Icon= must not be an absolute path"
+        );
+        for size in ["256x256", "512x512"] {
+            let png = root.join(format!("data/icons/hicolor/{size}/apps/{id}.png"));
+            assert!(png.is_file(), "missing {}", png.display());
+        }
+        assert!(root
+            .join(format!("data/icons/hicolor/scalable/apps/{id}.svg"))
+            .is_file());
+        assert!(root
+            .join(format!(
+                "data/icons/hicolor/symbolic/apps/{id}-symbolic.svg"
+            ))
+            .is_file());
     }
 }
