@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     # Fedora carries the GTK, libadwaita and WebKitGTK versions Buzón builds
     # against; Ubuntu's are older.
-    container: fedora:43
+    container: fedora:46
     timeout-minutes: 60
     steps:
       - name: Install the build dependencies

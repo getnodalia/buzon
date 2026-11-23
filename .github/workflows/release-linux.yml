@@ -90,7 +90,7 @@ jobs:
   rpm:
     needs: version
     runs-on: ubuntu-26.04
-    container: fedora:43
+    container: fedora:46
     timeout-minutes: 60
     steps:
       - name: Build dependencies
