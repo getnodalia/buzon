@@ -10,10 +10,11 @@
 //! another field, and its menu (right click, the menu key) moves it to
 //! another field too; Delete removes it (#492).
 //!
-//! Built from libadwaita's own entry-row markup and class names (`row.entry`,
-//! `.editable-area`, `.title`, `.subtitle`, `.edit-icon`, `.focused`), so the
-//! row looks, focuses and turns red on an error the way the Subject row under
-//! it does.
+//! Built like an `ndl::EntryRow` (the Subject row under it): the same `ndl-row`
+//! and `ndl-entry-row` classes, so it takes NDL's row padding, height and title
+//! colour, plus `.editable-area`, `.title`, `.subtitle`, `.edit-icon` and
+//! `.focused`, which `styles.css` draws, so the row looks and focuses the way
+//! the Subject row does.
 
 use std::cell::{Cell, RefCell};
 use std::sync::OnceLock;
@@ -116,13 +117,15 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.add_css_class("entry");
+            obj.add_css_class("ndl-row");
+            obj.add_css_class("ndl-entry-row");
             obj.add_css_class("recipient-row");
             obj.set_activatable(false);
             // The text takes the focus, never the row (see `focus`).
             obj.set_focusable(false);
 
             self.header.add_css_class("header");
+            self.header.set_spacing(12);
             self.header.set_valign(gtk::Align::Center);
 
             let area = gtk::Box::new(gtk::Orientation::Horizontal, 0);
