@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://getnodalia.com">
-    <img src="https://raw.githubusercontent.com/danielmigueltejedor/nodalia-web/main/assets/brand/nodalia-wordmark-badge.svg" width="150" alt="Nodalia">
+    <img src="https://raw.githubusercontent.com/getnodalia/nodalia-web/main/assets/brand/nodalia-wordmark-badge.svg" width="150" alt="Nodalia">
   </a>
   <br><br>
   <img src="data/icons/dev.danielmiguelt.Buzon.png" width="192" alt="Buzón">
@@ -35,8 +35,9 @@ drawn in GTK4 with the Nodalia Design Language. It keeps all your accounts in on
 the background and sends no telemetry.
 
 > [!IMPORTANT]
-> **Buzón is at an early stage.** There are no packages yet; build it from source (below).
-> Installable releases follow with the Nodalia interface.
+> **Buzón is at an early stage.** AppImage, `.rpm` and `.deb` packages for Linux are on the
+> [releases page](https://github.com/getnodalia/buzon/releases) ([how to install](docs/INSTALLING.md)).
+> There is no macOS or Windows build yet.
 
 ## What it does
 
@@ -87,9 +88,10 @@ cargo run --release
 | Mail engine (IMAP, POP3, JMAP, SMTP, sync, search) | Working |
 | App icon | Done |
 | Buzón names, app ID and settings folder | Done |
-| Nodalia interface: theme, islands, window controls, main menu | Planned |
-| Global menu in the top bar (D-Bus) | Planned |
-| Installable packages (Flatpak, AppImage, .deb, .rpm, DMG) | Planned |
+| Nodalia interface: theme, islands, window controls, main menu | Done |
+| Global menu in the top bar (D-Bus) | Done |
+| Packages: AppImage, .deb, .rpm | Done |
+| macOS DMG | Planned: needs the mail view ported from WebKitGTK to WKWebView |
 
 ## App icon
 
