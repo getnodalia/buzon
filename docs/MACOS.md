@@ -20,7 +20,7 @@ a popover or menu that opens over it has to hide it (or the popover has to be dr
 
 ## What Buzón uses of WebKitGTK
 
-About 60 call sites in 31 files, in `ui/message_view`, `ui/rich_editor`, `ui/print_preview`,
+About 80 call sites in 31 files, in `ui/message_view`, `ui/rich_editor`, `ui/print_preview`,
 `ui/send_morph`, `ui/web_signin` and `desktop/`. The HTML, CSS and JavaScript they load stay as they
 are: `WKWebView` runs the same web content.
 
