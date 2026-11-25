@@ -6,6 +6,7 @@ remote content blocked by default and credentials kept in the system keyring.
 ## What's new in 0.1.7
 
 - Fixes a 0.1.6 stylesheet bug that left the sidebar transparent; the AppImage dock icon uses an absolute PNG path so GNOME can show it without waiting on the icon cache
+- The To, Cc and Bcc row of the composer lines up with From and Subject again
 
 ## What's new in 0.1.6
 
