@@ -1,6 +1,6 @@
 [package]
 name = "buzon"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2021"
 description = "The email client of the Nodalia suite"
 license = "AGPL-3.0-or-later"

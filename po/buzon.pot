@@ -8176,3 +8176,9 @@ msgstr ""
 
 msgid "Update Buzón the way you installed it: with your software center, your package manager or the new release's package."
 msgstr ""
+
+msgid "{label}: mail error"
+msgstr ""
+
+msgid "The portal answered with response code {code}."
+msgstr ""

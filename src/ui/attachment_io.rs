@@ -309,7 +309,10 @@ fn portal_open_file(path: std::path::PathBuf, ask: bool, parent: Option<gtk::Win
             }
             Ok(code) => launch_failed_dialog(
                 retry_parent.as_ref(),
-                &format!("the portal answered response code {code}"),
+                &i18n_f(
+                    "The portal answered with response code {code}.",
+                    &[("code", &code.to_string())],
+                ),
             ),
         },
     );

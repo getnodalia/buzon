@@ -243,7 +243,7 @@ impl AppModel {
                 if self.notifications_enabled && !connectivity && !self.window.is_active() {
                     crate::desktop::notify::error(
                         account_id,
-                        &format!("{label}: mail error"),
+                        &crate::i18n::i18n_f("{label}: mail error", &[("label", label.as_str())]),
                         &text,
                     );
                 }

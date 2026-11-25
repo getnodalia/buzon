@@ -10588,3 +10588,9 @@ msgstr ""
 #~ msgstr ""
 #~ "Las cuentas de Google y Microsoft inician sesión mediante Ajustes de "
 #~ "GNOME → Cuentas en línea y después aparecen arriba."
+
+msgid "{label}: mail error"
+msgstr "{label}: error de correo"
+
+msgid "The portal answered with response code {code}."
+msgstr "El portal respondió con el código {code}."

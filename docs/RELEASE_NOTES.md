@@ -3,6 +3,10 @@
 Buzón is the email client of the Nodalia suite: native, written in Rust, with no telemetry,
 remote content blocked by default and credentials kept in the system keyring.
 
+## What's new in 0.1.7
+
+- Two messages that still appeared in English in the Spanish interface are translated, and a test keeps the Spanish catalog complete
+
 ## What's new in 0.1.6
 
 - On AppImage, a Gear Lever / Nodalix launcher with a generic mail icon is repaired in place so GNOME shows Buzón's own icon; the collapsed sidebar Add button no longer clips; the UI paints from Nodalia `--ndl-*` tokens

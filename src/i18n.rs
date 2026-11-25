@@ -220,6 +220,7 @@ pub(crate) fn ui_is_rtl() -> bool {
 #[cfg(test)]
 mod tests {
     use super::{fill, is_rtl_locale};
+    use std::collections::BTreeMap;
 
     #[test]
     fn fill_replaces_each_named_placeholder_in_turn() {
@@ -267,5 +268,68 @@ mod tests {
         ] {
             assert!(!is_rtl_locale(ltr), "{ltr}");
         }
+    }
+
+    /// Every message of a catalog with the translations it carries: the msgid, then its
+    /// non-empty msgstr forms. Obsolete (`#~`) entries and the header are left out.
+    fn catalog(po: &str) -> BTreeMap<String, Vec<String>> {
+        let unquote = |l: &str| {
+            let quoted = l.trim().trim_start_matches(|c: char| c != '"');
+            quoted.trim_matches('"').replace("\\\"", "\"")
+        };
+        let mut out: BTreeMap<String, Vec<String>> = BTreeMap::new();
+        let (mut id, mut forms, mut in_str) = (String::new(), Vec::<String>::new(), false);
+        let mut flush = |id: &mut String, forms: &mut Vec<String>| {
+            if !id.is_empty() {
+                let found = std::mem::take(forms)
+                    .into_iter()
+                    .filter(|f| !f.is_empty())
+                    .collect();
+                out.insert(std::mem::take(id), found);
+            }
+            forms.clear();
+        };
+        for line in po.lines().filter(|l| !l.starts_with('#')) {
+            if line.starts_with("msgid_plural") {
+                in_str = false;
+            } else if line.starts_with("msgid ") {
+                flush(&mut id, &mut forms);
+                id = unquote(line);
+                in_str = false;
+            } else if line.starts_with("msgstr") {
+                forms.push(unquote(line));
+                in_str = true;
+            } else if line.starts_with('"') {
+                if !in_str {
+                    id.push_str(&unquote(line));
+                } else if let Some(last) = forms.last_mut() {
+                    last.push_str(&unquote(line));
+                }
+            }
+        }
+        flush(&mut id, &mut forms);
+        out
+    }
+
+    /// Spanish is complete: every message in the template has its translation, a plural every
+    /// form, so the interface is never left half in English.
+    #[test]
+    fn spanish_translates_every_message_in_the_template() {
+        let template = catalog(include_str!("../po/buzon.pot"));
+        let spanish = catalog(include_str!("../po/es.po"));
+        assert!(
+            template.len() > 1000,
+            "the template did not parse: {} messages",
+            template.len()
+        );
+        let missing: Vec<&String> = template
+            .keys()
+            .filter(|id| spanish.get(*id).is_none_or(|forms| forms.is_empty()))
+            .collect();
+        assert!(
+            missing.is_empty(),
+            "{} message(s) with no Spanish translation:\n{missing:#?}",
+            missing.len()
+        );
     }
 }
