@@ -24,8 +24,14 @@ pub(super) fn set_sidebar_header_compact(
     refresh: &gtk::Button,
     compact: bool,
 ) {
+    // Expanded, the header goes back to how it was built: the start buttons
+    // follow the desktop's layout, and the end buttons stay off because the
+    // window's controls belong to the pane at the right edge (the reader's
+    // header, or the list's when the reader is below or off). Turning the end
+    // buttons back on here put a second set of controls in this island after
+    // a collapse and expand.
     header.set_show_start_title_buttons(!compact);
-    header.set_show_end_title_buttons(!compact);
+    header.set_show_end_title_buttons(false);
     // The menu is always in exactly one of three spots — packed end
     // (expanded), the title slot (rail), or packed start (peek) — and
     // HeaderBar::remove detaches it from any of them, so transitions are
