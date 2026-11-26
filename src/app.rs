@@ -215,6 +215,11 @@ impl SimpleComponent for AppModel {
                 #[name = "peek_split"]
                 ndl::OverlaySplitView {
                     set_vexpand: true,
+                    // Like the account split view's: the mail view is three
+                    // islands, so this one's content pane is not an island
+                    // around them (see `.mail-islands` in styles.css).
+                    #[watch]
+                    set_class_active: ("mail-islands", !model.showing_gallery && !model.showing_contacts),
                     set_collapsed: true,
                     set_show_sidebar: false,
                     set_min_sidebar_width: 280.0,
@@ -267,6 +272,11 @@ impl SimpleComponent for AppModel {
                     #[name = "sidebar_split"]
                     set_content = &ndl::OverlaySplitView {
                     set_vexpand: true,
+                    // The mail view is three islands (sidebar, list, reader):
+                    // the content pane stops being one island of its own then
+                    // (see `.mail-islands` in styles.css).
+                    #[watch]
+                    set_class_active: ("mail-islands", !model.showing_gallery && !model.showing_contacts),
                     set_max_sidebar_width: 280.0,
                     // Low enough (with the panes' own minimums) that the whole
                     // window fits half of a 1920px screen — see READER_MIN_WIDTH.
@@ -341,6 +351,9 @@ impl SimpleComponent for AppModel {
 
                         #[wrap(Some)]
                         set_start_child = &gtk::Overlay {
+                            add_css_class: "mail-island",
+                            // Rounded corners clip what the pane holds.
+                            set_overflow: gtk::Overflow::Hidden,
                             // A strip across the top that says how wide the
                             // list is: with the reading pane off, that decides
                             // when the toolbar folds (#475).
@@ -475,6 +488,8 @@ impl SimpleComponent for AppModel {
                         #[wrap(Some)]
                         #[name = "reader_bin"]
                         set_end_child = &ndl::BreakpointBin {
+                            add_css_class: "mail-island",
+                            set_overflow: gtk::Overflow::Hidden,
                             // The narrowest the reader may become. The header's
                             // actions collapse into the overflow menu before this
                             // matters (see the breakpoint added in init). The

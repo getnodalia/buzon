@@ -2608,3 +2608,30 @@ scrolledwindow.merge-dialog-scroll {
 .assistant-edit-bar .assistant-removed {
   color: var(--ndl-color-status-danger-fg);
 }
+
+/* The mail view is three NDL islands on the window ground: the sidebar, the
+   message list and the reader, a gap apart. NDL makes the sidebar and the
+   content pane islands by itself; with the mail panes showing, the content
+   pane is only the ground the list and the reader island sit on. */
+ndl-overlay-split-view.mail-islands > .ndl-content-pane {
+  background-color: transparent;
+  border-radius: 0;
+  margin: 0;
+}
+
+.mail-split {
+  margin: var(--ndl-component-window-gap);
+}
+
+.mail-island {
+  background-color: var(--ndl-color-surface-panel);
+  border-radius: var(--ndl-component-panel-radius);
+}
+
+/* The gap between the list and the reader is the divider's own width. */
+.mail-split > separator {
+  min-width: var(--ndl-component-window-gap);
+  min-height: var(--ndl-component-window-gap);
+  background-color: transparent;
+}
+
