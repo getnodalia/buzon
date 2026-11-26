@@ -173,11 +173,12 @@ fn icon_is_ours(value: &str) -> bool {
     }
     let path = std::path::Path::new(value);
     let prefix = format!("{}-", crate::APP_ID);
+    let bare = format!("{}.png", crate::APP_ID);
     path.is_absolute()
         && path
             .file_name()
             .map(|n| n.to_string_lossy())
-            .is_some_and(|n| n.starts_with(&prefix) && n.ends_with(".png"))
+            .is_some_and(|n| n == bare || (n.starts_with(&prefix) && n.ends_with(".png")))
 }
 
 /// An `Icon=` value that came from an AppImage integrator (Gear Lever,
@@ -457,6 +458,9 @@ mod tests {
         )));
         assert!(icon_is_ours(&format!(
             "/home/u/.local/share/icons/hicolor/512x512/apps/{id}-default.png"
+        )));
+        assert!(icon_is_ours(&format!(
+            "/home/u/.local/share/icons/hicolor/512x512/apps/{id}.png"
         )));
         // A theme's name, the symbolic, another app's file, a relative path.
         assert!(!icon_is_ours("mail-client"));
