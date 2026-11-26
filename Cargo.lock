@@ -369,7 +369,7 @@ checksum = "87a0cf66fd1eb2fb7b822cb78370d82303750809bc6ba855f3f58e517d3238db"
 
 [[package]]
 name = "buzon"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "ammonia",
  "async-imap",
@@ -2247,7 +2247,7 @@ dependencies = [
 [[package]]
 name = "nodalia-gtk"
 version = "0.1.0-alpha.1"
-source = "git+https://github.com/danielmigueltejedor/nodalia-design?rev=5cda41eb011afa8eb93c02d8aa7d62c9642ad977#5cda41eb011afa8eb93c02d8aa7d62c9642ad977"
+source = "git+https://github.com/getnodalia/nodalia-design?rev=5cda41eb011afa8eb93c02d8aa7d62c9642ad977#5cda41eb011afa8eb93c02d8aa7d62c9642ad977"
 dependencies = [
  "gtk4",
  "pango",
@@ -2257,7 +2257,7 @@ dependencies = [
 [[package]]
 name = "nodalia-update"
 version = "0.1.0-alpha.1"
-source = "git+https://github.com/danielmigueltejedor/nodalia-design?rev=114848a2ff1a7c29c9a5432fb12e955fbe0aeef2#114848a2ff1a7c29c9a5432fb12e955fbe0aeef2"
+source = "git+https://github.com/getnodalia/nodalia-design?rev=114848a2ff1a7c29c9a5432fb12e955fbe0aeef2#114848a2ff1a7c29c9a5432fb12e955fbe0aeef2"
 dependencies = [
  "serde_json",
  "sha2 0.10.9",

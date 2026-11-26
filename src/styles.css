@@ -67,7 +67,7 @@ row.compose-row .compose-split:dir(rtl) {
   padding-right: 8px;
 }
 row.compose-row .compose-split > separator {
-  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent 55%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent) 55%, transparent);
   min-width: 1px;
   margin: 3px 4px 3px 8px;
 }
@@ -88,10 +88,10 @@ row.compose-row .compose-caret:dir(rtl) {
   margin-left: -3px;
 }
 row.compose-row .compose-caret:hover {
-  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent 15%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent) 15%, transparent);
 }
 row.compose-row .compose-caret:active {
-  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent 28%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-text-on-accent) 28%, transparent);
 }
 
 .account-header {
@@ -144,9 +144,17 @@ headerbar.rail-header {
 }
 
 .rail-collapsed button.suggested-action label {
-  /* Expanded empty-state shows text; rail is icon-only via set_label(""). */
   padding: 0;
 }
+
+/* Rail must stay opaque: without a painted sidebar surface the collapsed
+   split shows whatever is behind the window (compositor / CSS parse fallout). */
+.rail-collapsed,
+overlay-split-view.rail-collapsed > widget:first-child,
+.rail-collapsed .navigation-sidebar {
+  background-color: var(--ndl-color-surface-panel);
+}
+
 
 .account-avatar {
   min-width: 36px;
@@ -158,7 +166,7 @@ headerbar.rail-header {
 
 /* Version pill on the About window. */
 .about-version-chip {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-text 15%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-text) 15%, transparent);
   color: var(--ndl-color-accent-text);
   border-radius: 999px;
   padding: 1px 12px;
@@ -380,7 +388,7 @@ headerbar.rail-header {
 }
 
 .account-source-badge.goa {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 18%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 18%, transparent);
   color: var(--ndl-color-accent-text);
   opacity: 1;
 }
@@ -453,7 +461,7 @@ levelbar block.quota-full {
 }
 /* A file moved or deleted since it was attached (#340). */
 .attach-chip.missing {
-  background: color-mix(in srgb, var(--ndl-color-status-danger-fg 14%, transparent);
+  background: color-mix(in srgb, var(--ndl-color-status-danger-fg) 14%, transparent);
   color: var(--ndl-color-status-danger-fg);
 }
 /* The chips' grid cells stay out of sight: the chip is the target, and a
@@ -472,7 +480,7 @@ flowbox.attach-flow > flowboxchild {
    can go. The card under the pointer is the one GTK marks :drop(active); it
    fills with the accent and lifts, so the choice reads before the drop. */
 .drop-layer {
-  background-color: color-mix(in srgb, var(--ndl-color-surface-window 95%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-surface-window) 95%, transparent);
   padding: 18px;
 }
 /* The composer takes every file drop itself and lights the card under the
@@ -489,7 +497,7 @@ flowbox.attach-flow > flowboxchild {
 .drop-zone {
   padding: 20px 16px;
   border-radius: 20px;
-  border: 2px dashed color-mix(in srgb, var(--ndl-color-accent-text 35%, transparent);
+  border: 2px dashed color-mix(in srgb, var(--ndl-color-accent-text) 35%, transparent);
   /* Opaque, unlike the veil around it: the message beneath shows through
      only at the margins, never behind a card's words. */
   background-color: mix(var(--ndl-color-surface-window), var(--ndl-color-accent-default), 0.05);
@@ -501,7 +509,7 @@ flowbox.attach-flow > flowboxchild {
   min-height: 68px;
   border-radius: 34px;
   color: var(--ndl-color-accent-text);
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 12%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 12%, transparent);
   transition: background-color 180ms ease-out, color 180ms ease-out,
               -gtk-icon-transform 180ms ease-out;
 }
@@ -518,9 +526,9 @@ flowbox.attach-flow > flowboxchild {
 }
 .drop-zone:drop(active) {
   border-style: solid;
-  border-color: color-mix(in srgb, var(--ndl-color-accent-default 90%, transparent);
+  border-color: color-mix(in srgb, var(--ndl-color-accent-default) 90%, transparent);
   background-color: mix(var(--ndl-color-surface-window), var(--ndl-color-accent-default), 0.14);
-  box-shadow: 0 10px 28px -8px color-mix(in srgb, var(--ndl-color-accent-default 45%, transparent);
+  box-shadow: 0 10px 28px -8px color-mix(in srgb, var(--ndl-color-accent-default) 45%, transparent);
 }
 .drop-zone:drop(active) .drop-badge {
   color: var(--ndl-color-text-on-accent);
@@ -940,13 +948,13 @@ flowbox.attach-flow > flowboxchild {
    focus moves to the reader. The hover/active variants are overridden too so
    the highlight stays uniform when the cursor passes over the selected row. */
 .message-list > row:selected > .message-item:not(.swiping) .message-row {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 30%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 30%, transparent);
 }
 
 .message-list:focus-within > row:selected > .message-item:not(.swiping) .message-row,
 .message-list > row:selected:hover > .message-item:not(.swiping) .message-row,
 .message-list > row:selected:active > .message-item:not(.swiping) .message-row {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 50%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 50%, transparent);
 }
 
 /* Gmail's j/k cursor (#392): an accent outline inside the pill, while the
@@ -955,15 +963,15 @@ flowbox.attach-flow > flowboxchild {
    selected row, whose pill is already the accent, it is the accent's
    foreground. */
 .message-list:focus-within > row > .message-item.kbd-cursor:not(.swiping) .message-row {
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ndl-color-accent-text 85%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ndl-color-accent-text) 85%, transparent);
 }
 
 .message-list:focus-within > row:not(:selected) > .message-item.kbd-cursor:not(.swiping) .message-row {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 10%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 10%, transparent);
 }
 
 .message-list:focus-within > row:selected > .message-item.kbd-cursor:not(.swiping) .message-row {
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ndl-color-text-on-accent 80%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ndl-color-text-on-accent) 80%, transparent);
 }
 
 .message-row {
@@ -1186,13 +1194,13 @@ flowbox.attach-flow > flowboxchild {
   margin-left: 10px;
   /* var(--ndl-color-text-primary), not currentColor: a selected row's currentColor is the
      selection foreground, which made the rail vanish under selection. */
-  border-left: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
+  border-left: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary) 30%, transparent);
 }
 .message-item.thread-child:dir(rtl) {
   margin-left: 0;
   margin-right: 10px;
   border-left: none;
-  border-right: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
+  border-right: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary) 30%, transparent);
 }
 
 /* The LAST reply: its rail stops at the node dot (row centre) instead of
@@ -1209,13 +1217,13 @@ flowbox.attach-flow > flowboxchild {
 /* Identical stroke to the sibling rows' rails; the negative margin moves it
    from the row's content box back onto the border's own axis. */
 .thread-rail-stub {
-  border-left: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
+  border-left: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary) 30%, transparent);
   margin-left: -2px;
 }
 .thread-rail-stub:dir(rtl) {
   border-left: none;
   margin-left: 0;
-  border-right: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary 30%, transparent);
+  border-right: 2px dotted color-mix(in srgb, var(--ndl-color-text-primary) 30%, transparent);
   margin-right: -2px;
 }
 
@@ -1275,11 +1283,11 @@ flowbox.attach-flow > flowboxchild {
 }
 
 .message-list > row:selected > .message-item.thread-child:not(.swiping) .message-row {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 30%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 30%, transparent);
 }
 
 .message-list:focus-within > row:selected > .message-item.thread-child:not(.swiping) .message-row {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 50%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 50%, transparent);
 }
 
 /* Mid-swipe (.swiping, held from the first drag until the snap-back lands):
@@ -1740,7 +1748,7 @@ headerbar box.list-tools.compact button {
 }
 
 .recipient-pill.invalid {
-  background-color: color-mix(in srgb, var(--ndl-color-status-danger-fg 14%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-status-danger-fg) 14%, transparent);
   color: var(--ndl-color-status-danger-fg);
 }
 
@@ -1756,7 +1764,7 @@ headerbar box.list-tools.compact button {
 }
 
 .recipient-pill:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--ndl-color-accent-text 50%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--ndl-color-accent-text) 50%, transparent);
   outline-offset: 1px;
 }
 
@@ -2051,17 +2059,17 @@ headerbar box.list-tools.compact button {
 .gallery-flow > flowboxchild .gallery-cell.attachment-deleting,
 .attachment-drawer-flow > flowboxchild.attachment-deleting,
 .gallery-table row.attachment-deleting {
-  background: color-mix(in srgb, var(--ndl-color-status-danger-fg 12%, transparent);
+  background: color-mix(in srgb, var(--ndl-color-status-danger-fg) 12%, transparent);
 }
 .attachment-deleting-label {
   color: var(--ndl-color-status-danger-fg);
   font-weight: 600;
 }
 .attachment-deleting-veil {
-  background: color-mix(in srgb, var(--ndl-color-status-danger-fg 22%, transparent);
+  background: color-mix(in srgb, var(--ndl-color-status-danger-fg) 22%, transparent);
 }
 .attachment-deleting-veil .attachment-deleting-label {
-  background: color-mix(in srgb, var(--ndl-color-surface-window 90%, transparent);
+  background: color-mix(in srgb, var(--ndl-color-surface-window) 90%, transparent);
   border-radius: 999px;
   padding: 2px 10px;
 }
@@ -2103,7 +2111,7 @@ headerbar box.list-tools.compact button {
    issue #37): a soft accent wash that keeps the thumbnail legible, rounded to
    match the cells. */
 .attachment-drawer-flow flowboxchild:selected {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 18%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 18%, transparent);
   border-radius: 10px;
 }
 
@@ -2251,7 +2259,7 @@ window.welcome-window,
   background-color: alpha(currentColor, 0.06);
 }
 .icon-gallery flowboxchild:selected {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 14%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 14%, transparent);
   box-shadow: inset 0 0 0 2px var(--ndl-color-accent-default);
 }
 .icon-gallery flowboxchild:focus-visible {
@@ -2272,24 +2280,24 @@ window.welcome-window,
    color at the edge, in both schemes. */
 .icon-strip-fade.left {
   background:
-    linear-gradient(to right, var(--ndl-color-surface-raised), color-mix(in srgb, var(--ndl-color-surface-raised 0%, transparent)),
-    linear-gradient(to right, var(--ndl-color-surface-window), color-mix(in srgb, var(--ndl-color-surface-window 0%, transparent));
+    linear-gradient(to right, var(--ndl-color-surface-raised), color-mix(in srgb, var(--ndl-color-surface-raised) 0%, transparent)),
+    linear-gradient(to right, var(--ndl-color-surface-window), color-mix(in srgb, var(--ndl-color-surface-window) 0%, transparent));
 }
 .icon-strip-fade.right {
   background:
-    linear-gradient(to left, var(--ndl-color-surface-raised), color-mix(in srgb, var(--ndl-color-surface-raised 0%, transparent)),
-    linear-gradient(to left, var(--ndl-color-surface-window), color-mix(in srgb, var(--ndl-color-surface-window 0%, transparent));
+    linear-gradient(to left, var(--ndl-color-surface-raised), color-mix(in srgb, var(--ndl-color-surface-raised) 0%, transparent)),
+    linear-gradient(to left, var(--ndl-color-surface-window), color-mix(in srgb, var(--ndl-color-surface-window) 0%, transparent));
 }
 /* In the wizard the selection ring wears the accent. */
 .welcome-window .icon-gallery flowboxchild:hover {
-  background-color: color-mix(in srgb, var(--ndl-color-text-primary 6%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-text-primary) 6%, transparent);
 }
 .welcome-window .icon-gallery flowboxchild:selected {
-  background-color: color-mix(in srgb, var(--ndl-color-text-primary 8%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-text-primary) 8%, transparent);
   box-shadow: inset 0 0 0 2px var(--ndl-color-accent-default);
 }
 .welcome-window .icon-gallery-label {
-  color: color-mix(in srgb, var(--ndl-color-text-primary 75%, transparent);
+  color: color-mix(in srgb, var(--ndl-color-text-primary) 75%, transparent);
 }
 
 /* ---- Console mode (notifications.rs): NDL's sunken surface, monospace ---- */
@@ -2370,7 +2378,7 @@ textview.console-view text selection {
 }
 /* A row or group a settings search jumped to (#260), marked for a moment. */
 .settings-search-hit {
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 18%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 18%, transparent);
   border-radius: 12px;
   transition: background-color 400ms ease-out;
 }
@@ -2420,7 +2428,7 @@ textview.console-view text selection {
    draws the short line over its middle half. */
 .send-split > separator {
   background-color: var(--ndl-color-accent-default);
-  background-image: image(color-mix(in srgb, var(--ndl-color-text-on-accent 55%, transparent));
+  background-image: image(color-mix(in srgb, var(--ndl-color-text-on-accent) 55%, transparent));
   background-size: 100% 50%;
   background-position: center;
   background-repeat: no-repeat;
@@ -2451,7 +2459,7 @@ textview.console-view text selection {
 }
 .toolbar-zone.drop-active {
   border-color: var(--ndl-color-accent-text);
-  background: color-mix(in srgb, var(--ndl-color-accent-default 8%, transparent);
+  background: color-mix(in srgb, var(--ndl-color-accent-default) 8%, transparent);
 }
 .toolbar-chip {
   padding: 6px 10px;
@@ -2486,11 +2494,11 @@ textview.console-view text selection {
   transition: background 150ms ease-out, color 150ms ease-out;
 }
 .buzon-zoom-chip:hover {
-  background: color-mix(in srgb, var(--ndl-color-accent-default 20%, transparent);
+  background: color-mix(in srgb, var(--ndl-color-accent-default) 20%, transparent);
   color: var(--ndl-color-accent-text);
 }
 .buzon-zoom-chip:active {
-  background: color-mix(in srgb, var(--ndl-color-accent-default 35%, transparent);
+  background: color-mix(in srgb, var(--ndl-color-accent-default) 35%, transparent);
 }
 
 /* The highlight button's "A" on the color last chosen (#358): dark,
@@ -2557,7 +2565,7 @@ textview.console-view text selection {
 .list-scrub-date {
   padding: 6px 12px;
   border-radius: 999px;
-  background-color: color-mix(in srgb, var(--ndl-color-surface-window 92%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-surface-window) 92%, transparent);
   color: var(--ndl-color-text-primary);
   box-shadow: 0 1px 4px alpha(black, 0.25);
   font-weight: bold;
@@ -2585,7 +2593,7 @@ scrolledwindow.merge-dialog-scroll {
 .assistant-banner {
   padding: 8px 10px;
   border-radius: 8px;
-  background-color: color-mix(in srgb, var(--ndl-color-accent-default 12%, transparent);
+  background-color: color-mix(in srgb, var(--ndl-color-accent-default) 12%, transparent);
 }
 
 /* An assistant's edit waiting for the user: one slim row with Reject and
@@ -2600,3 +2608,30 @@ scrolledwindow.merge-dialog-scroll {
 .assistant-edit-bar .assistant-removed {
   color: var(--ndl-color-status-danger-fg);
 }
+
+/* The mail view is three NDL islands on the window ground: the sidebar, the
+   message list and the reader, a gap apart. NDL makes the sidebar and the
+   content pane islands by itself; with the mail panes showing, the content
+   pane is only the ground the list and the reader island sit on. */
+ndl-overlay-split-view.mail-islands > .ndl-content-pane {
+  background-color: transparent;
+  border-radius: 0;
+  margin: 0;
+}
+
+.mail-split {
+  margin: var(--ndl-component-window-gap);
+}
+
+.mail-island {
+  background-color: var(--ndl-color-surface-panel);
+  border-radius: var(--ndl-component-panel-radius);
+}
+
+/* The gap between the list and the reader is the divider's own width. */
+.mail-split > separator {
+  min-width: var(--ndl-component-window-gap);
+  min-height: var(--ndl-component-window-gap);
+  background-color: transparent;
+}
+

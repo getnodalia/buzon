@@ -31,7 +31,7 @@ WebKitGTK. `CLAUDE.md` imports this file; edit this one only.
 ## Nodalia Design
 
 - The interface uses `nodalia-gtk` (`use nodalia_gtk as ndl;`), pinned by `rev` from
-  [nodalia-design](https://github.com/danielmigueltejedor/nodalia-design). The widget layer is
+  [nodalia-design](https://github.com/getnodalia/nodalia-design). The widget layer is
   entirely `ndl::`; colours come from `--ndl-*` tokens (and Appearance themes override those).
   Buzón's accent is `#D4241B`.
 - A hamburger menu in the header holds Preferences, Keyboard shortcuts and About. The light and

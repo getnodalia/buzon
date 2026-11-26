@@ -1,0 +1,56 @@
+name: macOS spike
+
+# Does a system WKWebView work inside a GTK 4 window on macOS? Buzón draws mail with WebKitGTK, which
+# does not exist for macOS, so this is the first question of the macOS port. It runs only for changes
+# to the spike (or by hand): macOS runners are kept for releases.
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/macos-spike.yml"
+      - "tools/macos-spike/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: macos-spike-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spike:
+    name: WKWebView in GTK 4
+    runs-on: macos-15
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: tools/macos-spike
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: GTK 4
+        run: |
+          brew install gtk4 pkgconf
+          pkg-config --modversion gtk4
+      - name: Build
+        run: cargo build --locked --features app
+      - name: Run
+        run: |
+          set +e
+          ./target/debug/buzon-macos-spike 2>&1 | tee spike.log &
+          sleep 4
+          screencapture -x spike.png || echo "no screenshot"
+          wait %1
+          status=${PIPESTATUS[0]}
+          echo "exit status: $status"
+          grep -q "SPIKE steps: 0b111 of 0b111" spike.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: macos-spike
+          path: |
+            tools/macos-spike/spike.log
+            tools/macos-spike/spike.png
+          if-no-files-found: warn

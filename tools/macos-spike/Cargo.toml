@@ -1,0 +1,24 @@
+[package]
+name = "buzon-macos-spike"
+version = "0.0.0"
+edition = "2021"
+description = "Spike: a WKWebView embedded in a GTK 4 window on macOS"
+license = "AGPL-3.0-or-later"
+publish = false
+
+# Not part of Buzón's build: a separate workspace, so the main crate's lock file and CI never see it.
+[workspace]
+
+[features]
+# The GTK window around the web view. Without it the crate is just the web view layer, which type-checks
+# from any host (cargo check --target aarch64-apple-darwin) without GTK installed.
+app = ["dep:gtk", "dep:gdk-macos"]
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-foundation = "0.3"
+objc2-app-kit = "0.3"
+objc2-web-kit = "0.3"
+block2 = "0.6"
+gtk = { package = "gtk4", version = "0.11", optional = true }
+gdk-macos = { package = "gdk4-macos", version = "0.11", optional = true }

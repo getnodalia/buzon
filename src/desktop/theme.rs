@@ -211,14 +211,13 @@ fn repaint() {
 /// still resolves through those names, and the one rule that needs writing
 /// out.
 ///
-/// The divider between the message list and the reading pane is the
-/// exception: a GtkPaned separator takes no token, so it is painted here by
-/// class. The border and shadow resets are load-bearing: the toolkit draws
-/// the separator's hairline as a shadow, which would otherwise sit over the
-/// palette color and lighten it. It is painted a fifth darker than the
-/// palette's border role. Because this string is empty under the stock look,
-/// none of it reaches an unthemed window — stock Nodalia tokens stay in
-/// charge.
+/// The gap between the message list and the reading pane is the
+/// exception: a GtkPaned separator takes no token, so it is cleared here by
+/// class. The list and the reader are islands a gap apart, so the separator
+/// between them must show the window ground and no hairline: the border and
+/// shadow resets are load-bearing, since the toolkit draws the hairline as a
+/// shadow. Because this string is empty under the stock look, none of it
+/// reaches an unthemed window — stock Nodalia tokens stay in charge.
 ///
 /// The sidebar's divider keeps the toolkit's own shade values rather than
 /// the palette's `sidebar_border`: every theme's tint is lighter than the
@@ -233,7 +232,6 @@ fn css(p: &Palette, dark: bool) -> String {
     };
     let on_error = crate::color::readable_text(p.error);
     let on_warning = crate::color::readable_text(p.warning);
-    let separator = crate::color::darken(p.border, 0.2);
     format!(
         "\
 :root {{\
@@ -298,7 +296,7 @@ fn css(p: &Palette, dark: bool) -> String {
 @define-color warning_fg_color {on_warning};\
 @define-color shade_color {shade};\
 @define-color scrollbar_outline_color {surface};\
-.mail-split > separator {{background-color: {separator};\
+.mail-split > separator {{background-color: transparent;\
 border: none;box-shadow: none;outline: none;}}",
         chrome = p.chrome,
         text = p.text,
