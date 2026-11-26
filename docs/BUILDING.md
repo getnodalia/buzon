@@ -68,8 +68,8 @@ Debian or Ubuntu host with the dependencies above and `dpkg-dev`, it builds in p
 
 ## AppImage
 
-`tools/build-appimage.sh` produces `packaging/out/Buzon-<arch>.AppImage`, or
-`Buzon-Beta-<arch>.AppImage` when the version is a beta, which is then built
+`tools/build-appimage.sh` produces `packaging/out/Buzon-<version>-<arch>.AppImage`, or
+`Buzon-Beta-<version>-<arch>.AppImage` when the version is a beta, which is then built
 with the `beta` feature as the Flatpak beta is (#235). It runs inside an Arch
 container (the script starts one with podman; in CI it is already in one),
 because the bundle carries every library down to the C library and those have
