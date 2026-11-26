@@ -3,6 +3,10 @@
 Buzón is the email client of the Nodalia suite: native, written in Rust, with no telemetry,
 remote content blocked by default and credentials kept in the system keyring.
 
+## What's new in 0.1.9
+
+- The AppImage carries its version in the file name (`Buzon-0.1.9-x86_64.AppImage`), so Nodalia Launcher and the Nodalix Store can install and update it
+
 ## What's new in 0.1.8
 
 - Fixes a 0.1.6 stylesheet bug that left the sidebar transparent; the AppImage dock icon uses an absolute PNG path so GNOME can show it without waiting on the icon cache

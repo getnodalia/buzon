@@ -11,12 +11,12 @@ sha256sum -c --ignore-missing SHA256SUMS-linux
 
 ### AppImage (any distribution)
 
-`Buzon-x86_64.AppImage` carries every library it needs, down to the C library, so it runs on any
+`Buzon-<version>-x86_64.AppImage` carries every library it needs, down to the C library, so it runs on any
 x86-64 Linux.
 
 ```sh
-chmod +x Buzon-x86_64.AppImage     # a browser download is not executable
-./Buzon-x86_64.AppImage
+chmod +x Buzon-*-x86_64.AppImage     # a browser download is not executable
+./Buzon-*-x86_64.AppImage
 ```
 
 Run it once from a terminal first; on that first start Buzón writes its own launcher and icons

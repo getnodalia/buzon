@@ -8,8 +8,8 @@
 #                                    # beta worktree) with this script
 #
 # Output lands in packaging/out/:
-#   Buzon-<arch>.AppImage            - the stable bundle
-#   Buzon-Beta-<arch>.AppImage       - the beta, when the version is X.Y.Z-beta.N
+#   Buzon-<version>-<arch>.AppImage       - the stable bundle
+#   Buzon-Beta-<version>-<arch>.AppImage  - the beta, when the version is X.Y.Z-beta.N
 #
 # A beta is the beta app, as in the Flatpak: built with the `beta` feature,
 # app ID dev.danielmiguelt.Buzon.Beta, its own launcher and icon. Outside the
@@ -46,13 +46,13 @@ case "$VERSION" in
         APP_ID="dev.danielmiguelt.Buzon.Beta"
         NAME="Buzon-Beta"
         FEATURES=(--features beta)
-        UPDATES="gh-releases-zsync|getnodalia|buzon|latest-pre|$NAME-$ARCH.AppImage.zsync"
+        UPDATES="gh-releases-zsync|getnodalia|buzon|latest-pre|$NAME-*-$ARCH.AppImage.zsync"
         ;;
     *)
         APP_ID="dev.danielmiguelt.Buzon"
         NAME="Buzon"
         FEATURES=()
-        UPDATES="gh-releases-zsync|getnodalia|buzon|latest|$NAME-$ARCH.AppImage.zsync"
+        UPDATES="gh-releases-zsync|getnodalia|buzon|latest|$NAME-*-$ARCH.AppImage.zsync"
         ;;
 esac
 
@@ -170,7 +170,10 @@ export VERSION ARCH
 export ICON="/usr/share/icons/hicolor/256x256/apps/$APP_ID.png"
 export DESKTOP="/usr/share/applications/$APP_ID.desktop"
 export OUTPATH="$OUT"
-export OUTNAME="$NAME-$ARCH.AppImage"
+# The version is in the name, as in Brújula's: Nodalia Launcher and NXPM read it from the file
+# name to bind a download to the release it was advertised for.
+APPIMAGE="$NAME-$VERSION-$ARCH.AppImage"
+export OUTNAME="$APPIMAGE"
 # The window has to match the launcher's StartupWMClass or the desktop shows
 # the app twice in the dock; on X11 the class comes out wrong without the shim.
 export STARTUPWMCLASS="$APP_ID"
@@ -329,11 +332,11 @@ quick-sharun --make-appimage
 
 # Downloads and some desktops strip the execute bit; pin it so integrating
 # and launching the bundle does not need a manual chmod (#18).
-chmod 755 "$OUT/$NAME-$ARCH.AppImage"
-[ -x "$OUT/$NAME-$ARCH.AppImage" ] \
+chmod 755 "$OUT/$APPIMAGE"
+[ -x "$OUT/$APPIMAGE" ] \
     || { echo "AppImage is not executable after chmod" >&2; exit 1; }
 
 # The .zsync quick-sharun writes goes on the release beside the AppImage.
 
 echo "==> AppImage in $OUT:"
-ls -lh "$OUT/$NAME-$ARCH.AppImage"
+ls -lh "$OUT/$APPIMAGE"
