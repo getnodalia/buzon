@@ -52,7 +52,7 @@ pub(in crate::worker) fn extract_attachments(raw: &[u8]) -> Vec<crate::models::A
 pub(in crate::worker) fn attachment_parts(
     parsed: &mail_parser::Message<'_>,
     raw: &[u8],
-) -> Vec<(usize, crate::models::Attachment)> {
+) -> Vec<(u32, crate::models::Attachment)> {
     use mail_parser::MimeHeaders;
     let mut out = Vec::new();
     let legacy = crate::mail::pgp::legacy_display_part(parsed);
@@ -60,7 +60,7 @@ pub(in crate::worker) fn attachment_parts(
         if Some(id) == legacy {
             continue;
         }
-        let Some(part) = parsed.parts.get(id) else {
+        let Some(part) = parsed.parts.get(id as usize) else {
             continue;
         };
         // What is left where an attachment was removed, here or by
@@ -165,7 +165,7 @@ fn attachment_name_of(part: &mail_parser::MessagePart<'_>, raw: &[u8]) -> Option
     let mut repaired = Vec::new();
     let mut spliced = false;
     for h in part.headers.iter().filter(|h| names(h)) {
-        let Some(value) = raw.get(h.offset_start..h.offset_end) else {
+        let Some(value) = raw.get(h.offset_start as usize..h.offset_end as usize) else {
             return plain();
         };
         let joined = splice_encoded_words(value);

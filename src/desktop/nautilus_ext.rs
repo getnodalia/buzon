@@ -77,7 +77,7 @@ impl State {
 
 fn source_hash() -> String {
     use sha2::Digest;
-    format!("{:x}", sha2::Sha256::digest(SOURCE.as_bytes()))
+    crate::services::hex(&sha2::Sha256::digest(SOURCE.as_bytes()))
 }
 
 fn loaded_at(marker: &std::path::Path) -> bool {

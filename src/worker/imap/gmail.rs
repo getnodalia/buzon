@@ -164,13 +164,13 @@ where
     let mut out = Vec::new();
     loop {
         let reply = match session.read_response().await {
-            Some(Ok(reply)) => reply,
-            Some(Err(e)) => {
+            Ok(Some(reply)) => reply,
+            Err(e) => {
                 let e = async_imap::error::Error::Io(e);
                 wired_err(&cmd, &e);
                 return Err(e);
             }
-            None => {
+            Ok(None) => {
                 wired::<()>(&cmd, &Err(async_imap::error::Error::ConnectionLost));
                 return Err(async_imap::error::Error::ConnectionLost);
             }
@@ -185,10 +185,9 @@ where
             Response::Done {
                 tag,
                 status,
-                information,
-                ..
+                outcome,
             } if *tag == id => {
-                let why = information.as_deref().unwrap_or("");
+                let why = outcome.information.as_deref().unwrap_or("");
                 return match status {
                     Status::Ok => {
                         tracing::debug!(target: "buzon::imap", "< OK ({})", cmd_head(&cmd));
@@ -302,8 +301,8 @@ where
     let mut out = std::collections::HashMap::new();
     loop {
         let reply = match session.read_response().await {
-            Some(Ok(reply)) => reply,
-            Some(Err(e)) => {
+            Ok(Some(reply)) => reply,
+            Err(e) => {
                 let e = async_imap::error::Error::Io(e);
                 wired_err(&cmd, &e);
                 if !is_parse_error(&e) {
@@ -314,7 +313,7 @@ where
                     "unreadable X-GM-LABELS reply",
                 )));
             }
-            None => {
+            Ok(None) => {
                 wired::<()>(&cmd, &Err(async_imap::error::Error::ConnectionLost));
                 return Err(async_imap::error::Error::ConnectionLost);
             }
@@ -328,10 +327,9 @@ where
             Response::Done {
                 tag,
                 status,
-                information,
-                ..
+                outcome,
             } if *tag == id => {
-                let why = information.as_deref().unwrap_or("");
+                let why = outcome.information.as_deref().unwrap_or("");
                 return Ok(match status {
                     Status::Ok => {
                         tracing::debug!(target: "buzon::imap", "< OK ({})", cmd_head(&cmd));
@@ -646,14 +644,14 @@ mod gmail_label_tests {
 
     /// An unreadable reply wedges the stream: the caller has to reconnect,
     /// but not move its summary fetch down the ladder (#226), and the retry
-    /// must not ask for labels again. A label sent as a literal is one such
-    /// reply: imap-proto reads labels as atoms and quoted strings only.
+    /// must not ask for labels again. A reply the parser rejects outright,
+    /// such as a FETCH list that is never closed, is one such reply.
     #[tokio::test]
     async fn an_unreadable_reply_asks_for_a_reconnect_without_labels() {
         let account_id = 900_376;
         let (r, mut msgs) = read(
             account_id,
-            "* 3 FETCH (UID 7 X-GM-LABELS ({5}\r\nHello))\r\n{tag} OK Success\r\n",
+            "* 3 FETCH (UID 7 X-GM-LABELS (Hello) BOGUS\r\n{tag} OK Success\r\n",
         )
         .await;
         let e = r.expect_err("the stream cannot be trusted");
@@ -667,8 +665,25 @@ mod gmail_label_tests {
             .expect("skipped");
     }
 
+    /// A label sent as a literal used to be one of those unreadable replies.
+    /// imap-proto 0.17 skips what it cannot read as an unknown item instead,
+    /// so the stream stays usable: the message keeps the labels it had, and
+    /// labels are still asked for.
+    #[tokio::test]
+    async fn a_label_sent_as_a_literal_leaves_the_stream_and_the_labels_alone() {
+        let account_id = 900_377;
+        let (r, msgs) = read(
+            account_id,
+            "* 3 FETCH (UID 7 X-GM-LABELS ({5}\r\nHello))\r\n{tag} OK Success\r\n",
+        )
+        .await;
+        r.expect("the reply reads");
+        assert_eq!(labels_of(&msgs)[0], ["Old"]);
+        assert!(gmail_labels_wanted(account_id));
+    }
+
     fn fetch_attrs(raw: &[u8]) -> Vec<async_imap::imap_proto::AttributeValue<'_>> {
-        match async_imap::imap_proto::parser::parse_response(raw) {
+        match async_imap::imap_proto::Response::parse(raw) {
             Ok((_, async_imap::imap_proto::Response::Fetch(_, attrs))) => attrs,
             other => panic!("not a FETCH reply: {other:?}"),
         }
