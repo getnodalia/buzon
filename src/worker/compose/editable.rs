@@ -238,7 +238,7 @@ pub(crate) fn editable_from_raw(raw: &[u8], envelope_rcpts: &[String]) -> Editab
                 .into_iter()
                 .filter(|(id, _)| {
                     !p.parts
-                        .get(*id)
+                        .get(*id as usize)
                         .and_then(|part| part.content_id())
                         .is_some_and(|cid| embedded.iter().any(|e| e == cid))
                 })
